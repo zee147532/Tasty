@@ -1,0 +1,9 @@
+
+  ${AnsiColor.CYAN}████████╗ ████████╗ ████████╗ ████╗   ██╗ ${AnsiColor.RED} ████╗   ██╗ ███████╗
+  ${AnsiColor.CYAN}╚══██╔══╝ ╚══██╔══╝ ██╔═════╝ ██╔██╗  ██║ ${AnsiColor.RED} ██╔██╗  ██║ ██║   ██╗
+  ${AnsiColor.CYAN}   ██║       ██║    ██████╗   ██║ ██╗ ██║ ${AnsiColor.RED} ██║ ██╗ ██║ ██║    ██╗
+  ${AnsiColor.CYAN}   ██║       ██║    ██╔═══╝   ██║  ██╗██║ ${AnsiColor.RED} ██║  ██╗██║ ██║   ██╔╝
+  ${AnsiColor.CYAN}   ██║    ████████╗ ████████╗ ██║   ████║ ${AnsiColor.RED} ██║   ████║ ███████╔╝
+  ${AnsiColor.CYAN}   ╚═╝    ╚═══════╝ ╚═══════╝ ╚═╝   ╚═══╝ ${AnsiColor.RED} ╚═╝   ╚═══╝ ╚══════╝
+
+${AnsiColor.BRIGHT_MAGENTA}:: Made by Nguyen Dinh Tien - 64CS1 🤓 ::
