@@ -3,6 +3,7 @@ import Cookies from 'js-cookie'
 import Header from '../Header'
 
 import AllRestaurantsList from '../AllRestaurantsList'
+import Cart from '../Cart'
 import Footer from '../Footer'
 
 import './index.css'
@@ -15,7 +16,7 @@ const Home = () => {
   return (
     <>
       <Header />
-      <AllRestaurantsList />
+      <Cart />
       <Footer />
     </>
   )

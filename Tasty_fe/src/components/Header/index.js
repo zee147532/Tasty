@@ -9,9 +9,10 @@ class Header extends Component {
   state = {isMobileMenuClicked: false}
 
   onClickLogout = () => {
+    console.log('asdfasdf')
     const {history} = this.props
-    Cookies.remove('jwt_token')
     history.replace('/login')
+    // Cookies.remove('jwt_token')
   }
 
   onClickMenuBar = () => {

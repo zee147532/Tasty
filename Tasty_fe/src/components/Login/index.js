@@ -49,17 +49,15 @@ class Login extends Component {
       },
     }
     const response = await fetch(url, {
-      headers: {
-        
-      }
+      headers: {},
     })
     console.log(response)
     const data = await response.json()
     console.log(data)
     if (response.ok === true) {
-      this.onSubmitSuccess(data.jwt_token)
+      this.onSubmitSuccess(data.jwtToken)
     } else {
-      this.onSubmitFailure(data.error_msg)
+      this.onSubmitFailure(data.errorMsg)
     }
   }
 

@@ -1,7 +1,6 @@
 import {Component} from 'react'
 import {Link} from 'react-router-dom'
 import CartItem from '../CartItem'
-import Header from '../Header'
 import Footer from '../Footer'
 import './index.css'
 
@@ -26,6 +25,7 @@ class Cart extends Component {
         )
         this.setState({totalCartAmount})
       }
+      this.setState({cartData: parseCartData, cartStatus: true})
       this.setState({cartData: parseCartData, cartStatus: true})
     }
   }
@@ -63,7 +63,6 @@ class Cart extends Component {
           <>
             {!orderStatus ? (
               <div>
-                <Header />
                 <div className="cart-container">
                   <div className="cart-responsive-container">
                     <ul className="cart-list-container">
@@ -102,7 +101,6 @@ class Cart extends Component {
               </div>
             ) : (
               <>
-                <Header />
                 <div className="order-successful-container">
                   <div className="order-successful-responsive-container">
                     <img
@@ -129,7 +127,6 @@ class Cart extends Component {
           </>
         ) : (
           <div>
-            <Header />
             <div className="empty-cart-container">
               <div className="empty-cart-responsive-container">
                 <img
@@ -137,13 +134,13 @@ class Cart extends Component {
                   src="https://res.cloudinary.com/nsp/image/upload/v1636379708/tastyKitchens/empty_cart_1_1x_o1nekx.png"
                   alt="empty cart"
                 />
-                <h1 className="empty-cart-heading">No Order Yet!</h1>
+                <h1 className="empty-cart-heading">No Recipes Posted Yet!</h1>
                 <p className="empty-cart-para">
-                  Your cart is empty. Add something from the menu.
+                  Your page is blank. Let's Add something .
                 </p>
                 <Link to="/">
                   <button className="empty-cart-button" type="button">
-                    Order Now
+                    Add Now
                   </button>
                 </Link>
               </div>
