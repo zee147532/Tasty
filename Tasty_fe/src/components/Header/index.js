@@ -9,10 +9,12 @@ class Header extends Component {
   state = {isMobileMenuClicked: false}
 
   onClickLogout = () => {
-    console.log('asdfasdf')
     const {history} = this.props
-    history.replace('/login')
-    // Cookies.remove('jwt_token')
+    var warning = "Are you sure you want to Logout.\nYou will be returned to the login screen."
+    if (confirm(warning)) {
+      Cookies.remove('jwt_token')
+      history.push('/login')
+    }
   }
 
   onClickMenuBar = () => {
@@ -70,7 +72,7 @@ class Header extends Component {
 
                 <li className="nav-menu-item">
                   <Link to="/cart" className="nav-link">
-                    Cart
+                    Posts
                   </Link>
                 </li>
               </ul>
@@ -97,7 +99,7 @@ class Header extends Component {
 
                   <li className="nav-menu-item-mobile">
                     <Link to="/cart" className="nav-link">
-                      Cart
+                      Posts
                     </Link>
                   </li>
                 </ul>

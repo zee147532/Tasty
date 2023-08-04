@@ -28,7 +28,7 @@ class Login extends Component {
       expires: 30,
       path: '/',
     })
-    history.replace('/')
+    history.push('/')
   }
 
   onSubmitFailure = errorMsg => {
@@ -44,13 +44,11 @@ class Login extends Component {
       method: 'POST',
       body: JSON.stringify(userDetails),
       headers: {
-        Accept: 'application/json, text/plain, */*',
-        Content: 'application/json',
+        Accept: 'application/json',
+        'Content-type': 'application/json',
       },
     }
-    const response = await fetch(url, {
-      headers: {},
-    })
+    const response = await fetch(url, options)
     console.log(response)
     const data = await response.json()
     console.log(data)
