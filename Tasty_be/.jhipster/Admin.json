@@ -1,0 +1,17 @@
+{
+  "applications": "*",
+  "entityTableName": "admin",
+  "fields": [
+    {
+      "fieldName": "username",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "passord",
+      "fieldType": "String"
+    }
+  ],
+  "name": "Admin",
+  "pagination": "pagination",
+  "relationships": []
+}

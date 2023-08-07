@@ -1,0 +1,39 @@
+{
+  "applications": "*",
+  "entityTableName": "ingredient",
+  "fields": [
+    {
+      "fieldName": "id",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "otherName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "type",
+      "fieldType": "Long"
+    }
+  ],
+  "name": "Ingredient",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "ingredientOfDish",
+      "otherEntityRelationshipName": "ingredient",
+      "relationshipName": "ingredientOfDish",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "ingredientType",
+      "relationshipName": "type",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    }
+  ]
+}

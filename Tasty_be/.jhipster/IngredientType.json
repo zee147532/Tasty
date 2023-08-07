@@ -1,0 +1,25 @@
+{
+  "applications": "*",
+  "entityTableName": "ingredient_type",
+  "fields": [
+    {
+      "fieldName": "id",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    }
+  ],
+  "name": "IngredientType",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "ingredient",
+      "otherEntityRelationshipName": "type",
+      "relationshipName": "ingredient",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    }
+  ]
+}

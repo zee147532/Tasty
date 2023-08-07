@@ -1,0 +1,34 @@
+{
+  "applications": "*",
+  "entityTableName": "favorites",
+  "fields": [
+    {
+      "fieldName": "id",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "customer",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "post",
+      "fieldType": "Long"
+    }
+  ],
+  "name": "Favorites",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "customer",
+      "relationshipName": "customer",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "post",
+      "relationshipName": "post",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "applications": "*",
+  "entityTableName": "comment",
+  "fields": [
+    {
+      "fieldName": "id",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "post",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "isSubComment",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "supperComment",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "comment",
+      "fieldType": "String"
+    }
+  ],
+  "name": "Comment",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "post",
+      "relationshipName": "post",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    }
+  ]
+}
