@@ -1,0 +1,105 @@
+
+entity Admin {
+	username String,
+    passord String
+}
+
+entity Comment {
+	id Long,
+    post Long,
+    isSubComment Boolean,
+    supperComment Long,
+    comment String
+}
+
+entity Customer {
+	username String,
+	password String,
+    fullName String,
+	phoneNumber String,
+	email String,
+    status Boolean,
+    gender Boolean,
+    profession Long
+}
+
+entity Evaluation {
+	id Long,
+    post Long,
+    point Integer,
+    comment String
+}
+
+entity Favorites {
+	id Long,
+	customer String,
+    post Long
+}
+
+entity Ingredient {
+	id Long,
+	name String,
+    otherName String,
+	type Long
+}
+
+entity IngredientOfDish {
+	id Long,
+	post Long,
+	ingredient Long,
+    unit String,
+    quantity Long
+}
+
+entity IngredientType {
+	id Long,
+	name String
+}
+
+entity Post {
+	id Long,
+	title String,
+    content String,
+    description String,
+    status Boolean,
+    createdDate LocalDate,
+    author String
+}
+
+entity Profession {
+	id Long,
+	name String
+}
+
+entity StepToCook {
+	id Long,
+	post Long,
+    content String,
+    index Long
+}
+
+relationship OneToMany {
+	Customer to Favorites{customer},
+    Profession to Customer{professtion},
+    Customer to Post{author},
+    Post to Favorites{post},
+    Post to StepToCook{post},
+    Post to Comment{post},
+    Post to Evaluation{post},
+    Post to IngredientOfDish{post},
+    IngredientType to Ingredient{type},
+    Ingredient to IngredientOfDish{ingredient}
+}
+
+// Set pagination options
+paginate * with infinite-scroll
+paginate * with pagination
+
+// Use Data Transfer Objects (DTO)
+// dto * with mapstruct
+
+// Set service options to all except few
+service all with serviceImpl except Admin, Profession, Customer, Post, Favorites, StepToCook, Comment, Evaluation, IngredientOfDish, Ingredient, IngredientType
+
+// Set an angular suffix
+// angularSuffix * with mySuffix
