@@ -9,4 +9,9 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface CustomerRepository extends JpaRepository<Customer, Long> {}
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
+    Customer findByUsernameOrEmail(String username, String email);
+    Customer findByUsername(String username);
+
+    Customer findByEmail(String email);
+}

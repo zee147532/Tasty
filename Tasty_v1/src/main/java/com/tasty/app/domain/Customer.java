@@ -45,6 +45,9 @@ public class Customer implements Serializable {
     @Column(name = "gender")
     private Gender gender;
 
+    @Column(name = "confirmed")
+    private Boolean confirmed;
+
     @OneToMany(mappedBy = "customer")
     @JsonIgnoreProperties(value = { "customer", "post" }, allowSetters = true)
     private Set<Favorites> favorites = new HashSet<>();
@@ -58,7 +61,7 @@ public class Customer implements Serializable {
 
     @ManyToOne
     @JsonIgnoreProperties(value = { "customers" }, allowSetters = true)
-    private Profession professtion;
+    private Profession profession;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -162,6 +165,19 @@ public class Customer implements Serializable {
         return this;
     }
 
+    public void setConfirmed(Boolean confirmed) {
+        this.confirmed = confirmed;
+    }
+
+    public Boolean getConfirmed() {
+        return this.confirmed;
+    }
+
+    public Customer confirmed(Boolean confirmed) {
+        this.setConfirmed(confirmed);
+        return this;
+    }
+
     public void setGender(Gender gender) {
         this.gender = gender;
     }
@@ -228,16 +244,16 @@ public class Customer implements Serializable {
         return this;
     }
 
-    public Profession getProfesstion() {
-        return this.professtion;
+    public Profession getProfession() {
+        return this.profession;
     }
 
-    public void setProfesstion(Profession profession) {
-        this.professtion = profession;
+    public void setProfession(Profession profession) {
+        this.profession = profession;
     }
 
-    public Customer professtion(Profession profession) {
-        this.setProfesstion(profession);
+    public Customer profession(Profession profession) {
+        this.setProfession(profession);
         return this;
     }
 
@@ -272,6 +288,7 @@ public class Customer implements Serializable {
             ", email='" + getEmail() + "'" +
             ", status='" + getStatus() + "'" +
             ", gender='" + getGender() + "'" +
+            ", confirmed='" + getConfirmed() + "'" +
             "}";
     }
 }

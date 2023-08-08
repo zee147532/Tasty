@@ -25,7 +25,7 @@ public class Profession implements Serializable {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "professtion")
+    @OneToMany(mappedBy = "profession")
     @JsonIgnoreProperties(value = { "favorites", "posts", "professtion" }, allowSetters = true)
     private Set<Customer> customers = new HashSet<>();
 
@@ -63,10 +63,10 @@ public class Profession implements Serializable {
 
     public void setCustomers(Set<Customer> customers) {
         if (this.customers != null) {
-            this.customers.forEach(i -> i.setProfesstion(null));
+            this.customers.forEach(i -> i.setProfession(null));
         }
         if (customers != null) {
-            customers.forEach(i -> i.setProfesstion(this));
+            customers.forEach(i -> i.setProfession(this));
         }
         this.customers = customers;
     }
@@ -78,13 +78,13 @@ public class Profession implements Serializable {
 
     public Profession addCustomer(Customer customer) {
         this.customers.add(customer);
-        customer.setProfesstion(this);
+        customer.setProfession(this);
         return this;
     }
 
     public Profession removeCustomer(Customer customer) {
         this.customers.remove(customer);
-        customer.setProfesstion(null);
+        customer.setProfession(null);
         return this;
     }
 

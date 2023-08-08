@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,11 +39,8 @@ public class PostResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final PostRepository postRepository;
-
-    public PostResource(PostRepository postRepository) {
-        this.postRepository = postRepository;
-    }
+    @Autowired
+    private PostRepository postRepository;
 
     /**
      * {@code POST  /posts} : Create a new post.
