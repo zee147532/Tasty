@@ -1,0 +1,64 @@
+{
+  "applications": "*",
+  "changelogDate": "20230808043705",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "customer",
+  "fields": [
+    {
+      "fieldName": "username",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "password",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "fullName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "phoneNumber",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "email",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "gender",
+      "fieldType": "Gender",
+      "fieldValues": "NAM,NU,KHAC"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Customer",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "favorites",
+      "otherEntityRelationshipName": "customer",
+      "relationshipName": "favorites",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "post",
+      "otherEntityRelationshipName": "author",
+      "relationshipName": "post",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "profession",
+      "otherEntityRelationshipName": "customer",
+      "relationshipName": "professtion",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "no"
+}
