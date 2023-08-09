@@ -50,12 +50,29 @@ spring:
   mail:
     host: localhost
     port: 25
-    username:
+    username: zeezxt@gmail.com
     password:
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls.enable: true
+          ssl.trust: smtp.gmail.com
   messages:
     cache-duration: PT1S # 1 second, see the ISO 8601 standard
   thymeleaf:
     cache: false
+
+  redis:
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 10
+        min-idle: 2
+    port: 6379
+    host: localhost
+    password: 123
 
 server:
   port: 8080
