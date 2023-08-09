@@ -1,5 +1,6 @@
 package com.tasty.app.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tasty.app.domain.Customer;
 import com.tasty.app.domain.Profession;
 import com.tasty.app.repository.CustomerRepository;
@@ -9,25 +10,30 @@ import com.tasty.app.request.RegistryRequest;
 import com.tasty.app.request.VerifyRequest;
 import com.tasty.app.service.LoginService;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.Objects;
-import java.util.Random;
 
 @Service
 public class LoginServiceImpl implements LoginService {
-
-    @Autowired
-    private CustomerRepository customerRepository;
-    @Autowired
-    private ProfessionRepository professionRepository;
-//    @Autowired
-//    private RedisTemplate<String, String> redisTemplate;
+    private final CustomerRepository customerRepository;
+    private final ProfessionRepository professionRepository;
+    private final RedisTemplate<String, String> redisTemplate;
     private static final Duration PERMISSION_CACHE_TTL = Duration.ofMinutes(5);
+    private final ObjectMapper mapper;
+
+    public LoginServiceImpl(ObjectMapper mapper,
+                            CustomerRepository customerRepository,
+                            ProfessionRepository professionRepository,
+                            RedisTemplate<String, String> redisTemplate) {
+        this.customerRepository = customerRepository;
+        this.professionRepository = professionRepository;
+        this.redisTemplate = redisTemplate;
+        this.mapper = mapper;
+    }
 
     @Override
     public String registry(RegistryRequest request) {
@@ -37,7 +43,8 @@ public class LoginServiceImpl implements LoginService {
         }
         // TODO: Encode mật khẩu
         String encodedPassword = request.getPassword();
-        Customer customer = new Customer().username(username)
+        Customer customer = new Customer().id(request.getId())
+            .username(username)
             .password(encodedPassword);
         customerRepository.save(customer);
         return "Success.";
@@ -62,25 +69,14 @@ public class LoginServiceImpl implements LoginService {
 
         customerRepository.save(customer);
 
-        // TODO: Tạo mã xác nhận và lưu vào redis cùng email với thời gian tồn tại là 5 phút
-        int leftLimit = 48; // Số 0
-        int rightLimit = 57; // Số 9
-        int targetStringLength = 6;
-        Random random = new Random();
-
-//        String generatedCode = random.ints(leftLimit, rightLimit + 1)
-//            .li
-        String generatedCode = RandomStringUtils.random(6,false,true);
-//        redisTemplate.opsForValue().set(email, generatedCode, PERMISSION_CACHE_TTL);
-
-        // TODO: Gửi mail xác nhận
+        sendCode(email);
 
         return "Success.";
     }
 
     public String verify(VerifyRequest request) {
         // TODO: Lấy mã xác thực đúng từ redis sử dung email
-        String correctCode = "";
+        String correctCode = mapper.convertValue(redisTemplate.opsForValue().get(request.getEmail()), String.class);
 
         if (correctCode.equals(request.getVerifyCode())) {
             Customer customer = customerRepository.findByEmail(request.getEmail());
@@ -94,8 +90,20 @@ public class LoginServiceImpl implements LoginService {
 
     public String resendCode(String email) {
         // TODO: Xóa mã theo email trên redis
+        redisTemplate.delete(email);
+
+        sendCode(email);
+
+        return "Success.";
+    }
+
+    public String sendCode(String email) {
         // TODO: Tạo mã xác nhận và lưu vào redis cùng email với thời gian tồn tại là 5 phút
+        String generatedCode = RandomStringUtils.random(6,false,true);
+        redisTemplate.opsForValue().set(email, generatedCode, PERMISSION_CACHE_TTL);
+
         // TODO: Gửi mail xác nhận
+
         return "Success.";
     }
 }
