@@ -3,7 +3,11 @@ package com.tasty.app.service.impl;
 import com.tasty.app.domain.Admin;
 import com.tasty.app.repository.AdminRepository;
 import com.tasty.app.service.AdminService;
+
+import java.util.List;
 import java.util.Optional;
+
+import com.tasty.app.service.dto.AdminDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -75,5 +79,39 @@ public class AdminServiceImpl implements AdminService {
     public void delete(Long id) {
         log.debug("Request to delete Admin : {}", id);
         adminRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Admin> findAll() {
+        return adminRepository.findAll();
+    }
+
+    @Override
+    public String createAdmin(AdminDTO dto) {
+        // TODO: Mã hóa mật khẩu
+        String encodedPassword = dto.getPassword();
+
+        Admin admin = new Admin()
+            .username(dto.getUsername())
+            .passord(encodedPassword);
+
+        adminRepository.save(admin);
+        return "Success.";
+    }
+
+    @Override
+    public String updateAdmin(AdminDTO dto) {
+        // TODO: Mã hóa mật khẩu
+        String encodedPassword = dto.getPassword();
+
+        Admin admin = adminRepository.findByUsername(dto.getUsername());
+        admin.passord(encodedPassword);
+        return null;
+    }
+
+    @Override
+    public String deleteAdmin(String username) {
+        adminRepository.deleteByUsername(username);
+        return null;
     }
 }

@@ -1,7 +1,11 @@
 package com.tasty.app.service;
 
 import com.tasty.app.domain.Admin;
+
+import java.util.List;
 import java.util.Optional;
+
+import com.tasty.app.service.dto.AdminDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -55,4 +59,12 @@ public interface AdminService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    List<Admin> findAll();
+
+    String createAdmin(AdminDTO dto);
+
+    String updateAdmin(AdminDTO dto);
+
+    String deleteAdmin(String username);
 }

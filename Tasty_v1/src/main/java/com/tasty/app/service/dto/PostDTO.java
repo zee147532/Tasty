@@ -50,7 +50,7 @@ public class PostDTO {
         this.steps = steps;
     }
 
-    public class Step {
+    public static class Step {
         private Long id;
         private String content;
         private Long index;

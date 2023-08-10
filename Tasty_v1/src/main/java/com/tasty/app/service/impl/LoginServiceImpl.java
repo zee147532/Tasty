@@ -2,6 +2,7 @@ package com.tasty.app.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tasty.app.domain.Customer;
+import com.tasty.app.domain.Profession;
 import com.tasty.app.repository.CustomerRepository;
 import com.tasty.app.repository.ProfessionRepository;
 import com.tasty.app.request.InfoRequest;
@@ -18,18 +19,19 @@ import java.util.Objects;
 
 @Service
 public class LoginServiceImpl implements LoginService {
-
-    @Autowired
-    private CustomerRepository customerRepository;
-    @Autowired
-    private ProfessionRepository professionRepository;
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+    private final CustomerRepository customerRepository;
+    private final ProfessionRepository professionRepository;
+    private final RedisTemplate<String, String> redisTemplate;
     private static final Duration PERMISSION_CACHE_TTL = Duration.ofMinutes(5);
-
     private final ObjectMapper mapper;
 
-    public LoginServiceImpl(ObjectMapper mapper) {
+    public LoginServiceImpl(ObjectMapper mapper,
+                            CustomerRepository customerRepository,
+                            ProfessionRepository professionRepository,
+                            RedisTemplate<String, String> redisTemplate) {
+        this.customerRepository = customerRepository;
+        this.professionRepository = professionRepository;
+        this.redisTemplate = redisTemplate;
         this.mapper = mapper;
     }
 
