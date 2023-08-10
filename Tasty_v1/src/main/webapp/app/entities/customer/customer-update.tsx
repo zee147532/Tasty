@@ -53,7 +53,7 @@ export const CustomerUpdate = () => {
     const entity = {
       ...customerEntity,
       ...values,
-      professtion: professions.find(it => it.id.toString() === values.professtion.toString()),
+      profession: professions.find(it => it.id.toString() === values.profession.toString()),
     };
 
     if (isNew) {
@@ -69,7 +69,7 @@ export const CustomerUpdate = () => {
       : {
           gender: 'NAM',
           ...customerEntity,
-          professtion: customerEntity?.professtion?.id,
+          profession: customerEntity?.profession?.id,
         };
 
   return (
@@ -102,7 +102,7 @@ export const CustomerUpdate = () => {
                 ))}
               </ValidatedField>
               <ValidatedField label="Confirmed" id="customer-confirmed" name="confirmed" data-cy="confirmed" check type="checkbox" />
-              <ValidatedField id="customer-professtion" name="professtion" data-cy="professtion" label="Professtion" type="select">
+              <ValidatedField id="customer-profession" name="profession" data-cy="profession" label="Profession" type="select">
                 <option value="" key="0" />
                 {professions
                   ? professions.map(otherEntity => (

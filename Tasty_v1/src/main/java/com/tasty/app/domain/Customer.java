@@ -61,7 +61,7 @@ public class Customer implements Serializable {
 
     @ManyToOne
     @JsonIgnoreProperties(value = { "customers" }, allowSetters = true)
-    private Profession professtion;
+    private Profession profession;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -244,16 +244,16 @@ public class Customer implements Serializable {
         return this;
     }
 
-    public Profession getProfesstion() {
-        return this.professtion;
+    public Profession getProfession() {
+        return this.profession;
     }
 
-    public void setProfesstion(Profession profession) {
-        this.professtion = profession;
+    public void setProfession(Profession profession) {
+        this.profession = profession;
     }
 
-    public Customer professtion(Profession profession) {
-        this.setProfesstion(profession);
+    public Customer profession(Profession profession) {
+        this.setProfession(profession);
         return this;
     }
 

@@ -15,7 +15,7 @@ export interface ICustomer {
   confirmed?: boolean | null;
   favorites?: IFavorites[] | null;
   posts?: IPost[] | null;
-  professtion?: IProfession | null;
+  profession?: IProfession | null;
 }
 
 export const defaultValue: Readonly<ICustomer> = {

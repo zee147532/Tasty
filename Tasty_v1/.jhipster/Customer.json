@@ -60,7 +60,7 @@
     {
       "otherEntityName": "profession",
       "otherEntityRelationshipName": "customer",
-      "relationshipName": "professtion",
+      "relationshipName": "profession",
       "relationshipType": "many-to-one"
     }
   ],

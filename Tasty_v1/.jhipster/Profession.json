@@ -22,7 +22,7 @@
   "relationships": [
     {
       "otherEntityName": "customer",
-      "otherEntityRelationshipName": "professtion",
+      "otherEntityRelationshipName": "profession",
       "relationshipName": "customer",
       "relationshipType": "one-to-many"
     }

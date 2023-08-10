@@ -21,7 +21,7 @@ public class Favorites implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "favorites", "posts", "professtion" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "favorites", "posts", "profession" }, allowSetters = true)
     private Customer customer;
 
     @ManyToOne

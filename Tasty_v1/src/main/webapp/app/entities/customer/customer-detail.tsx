@@ -60,8 +60,8 @@ export const CustomerDetail = () => {
             <span id="confirmed">Confirmed</span>
           </dt>
           <dd>{customerEntity.confirmed ? 'true' : 'false'}</dd>
-          <dt>Professtion</dt>
-          <dd>{customerEntity.professtion ? customerEntity.professtion.id : ''}</dd>
+          <dt>Profession</dt>
+          <dd>{customerEntity.profession ? customerEntity.profession.id : ''}</dd>
         </dl>
         <Button tag={Link} to="/customer" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" /> <span className="d-none d-md-inline">Back</span>

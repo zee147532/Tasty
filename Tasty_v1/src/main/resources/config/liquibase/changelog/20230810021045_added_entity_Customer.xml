@@ -38,7 +38,7 @@
             <column name="confirmed" type="boolean">
                 <constraints nullable="true" />
             </column>
-            <column name="professtion_id" type="bigint">
+            <column name="profession_id" type="bigint">
                 <constraints nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->

@@ -63,7 +63,7 @@ public class Post implements Serializable {
     private Set<TypeOfDish> typeOfDishes = new HashSet<>();
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "favorites", "posts", "professtion" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "favorites", "posts", "profession" }, allowSetters = true)
     private Customer author;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

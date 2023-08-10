@@ -128,7 +128,7 @@ export const Customer = () => {
                   Confirmed <FontAwesomeIcon icon="sort" />
                 </th>
                 <th>
-                  Professtion <FontAwesomeIcon icon="sort" />
+                  Profession <FontAwesomeIcon icon="sort" />
                 </th>
                 <th />
               </tr>
@@ -150,7 +150,7 @@ export const Customer = () => {
                   <td>{customer.gender}</td>
                   <td>{customer.confirmed ? 'true' : 'false'}</td>
                   <td>
-                    {customer.professtion ? <Link to={`/profession/${customer.professtion.id}`}>{customer.professtion.id}</Link> : ''}
+                    {customer.profession ? <Link to={`/profession/${customer.profession.id}`}>{customer.profession.id}</Link> : ''}
                   </td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
