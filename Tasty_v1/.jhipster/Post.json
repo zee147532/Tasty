@@ -1,0 +1,83 @@
+{
+  "applications": "*",
+  "changelogDate": "20230810021051",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "post",
+  "fields": [
+    {
+      "fieldName": "id",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "title",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "content",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "createdDate",
+      "fieldType": "LocalDate"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Post",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "favorites",
+      "otherEntityRelationshipName": "post",
+      "relationshipName": "favorites",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "stepToCook",
+      "otherEntityRelationshipName": "post",
+      "relationshipName": "stepToCook",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "comment",
+      "otherEntityRelationshipName": "post",
+      "relationshipName": "comment",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "evaluation",
+      "otherEntityRelationshipName": "post",
+      "relationshipName": "evaluation",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "ingredientOfDish",
+      "otherEntityRelationshipName": "post",
+      "relationshipName": "ingredientOfDish",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "typeOfDish",
+      "otherEntityRelationshipName": "post",
+      "relationshipName": "typeOfDish",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "customer",
+      "otherEntityRelationshipName": "post",
+      "relationshipName": "author",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "serviceImpl"
+}

@@ -1,0 +1,41 @@
+{
+  "applications": "*",
+  "changelogDate": "20230810021049",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "ingredient_of_dish",
+  "fields": [
+    {
+      "fieldName": "id",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "unit",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "quantity",
+      "fieldType": "Long"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "IngredientOfDish",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "post",
+      "otherEntityRelationshipName": "ingredientOfDish",
+      "relationshipName": "post",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "ingredient",
+      "otherEntityRelationshipName": "ingredientOfDish",
+      "relationshipName": "ingredient",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "serviceImpl"
+}

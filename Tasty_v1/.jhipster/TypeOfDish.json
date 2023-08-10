@@ -1,0 +1,33 @@
+{
+  "applications": "*",
+  "changelogDate": "20230810021055",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "type_of_dish",
+  "fields": [
+    {
+      "fieldName": "id",
+      "fieldType": "Long"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "TypeOfDish",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "dishType",
+      "otherEntityRelationshipName": "typeOfDish",
+      "relationshipName": "type",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "post",
+      "otherEntityRelationshipName": "typeOfDish",
+      "relationshipName": "post",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "serviceImpl"
+}

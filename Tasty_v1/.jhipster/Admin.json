@@ -1,0 +1,24 @@
+{
+  "applications": "*",
+  "changelogDate": "20230810021043",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "admin",
+  "fields": [
+    {
+      "fieldName": "username",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "passord",
+      "fieldType": "String"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Admin",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [],
+  "service": "serviceImpl"
+}
