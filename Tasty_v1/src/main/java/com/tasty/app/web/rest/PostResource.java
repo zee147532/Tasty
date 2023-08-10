@@ -2,6 +2,8 @@ package com.tasty.app.web.rest;
 
 import com.tasty.app.domain.Post;
 import com.tasty.app.repository.PostRepository;
+import com.tasty.app.service.PostService;
+import com.tasty.app.service.dto.PostDTO;
 import com.tasty.app.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,7 +15,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +28,6 @@ import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
-/**
- * REST controller for managing {@link com.tasty.app.domain.Post}.
- */
 @RestController
 @RequestMapping("/api")
 @Transactional
@@ -41,21 +42,28 @@ public class PostResource {
 
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private PostService postService;
 
-    /**
-     * {@code POST  /posts} : Create a new post.
-     *
-     * @param post the post to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new post, or with status {@code 400 (Bad Request)} if the post has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
+    @GetMapping("/posts")
+    public ResponseEntity getPosts(@RequestParam(required = false, defaultValue = "") String keyword,
+                                   @RequestParam Integer page,
+                                   @RequestParam Integer size,
+                                   @RequestParam String sort,
+                                   @RequestParam String column) {
+        Sort sort1 = Sort.by(Sort.Direction.fromString(sort), column);
+        Pageable pageable = PageRequest.of(page - 1, size, sort1);
+        List<PostDTO> response = postService.getPosts(keyword, pageable);
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/posts")
-    public ResponseEntity<Post> createPost(@RequestBody Post post) throws URISyntaxException {
+    public ResponseEntity createPost(@RequestBody PostDTO post) throws URISyntaxException {
         log.debug("REST request to save Post : {}", post);
         if (post.getId() != null) {
             throw new BadRequestAlertException("A new post cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Post result = postRepository.save(post);
+        Post result = postService.createPost(post);
         return ResponseEntity
             .created(new URI("/api/posts/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
@@ -73,7 +81,7 @@ public class PostResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/posts/{id}")
-    public ResponseEntity<Post> updatePost(@PathVariable(value = "id", required = false) final Long id, @RequestBody Post post)
+    public ResponseEntity<Post> updatePost(@PathVariable(value = "id", required = false) final Long id, @RequestBody PostDTO post)
         throws URISyntaxException {
         log.debug("REST request to update Post : {}, {}", id, post);
         if (post.getId() == null) {
@@ -87,7 +95,7 @@ public class PostResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Post result = postRepository.save(post);
+        Post result = postService.updatePost(post);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, post.getId().toString()))
@@ -155,13 +163,13 @@ public class PostResource {
      * @param pageable the pagination information.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of posts in body.
      */
-    @GetMapping("/posts")
-    public ResponseEntity<List<Post>> getAllPosts(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
-        log.debug("REST request to get a page of Posts");
-        Page<Post> page = postRepository.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
-    }
+//    @GetMapping("/posts")
+//    public ResponseEntity<List<Post>> getAllPosts(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
+//        log.debug("REST request to get a page of Posts");
+//        Page<Post> page = postRepository.findAll(pageable);
+//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+//        return ResponseEntity.ok().headers(headers).body(page.getContent());
+//    }
 
     /**
      * {@code GET  /posts/:id} : get the "id" post.
