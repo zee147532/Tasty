@@ -2,6 +2,8 @@ package com.tasty.app.service;
 
 import com.tasty.app.domain.TypeOfDish;
 import java.util.Optional;
+
+import com.tasty.app.service.dto.TypeOfDishDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -55,4 +57,8 @@ public interface TypeOfDishService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    String createType(TypeOfDishDTO dto);
+
+    String deleteType(Long postId, Long typeId);
 }

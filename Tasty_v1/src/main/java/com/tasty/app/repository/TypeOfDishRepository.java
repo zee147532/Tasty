@@ -9,4 +9,7 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface TypeOfDishRepository extends JpaRepository<TypeOfDish, Long> {}
+public interface TypeOfDishRepository extends JpaRepository<TypeOfDish, Long> {
+    @Modifying
+    void deleteAllByPost_IdAndType_Id(Long postId, Long typeId);
+}

@@ -2,6 +2,8 @@ package com.tasty.app.service;
 
 import com.tasty.app.domain.IngredientOfDish;
 import java.util.Optional;
+
+import com.tasty.app.service.dto.IngredientOfDishDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -55,4 +57,10 @@ public interface IngredientOfDishService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    String createIngredientOfDish(IngredientOfDishDTO dto);
+
+    String updateIngredientOfDish(IngredientOfDishDTO dto);
+
+    String removeIngredientOfDish(Long postsId, Long ingredientId);
 }

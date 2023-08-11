@@ -2,6 +2,8 @@ package com.tasty.app.service;
 
 import com.tasty.app.domain.Favorites;
 import java.util.Optional;
+
+import com.tasty.app.service.dto.FavoriteDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -55,4 +57,8 @@ public interface FavoritesService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    String createFavorite(FavoriteDTO dto);
+
+    String deleteFavorite(Long id);
 }

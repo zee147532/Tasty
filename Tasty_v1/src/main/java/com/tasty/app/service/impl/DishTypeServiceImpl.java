@@ -3,7 +3,11 @@ package com.tasty.app.service.impl;
 import com.tasty.app.domain.DishType;
 import com.tasty.app.repository.DishTypeRepository;
 import com.tasty.app.service.DishTypeService;
+
+import java.util.List;
 import java.util.Optional;
+
+import com.tasty.app.service.dto.DishTypeDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -72,5 +76,33 @@ public class DishTypeServiceImpl implements DishTypeService {
     public void delete(Long id) {
         log.debug("Request to delete DishType : {}", id);
         dishTypeRepository.deleteById(id);
+    }
+
+    @Override
+    public List<DishType> getAll() {
+        return dishTypeRepository.findAll();
+    }
+
+    @Override
+    public String createType(DishTypeDTO dto) {
+        DishType dishType = new DishType()
+            .name(dto.getName());
+        dishTypeRepository.save(dishType);
+        return "Success.";
+    }
+
+    @Override
+    public String updateType(DishTypeDTO dto) {
+        DishType dishType = dishTypeRepository.getReferenceById(dto.getId());
+        dishType.setName(dto.getName());
+
+        dishTypeRepository.save(dishType);
+        return "Success.";
+    }
+
+    @Override
+    public String deleteType(Long id) {
+        dishTypeRepository.deleteById(id);
+        return "Success.";
     }
 }
