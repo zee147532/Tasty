@@ -2,14 +2,14 @@ package com.tasty.app.web.rest;
 
 import com.tasty.app.domain.Post;
 import com.tasty.app.repository.PostRepository;
+import com.tasty.app.response.PostsResponse;
 import com.tasty.app.service.PostService;
 import com.tasty.app.service.dto.PostDTO;
 import com.tasty.app.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -186,5 +186,19 @@ public class PostResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @GetMapping("/customer/posts")
+    public ResponseEntity<List<PostsResponse>> getAllPosts(@RequestParam(required = false, defaultValue = "") String keyword) {
+        Pageable pageable = PageRequest.of(0, 20);
+        List<PostsResponse> responses = postService.getPosts(keyword, pageable);
+        return ResponseEntity.ok(responses);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity login() {
+        Map<String, String> response = new HashMap<>();
+        response.put("jwtToken", "123456789");
+        return ResponseEntity.ok(response);
     }
 }
