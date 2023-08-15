@@ -1,9 +1,16 @@
 package com.tasty.app.service.impl;
 
 import com.tasty.app.domain.Customer;
+import com.tasty.app.domain.Profession;
 import com.tasty.app.repository.CustomerRepository;
+import com.tasty.app.repository.FavoritesRepository;
+import com.tasty.app.repository.ProfessionRepository;
 import com.tasty.app.service.CustomerService;
+
+import java.util.List;
 import java.util.Optional;
+
+import com.tasty.app.service.dto.CustomerDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -21,9 +28,13 @@ public class CustomerServiceImpl implements CustomerService {
     private final Logger log = LoggerFactory.getLogger(CustomerServiceImpl.class);
 
     private final CustomerRepository customerRepository;
+    private final ProfessionRepository professionRepository;
+    private final FavoritesRepository favoritesRepository;
 
-    public CustomerServiceImpl(CustomerRepository customerRepository) {
+    public CustomerServiceImpl(CustomerRepository customerRepository, ProfessionRepository professionRepository, FavoritesRepository favoritesRepository) {
         this.customerRepository = customerRepository;
+        this.professionRepository = professionRepository;
+        this.favoritesRepository = favoritesRepository;
     }
 
     @Override
@@ -93,5 +104,58 @@ public class CustomerServiceImpl implements CustomerService {
     public void delete(Long id) {
         log.debug("Request to delete Customer : {}", id);
         customerRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Customer> findAll() {
+        return customerRepository.findAll();
+    }
+
+    @Override
+    public String createCustomer(CustomerDTO dto) {
+        // TODO: Mã hóa mật khẩu
+        String encodedPassword = dto.getPassword();
+
+        Profession profession = professionRepository.getReferenceById(dto.getProfessionId());
+        Customer customer = new Customer()
+            .username(dto.getUsername())
+            .password(encodedPassword)
+            .fullName(dto.getFullName())
+            .phoneNumber(dto.getPhoneNumber())
+            .email(dto.getEmail())
+            .status(true)
+            .gender(dto.getGender())
+            .confirmed(dto.getConfirmed())
+            .profession(profession);
+
+        customerRepository.save(customer);
+        return "Success.";
+    }
+
+    @Override
+    public String updateCustomer(CustomerDTO dto) {
+        // TODO: Mã hóa mật khẩu
+        String encodedPassword = dto.getPassword();
+
+        Profession profession = professionRepository.getReferenceById(dto.getProfessionId());
+        Customer customer = customerRepository.findByUsername(dto.getUsername());
+        customer.password(encodedPassword)
+            .fullName(dto.getFullName())
+            .phoneNumber(dto.getPhoneNumber())
+            .email(dto.getEmail())
+            .status(true)
+            .gender(dto.getGender())
+            .confirmed(dto.getConfirmed())
+            .profession(profession);
+
+        customerRepository.save(customer);
+        return "Success.";
+    }
+
+    @Override
+    public String deleteCustomer(String username) {
+        favoritesRepository.deleteAllByCustomer_Username(username);
+        customerRepository.deleteByUsername(username);
+        return "Success.";
     }
 }

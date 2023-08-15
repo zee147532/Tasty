@@ -9,4 +9,9 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface AdminRepository extends JpaRepository<Admin, Long> {}
+public interface AdminRepository extends JpaRepository<Admin, Long> {
+    Admin findByUsername(String username);
+
+    @Modifying
+    void deleteByUsername(String username);
+}

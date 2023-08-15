@@ -1,7 +1,11 @@
 package com.tasty.app.service;
 
 import com.tasty.app.domain.StepToCook;
+
+import java.util.List;
 import java.util.Optional;
+
+import com.tasty.app.service.dto.StepDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -55,4 +59,12 @@ public interface StepToCookService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    List<StepToCook> findByPost(Long postId);
+
+    String createStep(StepDTO dto);
+
+    String updateStep(StepDTO dto);
+
+    String deleteStep(Long id);
 }

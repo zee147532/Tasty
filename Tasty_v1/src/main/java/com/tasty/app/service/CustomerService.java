@@ -1,7 +1,11 @@
 package com.tasty.app.service;
 
 import com.tasty.app.domain.Customer;
+
+import java.util.List;
 import java.util.Optional;
+
+import com.tasty.app.service.dto.CustomerDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -55,4 +59,12 @@ public interface CustomerService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    List<Customer> findAll();
+
+    String createCustomer(CustomerDTO dto);
+
+    String updateCustomer(CustomerDTO dto);
+
+    String deleteCustomer(String username);
 }

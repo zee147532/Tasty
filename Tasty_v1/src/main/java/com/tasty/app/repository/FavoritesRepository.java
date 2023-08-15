@@ -9,4 +9,7 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface FavoritesRepository extends JpaRepository<Favorites, Long> {}
+public interface FavoritesRepository extends JpaRepository<Favorites, Long> {
+    @Modifying
+    void deleteAllByCustomer_Username(String username);
+}

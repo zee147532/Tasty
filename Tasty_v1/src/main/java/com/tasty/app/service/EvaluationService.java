@@ -1,7 +1,11 @@
 package com.tasty.app.service;
 
 import com.tasty.app.domain.Evaluation;
+
+import java.util.List;
 import java.util.Optional;
+
+import com.tasty.app.service.dto.EvaluationDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -55,4 +59,11 @@ public interface EvaluationService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    List<Evaluation> findByPost(Long postId);
+
+    String createEvaluation(EvaluationDTO dto);
+    String updateEvaluation(EvaluationDTO dto);
+    String deleteEvaluation(Long id);
+    Double calculateByPost(Long postId);
 }

@@ -1,7 +1,11 @@
 package com.tasty.app.service;
 
 import com.tasty.app.domain.Post;
+
+import java.util.List;
 import java.util.Optional;
+
+import com.tasty.app.service.dto.PostDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -55,4 +59,12 @@ public interface PostService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    List<PostDTO> getPosts(String keyword, Pageable pageable);
+
+    Post createPost(PostDTO dto);
+
+    Post updatePost(PostDTO dto);
+
+    String removePost(Long id);
 }

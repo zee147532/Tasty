@@ -1,9 +1,16 @@
 package com.tasty.app.service.impl;
 
+import com.tasty.app.domain.Post;
 import com.tasty.app.domain.StepToCook;
+import com.tasty.app.repository.PostRepository;
 import com.tasty.app.repository.StepToCookRepository;
 import com.tasty.app.service.StepToCookService;
+
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
+import com.tasty.app.service.dto.StepDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -21,9 +28,11 @@ public class StepToCookServiceImpl implements StepToCookService {
     private final Logger log = LoggerFactory.getLogger(StepToCookServiceImpl.class);
 
     private final StepToCookRepository stepToCookRepository;
+    private final PostRepository postRepository;
 
-    public StepToCookServiceImpl(StepToCookRepository stepToCookRepository) {
+    public StepToCookServiceImpl(StepToCookRepository stepToCookRepository, PostRepository postRepository) {
         this.stepToCookRepository = stepToCookRepository;
+        this.postRepository = postRepository;
     }
 
     @Override
@@ -75,5 +84,46 @@ public class StepToCookServiceImpl implements StepToCookService {
     public void delete(Long id) {
         log.debug("Request to delete StepToCook : {}", id);
         stepToCookRepository.deleteById(id);
+    }
+
+    @Override
+    public List<StepToCook> findByPost(Long postId) {
+        return stepToCookRepository.findAllByPost_Id(postId);
+    }
+
+    @Override
+    public String createStep(StepDTO dto) {
+        Post post = postRepository.getReferenceById(dto.getPostId());
+        if (Objects.isNull(post.getId())) {
+            return "Fail.";
+        }
+        StepToCook step = new StepToCook()
+            .content(dto.getContent())
+            .index(dto.getIndex())
+            .post(post);
+
+        stepToCookRepository.save(step);
+        return "Success.";
+    }
+
+    @Override
+    public String updateStep(StepDTO dto) {
+        Post post = postRepository.getReferenceById(dto.getPostId());
+        if (Objects.isNull(post.getId())) {
+            return "Fail.";
+        }
+
+        StepToCook step = stepToCookRepository.getReferenceById(dto.getId());
+        step.content(dto.getContent())
+            .index(dto.getIndex());
+
+        stepToCookRepository.save(step);
+        return "Success.";
+    }
+
+    @Override
+    public String deleteStep(Long id) {
+        stepToCookRepository.deleteById(id);
+        return null;
     }
 }

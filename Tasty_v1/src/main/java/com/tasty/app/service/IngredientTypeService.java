@@ -1,7 +1,11 @@
 package com.tasty.app.service;
 
 import com.tasty.app.domain.IngredientType;
+
+import java.util.List;
 import java.util.Optional;
+
+import com.tasty.app.service.dto.IngredientTypeDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -55,4 +59,10 @@ public interface IngredientTypeService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    List<IngredientType> getAll();
+
+    String createType(IngredientTypeDTO dto);
+
+    String removeType(Long id);
 }

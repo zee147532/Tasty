@@ -1,7 +1,11 @@
 package com.tasty.app.service;
 
 import com.tasty.app.domain.Profession;
+
+import java.util.List;
 import java.util.Optional;
+
+import com.tasty.app.service.dto.ProfessionDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -55,4 +59,12 @@ public interface ProfessionService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    List<Profession> getAll();
+
+    String createProfession(ProfessionDTO dto);
+
+    String updateProfession(ProfessionDTO dto);
+
+    String deleteProfession(Long id);
 }
