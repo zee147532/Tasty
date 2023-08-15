@@ -9,10 +9,16 @@ const RestaurantCard = props => {
   return (
     <li className="restaurant-item">
       <Link to={`/restaurant/${id}`} className="link-item">
-        <img src={imageUrl} alt="restaurant" className="restaurant-image" />
+        <div class="image-div">
+          <img src={imageUrl} alt="restaurant" className="restaurant-image" />
+        </div>
         <div>
           <h1 className="restaurant-name">{name}</h1>
-          <p className="restaurant-cuisine">{cuisine}</p>
+          <p className="restaurant-cuisine">
+            {cuisine.map(c => (
+              <h4 class="cuisine-tag">{c}</h4>
+            ))}
+          </p>
           <div className="rating-container">
             <AiFillStar className="star" />
             <p className="rating">{rating}</p>

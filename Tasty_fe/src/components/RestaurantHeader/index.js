@@ -12,10 +12,9 @@ const RestaurantHeader = props => {
   return (
     <div className="restaurant-header">
       <div className="header-text-container">
-        <h1 className="restaurant-list-heading">Popular Restaurants</h1>
+        <h1 className="restaurant-list-heading">Công thức mới nhất</h1>
         <p className="restaurant-list-para">
-          Select Your favourite restaurant special dish and make your day
-          happy...
+          Chọn món ăn mà bạn yêu thích và tạo nên những bữa ăn tuyệt vời...
         </p>
       </div>
       <div className="sort-by-container">

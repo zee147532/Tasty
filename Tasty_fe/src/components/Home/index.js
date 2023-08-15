@@ -16,7 +16,7 @@ const Home = () => {
   return (
     <>
       <Header />
-      <Cart />
+      <AllRestaurantsList />
       <Footer />
     </>
   )

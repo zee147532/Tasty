@@ -48,7 +48,7 @@ class AllRestaurantsList extends Component {
     })
     const jwtToken = Cookies.get('jwt_token')
     const {activeOptionId, currentPage} = this.state
-    const apiUrl = `https://apis.ccbp.in/restaurants-list?offset=${
+    const apiUrl = `http://localhost:8085/posts?offset=${
       currentPage * 9
     }&limit=9&sort_by_rating=${activeOptionId}`
     const options = {
@@ -60,13 +60,13 @@ class AllRestaurantsList extends Component {
     const response = await fetch(apiUrl, options)
     if (response.ok) {
       const fetchedData = await response.json()
-      const updatedData = fetchedData.restaurants.map(restaurant => ({
+      const updatedData = fetchedData.map(restaurant => ({
         name: restaurant.name,
         cuisine: restaurant.cuisine,
         id: restaurant.id,
-        imageUrl: restaurant.image_url,
-        rating: restaurant.user_rating.rating,
-        totalReviews: restaurant.user_rating.total_reviews,
+        imageUrl: restaurant.imageUrl,
+        rating: restaurant.rating,
+        totalReviews: restaurant.totalReviews,
       }))
       this.setState({
         restaurantList: updatedData,
@@ -166,7 +166,7 @@ class AllRestaurantsList extends Component {
     const {currentPage} = this.state
     return (
       <div>
-        <ReactSlider />
+        {/*<ReactSlider />*/}
         <div className="all-restaurant-responsive-container">
           {this.renderRestaurants()}
           <div className="restaurant-navigation">
