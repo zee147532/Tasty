@@ -48,9 +48,10 @@ class AllRestaurantsList extends Component {
     })
     const jwtToken = Cookies.get('jwt_token')
     const {activeOptionId, currentPage} = this.state
-    const apiUrl = `http://localhost:8085/posts?offset=${
-      currentPage * 9
-    }&limit=9&sort_by_rating=${activeOptionId}`
+    const apiUrl = `http://localhost:9000/api/customer/posts`
+    //     + `?offset=${
+    //   currentPage * 9
+    // }&limit=9&sort_by_rating=${activeOptionId}`
     const options = {
       headers: {
         Authorization: `Bearer ${jwtToken}`,
