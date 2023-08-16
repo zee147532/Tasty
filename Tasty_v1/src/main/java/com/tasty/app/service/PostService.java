@@ -3,6 +3,7 @@ package com.tasty.app.service;
 import com.tasty.app.domain.Post;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.tasty.app.response.PostsResponse;
@@ -61,7 +62,7 @@ public interface PostService {
      */
     void delete(Long id);
 
-    List<PostsResponse> getPosts(String keyword, Pageable pageable);
+    Map<String, Object> getPosts(String keyword, Pageable pageable);
 
     Post createPost(PostDTO dto);
 

@@ -7,7 +7,9 @@ import com.tasty.app.repository.StepToCookRepository;
 import com.tasty.app.response.PostsResponse;
 import com.tasty.app.service.PostService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -99,9 +101,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostsResponse> getPosts(String keyword, Pageable pageable) {
-        List<Post> postList = postRepository.getAllPosts(keyword, pageable);
-        return postList.stream().map(p -> new PostsResponse(
+    public Map<String, Object> getPosts(String keyword, Pageable pageable) {
+        Page<Post> postList = postRepository.getAllPosts(keyword, pageable);
+        List<PostsResponse> data = postList.stream().map(p -> new PostsResponse(
             p.getId(),
             p.getContent(),
             List.of("abc", "123"),
@@ -109,6 +111,10 @@ public class PostServiceImpl implements PostService {
             4.23,
             2500000l
         )).collect(Collectors.toList());
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", data);
+        result.put("totalPage", postList.getTotalPages());
+        return result;
     }
 
     @Override
