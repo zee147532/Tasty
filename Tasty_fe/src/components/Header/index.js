@@ -4,6 +4,7 @@ import {Link, withRouter} from 'react-router-dom'
 import Cookies from 'js-cookie'
 
 import './index.css'
+import {AiOutlineImport, AiOutlineLogout} from "react-icons/ai";
 
 class Header extends Component {
   state = {isMobileMenuClicked: false}
@@ -66,13 +67,13 @@ class Header extends Component {
               <ul className="nav-menu">
                 <li className="nav-menu-item">
                   <Link to="/" className="nav-link">
-                    Home
+                    Trang chủ
                   </Link>
                 </li>
 
                 <li className="nav-menu-item">
                   <Link to="/cart" className="nav-link">
-                    Posts
+                    Bài viết
                   </Link>
                 </li>
               </ul>
@@ -81,7 +82,7 @@ class Header extends Component {
                 className="logout-desktop-btn"
                 onClick={this.onClickLogout}
               >
-                Logout
+                <b>Logout </b>
               </button>
             </div>
           </div>
@@ -93,13 +94,13 @@ class Header extends Component {
                 <ul className="nav-menu-list-mobile">
                   <li className="nav-menu-item-mobile">
                     <Link to="/" className="nav-link">
-                      Home
+                      Trang chủ
                     </Link>
                   </li>
 
                   <li className="nav-menu-item-mobile">
                     <Link to="/cart" className="nav-link">
-                      Posts
+                      Bài viết
                     </Link>
                   </li>
                 </ul>

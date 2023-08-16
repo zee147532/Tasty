@@ -13,13 +13,13 @@ import './index.css'
 const sortByOptions = [
   {
     id: 0,
-    displayText: 'Highest',
-    value: 'Highest',
+    displayText: 'Cao nhất',
+    value: 'DESC',
   },
   {
     id: 2,
-    displayText: 'Lowest',
-    value: 'Lowest',
+    displayText: 'Thấp nhất',
+    value: 'ASC',
   },
 ]
 
@@ -33,9 +33,11 @@ const apiStatusConstants = {
 class AllRestaurantsList extends Component {
   state = {
     restaurantList: [],
-    activeOptionId: 'Lowest',
-    currentPage: 0,
+    activeOptionId: 'DESC',
+    currentPage: 1,
     apiStatus: apiStatusConstants.initial,
+    totalPage: 99,
+    keyword: "",
   }
 
   componentDidMount() {
@@ -47,11 +49,8 @@ class AllRestaurantsList extends Component {
       apiStatus: apiStatusConstants.inProgress,
     })
     const jwtToken = Cookies.get('jwt_token')
-    const {activeOptionId, currentPage} = this.state
-    const apiUrl = `http://localhost:9000/api/customer/posts`
-    //     + `?offset=${
-    //   currentPage * 9
-    // }&limit=9&sort_by_rating=${activeOptionId}`
+    const {activeOptionId, currentPage, keyword} = this.state
+    const apiUrl = `http://localhost:8080/api/customer/posts?page=${currentPage}&sortType=${activeOptionId}`
     const options = {
       headers: {
         Authorization: `Bearer ${jwtToken}`,
@@ -61,7 +60,7 @@ class AllRestaurantsList extends Component {
     const response = await fetch(apiUrl, options)
     if (response.ok) {
       const fetchedData = await response.json()
-      const updatedData = fetchedData.map(restaurant => ({
+      const updatedData = fetchedData.data.map(restaurant => ({
         name: restaurant.name,
         cuisine: restaurant.cuisine,
         id: restaurant.id,
@@ -72,6 +71,7 @@ class AllRestaurantsList extends Component {
       this.setState({
         restaurantList: updatedData,
         apiStatus: apiStatusConstants.success,
+        totalPage: fetchedData.totalPage,
       })
     } else {
       this.setState({
@@ -145,7 +145,7 @@ class AllRestaurantsList extends Component {
 
   leftArrowClicked = () => {
     const {currentPage} = this.state
-    if (currentPage > 0) {
+    if (currentPage > 1) {
       this.setState(
         prev => ({currentPage: prev.currentPage - 1}),
         this.getRestaurants,
@@ -154,8 +154,8 @@ class AllRestaurantsList extends Component {
   }
 
   rightArrowClicked = () => {
-    const {currentPage} = this.state
-    if (currentPage < 4) {
+    const {currentPage, totalPage} = this.state
+    if (currentPage < totalPage) {
       this.setState(
         prev => ({currentPage: prev.currentPage + 1}),
         this.getRestaurants,
@@ -178,7 +178,7 @@ class AllRestaurantsList extends Component {
             >
               <RiArrowDropLeftLine size={20} color="red" className="arrow" />
             </button>
-            <span className="current-page">{currentPage + 1}</span>
+            <span className="current-page">{currentPage}</span>
             <button
               type="button"
               className="arrow-button"

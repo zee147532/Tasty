@@ -39,7 +39,7 @@ class Login extends Component {
     event.preventDefault()
     const {username, password} = this.state
     const userDetails = {username, password}
-    const url = 'http://localhost:9000/api/login'
+    const url = 'http://localhost:8080/api/login'
     const options = {
       method: 'POST',
       body: JSON.stringify(userDetails),

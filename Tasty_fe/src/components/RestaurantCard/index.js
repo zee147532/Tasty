@@ -22,7 +22,7 @@ const RestaurantCard = props => {
           <div className="rating-container">
             <AiFillStar className="star" />
             <p className="rating">{rating}</p>
-            <p className="reviews">({totalReviews} rating)</p>
+            <p className="reviews">({totalReviews} lượt đánh giá)</p>
           </div>
         </div>
       </Link>
