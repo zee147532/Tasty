@@ -8,6 +8,7 @@ import com.tasty.app.repository.ProfessionRepository;
 import com.tasty.app.request.InfoRequest;
 import com.tasty.app.request.RegistryRequest;
 import com.tasty.app.request.VerifyRequest;
+import com.tasty.app.response.RegistryResponse;
 import com.tasty.app.service.LoginService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,17 +37,22 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public String registry(RegistryRequest request) {
+    public RegistryResponse registry(RegistryRequest request) {
         String username = request.getUsername();
+        RegistryResponse response = new RegistryResponse();
         if (Objects.nonNull(customerRepository.findByUsername(username))) {
-            return "Fail.";
+            response.setErrorMsg("Tên đăng nhập đã được sử dụng.");
+            response.setStatusCode(400);
+            return response;
         }
         // TODO: Encode mật khẩu
         String encodedPassword = request.getPassword();
         Customer customer = new Customer().username(username)
             .password(encodedPassword);
         customerRepository.save(customer);
-        return "Success.";
+        response.setUsername(username);
+        response.setStatusCode(200);
+        return response;
     }
 
     @Override

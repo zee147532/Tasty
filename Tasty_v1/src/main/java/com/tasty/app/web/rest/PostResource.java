@@ -2,14 +2,8 @@ package com.tasty.app.web.rest;
 
 import com.tasty.app.domain.Post;
 import com.tasty.app.repository.PostRepository;
-import com.tasty.app.response.PostsResponse;
 import com.tasty.app.service.PostService;
-import com.tasty.app.service.dto.PostDTO;
 import com.tasty.app.web.rest.errors.BadRequestAlertException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.*;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +13,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * REST controller for managing {@link com.tasty.app.domain.Post}.
@@ -196,12 +195,5 @@ public class PostResource {
         Pageable pageable = PageRequest.of(page - 1, 6, sort);
         Map<String, Object> responses = postService.getPosts(keyword, pageable);
         return ResponseEntity.ok(responses);
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity login() {
-        Map<String, String> response = new HashMap<>();
-        response.put("jwtToken", "123456789");
-        return ResponseEntity.ok(response);
     }
 }

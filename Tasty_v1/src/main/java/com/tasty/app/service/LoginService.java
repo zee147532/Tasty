@@ -3,9 +3,10 @@ package com.tasty.app.service;
 import com.tasty.app.request.InfoRequest;
 import com.tasty.app.request.RegistryRequest;
 import com.tasty.app.request.VerifyRequest;
+import com.tasty.app.response.RegistryResponse;
 
 public interface LoginService {
-    String registry(RegistryRequest request);
+    RegistryResponse registry(RegistryRequest request);
 
     String fillInfo(InfoRequest request);
 

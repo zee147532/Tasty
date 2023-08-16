@@ -64,7 +64,7 @@ class Login extends Component {
     return (
       <>
         <label className="input-label" htmlFor="password">
-          PASSWORD
+          Mật khẩu
         </label>
         <input
           type="password"
@@ -83,7 +83,7 @@ class Login extends Component {
     return (
       <>
         <label className="input-label" htmlFor="username">
-          USERNAME
+          Tên đăng nhập
         </label>
         <input
           type="text"
@@ -106,7 +106,7 @@ class Login extends Component {
     return (
       <div className="login-form-container">
         <div className="landing-container">
-          <p className="login-mobile-text">Login</p>
+          <p className="login-mobile-text">Đăng nhập</p>
           <img
             src="https://res.cloudinary.com/dblomc9cr/image/upload/v1670912145/Rectangle_1457_cumwxk.png"
             className="login-image-mobile"
@@ -121,13 +121,17 @@ class Login extends Component {
             className="login-website-logo-desktop-image"
           />
           <h1 className="tasty-text">Tasty</h1>
-          <h1 className="login-text">Login</h1>
+          <h1 className="login-text">Đăng nhập</h1>
           <div className="input-container">{this.renderUsernameField()}</div>
           <div className="input-container">{this.renderPasswordField()}</div>
           {showSubmitError && <p className="error-message">{errorMsg}</p>}
           <button type="submit" className="login-button">
-            Login
+            Đăng nhập
           </button>
+          <a onClick={() => {
+            const {history} = this.props
+            history.push('/registry')
+          }}>Đăng ký</a>
         </form>
         <img
           src="https://res.cloudinary.com/nsp/image/upload/v1635305272/tastyKitchens/LoginLarge_1x_gfwe0e.jpg"

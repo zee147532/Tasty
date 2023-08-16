@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
 .login-form-container {
   display: flex;
   flex-direction: column;
@@ -21,8 +23,8 @@
 }
 .login-image-desktop {
   display: none;
-  height: 60vh;
-  width: 350px;
+  height: 570px;
+  width: auto;
 }
 
 @media screen and (min-width: 992px) {
@@ -55,6 +57,7 @@
   border-radius: 8px 0 0 8px;
   width: 50%;
   max-width: 350px;
+  height: 570px;
 }
 
 @media screen and (min-width: 992px) {
@@ -107,10 +110,37 @@
   outline: none;
 }
 
+.sign-up-buttom {
+  display: flex;
+  width: 100%;
+}
+
+.back-to-login{
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  transform: rotate(180deg);
+  height: 40px;
+  width: 40px;
+  margin-top: 20px;
+  margin-bottom: 2px;
+  margin-right: 5px;
+  font-size: 24px;
+
+  color: black;
+  border: 2px solid black;
+  border-radius: 8px;
+
+  /*-webkit-touch-callout: none;*/
+  /*-khtml-user-select: none;*/
+}
+
 .login-button {
   font-family: 'Roboto';
   font-weight: bold;
-  font-size: 14px;
+  font-size: 20px;
   color: #ffffff;
   height: 40px;
   width: 100%;
@@ -135,7 +165,7 @@
 }
 .tasty-text {
   display: none;
-  font-family: DM Sans;
+  font-family: 'Roboto', sans-serif;
   font-style: italic;
   font-weight: bold;
   font-size: 24px;
@@ -146,7 +176,7 @@
 }
 .login-text {
   display: none;
-  font-family: DM Sans;
+  font-family: 'Roboto', sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 32px;
@@ -167,7 +197,7 @@
   justify-content: flex-end;
 }
 .login-mobile-text {
-  font-family: DM Sans;
+  font-family: 'Roboto', sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 24px;

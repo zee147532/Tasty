@@ -1,7 +1,5 @@
 package com.tasty.app.request;
 
-import com.tasty.app.domain.enumeration.Gender;
-
 public class RegistryRequest {
     private Long id;
     private String username;
