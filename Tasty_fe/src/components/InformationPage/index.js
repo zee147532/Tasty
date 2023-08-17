@@ -1,86 +1,74 @@
 import Cookies from 'js-cookie'
 import {Component} from "react";
+import './index.css'
+import RestaurantCard from "../RestaurantCard";
 
 class InformationPage extends Component {
+    state = {
+        professionList: [],
+    }
+
+    getAllProfession = async () => {
+        const url = 'http://localhost:8080/api/customer/professions'
+        const options = {
+            method: 'GET',
+        }
+        const response = await fetch(url, options)
+        const data = await response.json()
+        console.log(data)
+        const professions = data.map(profession => ({
+            id: profession.id,
+            name: profession.name,
+        }))
+        this.setState({professionList: professions})
+    }
 
     render() {
+        const {professionList} = this.state
+        const registryUsername = Cookies.get('username')
         return (
             <>
                 <div className="wrapper">
-                    <div className="header">
-                        <ul>
-                            <li className="active form_1_progessbar">
-                                <div>
-                                    <p>1</p>
-                                </div>
-                            </li>
-                            <li className="form_2_progessbar">
-                                <div>
-                                    <p>2</p>
-                                </div>
-                            </li>
-                            <li className="form_3_progessbar">
-                                <div>
-                                    <p>3</p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
                     <div className="form_wrap">
                         <div className="form_1 data_info">
-                            <h2>Signup Info</h2>
+                            <h2>Thông tin người dùng</h2>
                             <form>
                                 <div className="form_container">
                                     <div className="input_wrap">
-                                        <label htmlFor="email">Email Address</label>
-                                        <input type="text" name="Email Address" className="input" id="email" />
+                                        <label>Tên đăng nhập</label>
+                                        <input type="text" name="Email Address" className="input" id="email" disabled value={registryUsername} />
                                     </div>
                                     <div className="input_wrap">
-                                        <label htmlFor="password">Password</label>
-                                        <input type="password" name="password" className="input" id="password" />
+                                        <label>Họ tên</label>
+                                        <input type="text" name="fullName" className="input" />
                                     </div>
                                     <div className="input_wrap">
-                                        <label htmlFor="confirm_password">Confirm Password</label>
-                                        <input type="password" name="confirm password" className="input"
-                                               id="confirm_password" />
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div className="form_2 data_info" style="display: none;">
-                            <h2>Create user</h2>
-                            <form>
-                                <div className="form_container">
-                                    <div className="input_wrap">
-                                        <label htmlFor="user_name">User Name</label>
-                                        <input type="text" name="User Name" className="input" id="user_name" />
+                                        <label>Số điện thoại</label>
+                                        <input type="number" name="phoneNumber" className="input"  />
                                     </div>
                                     <div className="input_wrap">
-                                        <label htmlFor="first_name">First Name</label>
-                                        <input type="text" name="First Name" className="input" id="first_name" />
+                                        <label>Email</label>
+                                        <input type="text" name="email" className="input" />
                                     </div>
                                     <div className="input_wrap">
-                                        <label htmlFor="last_name">Last Name</label>
-                                        <input type="text" name="Last Name" className="input" id="last_name" />
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div className="form_3 data_info" style="display: none;">
-                            <h2>Professional Info</h2>
-                            <form>
-                                <div className="form_container">
-                                    <div className="input_wrap">
-                                        <label htmlFor="company">Current Company</label>
-                                        <input type="text" name="Current Company" className="input" id="company" />
+                                        <label>Giới tính</label>
+                                        <div>
+                                            <input type="radio" name="gender" className="gender-radio" value="NU" />Nữ
+                                            <input type="radio" name="gender" className="gender-radio" value="NAM" />Nam
+                                            <input type="radio" name="gender" className="gender-radio" value="AN" />Bí mật
+                                        </div>
                                     </div>
                                     <div className="input_wrap">
-                                        <label htmlFor="experience">Total Experience</label>
-                                        <input type="text" name="Total Experience" className="input" id="experience" />
-                                    </div>
-                                    <div className="input_wrap">
-                                        <label htmlFor="designation">Designation</label>
-                                        <input type="text" name="Designation" className="input" id="designation" />
+                                        <label>Nghề nghiệp</label>
+                                        <select name="professionId" className="input" onClick={() => {
+                                            this.getAllProfession()
+                                        }} >
+                                            <option value="" disabled selected hidden>Select</option>
+                                            {professionList.map(profession => (
+                                                <option value={profession.id}>{profession.name}</option>
+                                            ))}
+                                            <option value="0">Khác</option>
+                                        </select>
                                     </div>
                                 </div>
                             </form>
@@ -88,21 +76,8 @@ class InformationPage extends Component {
                     </div>
                     <div className="btns_wrap">
                         <div className="common_btns form_1_btns">
-                            <button type="button" className="btn_next">Next <span className="icon"><ion-icon
+                            <button type="button" className="btn_next">Xác thực <span className="icon"><ion-icon
                                 name="arrow-forward-sharp"></ion-icon></span></button>
-                        </div>
-                        <div className="common_btns form_2_btns" style="display: none;">
-                            <button type="button" className="btn_back"><span className="icon"><ion-icon
-                                name="arrow-back-sharp"></ion-icon></span>Back
-                            </button>
-                            <button type="button" className="btn_next">Next <span className="icon"><ion-icon
-                                name="arrow-forward-sharp"></ion-icon></span></button>
-                        </div>
-                        <div className="common_btns form_3_btns" style="display: none;">
-                            <button type="button" className="btn_back"><span className="icon"><ion-icon
-                                name="arrow-back-sharp"></ion-icon></span>Back
-                            </button>
-                            <button type="button" className="btn_done">Done</button>
                         </div>
                     </div>
                 </div>

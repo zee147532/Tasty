@@ -48,7 +48,8 @@ public class LoginServiceImpl implements LoginService {
         // TODO: Encode mật khẩu
         String encodedPassword = request.getPassword();
         Customer customer = new Customer().username(username)
-            .password(encodedPassword);
+            .password(encodedPassword)
+            .confirmed(false);
         customerRepository.save(customer);
         response.setUsername(username);
         response.setStatusCode(200);

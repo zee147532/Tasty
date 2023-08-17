@@ -26,7 +26,7 @@ minio:
   access:
     key: tasty
     secret: tiennd123
-  url: http://localhost:7001
+  url: http://172.18.0.2:9000
 
 spring:
   devtools:

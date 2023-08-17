@@ -6,5 +6,5 @@ package com.tasty.app.domain.enumeration;
 public enum Gender {
     NAM,
     NU,
-    KHAC,
+    AN,
 }

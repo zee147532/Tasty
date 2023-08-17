@@ -178,4 +178,10 @@ public class ProfessionResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
+
+    @GetMapping("/customer/professions")
+    public ResponseEntity getAllProfessions() {
+        List<Profession> response = professionService.getAll();
+        return ResponseEntity.ok(response);
+    }
 }

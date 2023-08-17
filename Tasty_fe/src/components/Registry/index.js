@@ -83,7 +83,6 @@ class Login extends Component {
         },
       }
       const response = await fetch(url, options)
-      console.log(response)
       const data = await response.json()
       console.log(data)
       if (response.ok === true) {
