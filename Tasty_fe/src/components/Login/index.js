@@ -51,7 +51,6 @@ class Login extends Component {
     const response = await fetch(url, options)
     console.log(response)
     const data = await response.json()
-    console.log(data)
     if (response.ok === true) {
       this.onSubmitSuccess(data.jwtToken)
     } else {
@@ -128,7 +127,7 @@ class Login extends Component {
           <button type="submit" className="login-button">
             Đăng nhập
           </button>
-          <a onClick={() => {
+          <a className="registry-button" onClick={() => {
             const {history} = this.props
             history.push('/registry')
           }}>Đăng ký</a>

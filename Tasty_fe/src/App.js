@@ -10,6 +10,7 @@ import Cart from './components/Cart'
 import NotFound from './components/NotFound'
 import Registry from './components/Registry'
 import InformationPage from "./components/InformationPage";
+import VerificationCode from "./components/VerificationCode";
 
 import './App.css'
 
@@ -18,6 +19,7 @@ const App = () => (
     <Route exact path="/login" component={Login} />
     <Route exact path="/registry" component={Registry} />
     <Route exact path="/info-page" component={InformationPage} />
+    <Route exact path="/verification-code" component={VerificationCode} />
     <ProtectedRoute exact path="/" component={Home} />
     <ProtectedRoute
       exact

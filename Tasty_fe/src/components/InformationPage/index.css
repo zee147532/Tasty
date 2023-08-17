@@ -14,7 +14,7 @@
     width: 750px;
     max-width: 100%;
     background: var(--white);
-    margin: 50px auto 0;
+    margin: 100px auto 100px;
     padding: 50px;
     border-radius: 50px 0px 50px 0px;
     box-shadow: 10px 10px 5px rgba(0,0,0,0.1);
@@ -237,6 +237,24 @@ h2 {
     font-size: 32px;
     font-weight: 700;
 }
+
+.error-message {
+    align-self: start;
+    font-size: 12px;
+    margin-top: 3px;
+    margin-bottom: 0px;
+    font-family: 'Roboto';
+    font-size: 12px;
+    line-height: 16px;
+    color: #ff0b37;
+}
+
+.require-label {
+    color: red;
+    font-weight: bolder;
+    font-size: 20px;
+    line-height: 14px;
+ }
 
 .modal_wrapper.active{
     visibility: visible;

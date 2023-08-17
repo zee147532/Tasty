@@ -154,6 +154,11 @@
   cursor: pointer;
 }
 
+.registry-button {
+  cursor: pointer;
+  margin-top: 10px;
+}
+
 .error-message {
   align-self: start;
   font-size: 12px;

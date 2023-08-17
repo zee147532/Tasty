@@ -3,6 +3,7 @@ package com.tasty.app.web.rest;
 import com.tasty.app.request.InfoRequest;
 import com.tasty.app.request.RegistryRequest;
 import com.tasty.app.request.VerifyRequest;
+import com.tasty.app.response.InfoResponse;
 import com.tasty.app.response.RegistryResponse;
 import com.tasty.app.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +44,9 @@ public class LoginResource {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/fill-info")
+    @PostMapping("/customer/fill-info")
     public ResponseEntity fillInfo(@RequestBody InfoRequest request) {
-        String response = loginService.fillInfo(request);
-        return ResponseEntity.ok(response);
+        InfoResponse response = loginService.fillInfo(request);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 }

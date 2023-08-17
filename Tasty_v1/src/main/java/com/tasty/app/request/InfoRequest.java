@@ -8,7 +8,7 @@ public class InfoRequest {
     private String phoneNumber;
     private String email;
     private Gender gender;
-    private Long professionId;
+    private Long profession;
 
     public String getUsername() {
         return username;
@@ -30,21 +30,21 @@ public class InfoRequest {
         return gender;
     }
 
-    public Long getProfessionId() {
-        return professionId;
+    public Long getProfession() {
+        return profession;
     }
 
-    public void setProfessionId(Long professionId) {
-        this.professionId = professionId;
+    public void setProfession(Long profession) {
+        this.profession = profession;
     }
 
-    public InfoRequest(String username, String fullName, String phoneNumber, String email, Gender gender, Long professionId) {
+    public InfoRequest(String username, String fullName, String phoneNumber, String email, Gender gender, Long profession) {
         this.username = username;
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.gender = gender;
-        this.professionId = professionId;
+        this.profession = profession;
     }
 
     public InfoRequest() {

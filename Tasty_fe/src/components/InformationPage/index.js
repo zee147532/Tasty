@@ -1,11 +1,41 @@
 import Cookies from 'js-cookie'
 import {Component} from "react";
 import './index.css'
-import RestaurantCard from "../RestaurantCard";
 
 class InformationPage extends Component {
     state = {
         professionList: [],
+        fullName: '',
+        phoneNumber: '',
+        email: '',
+        gender: '',
+        profession: NaN,
+        showSubmitError: false,
+        fullNameErr: '',
+        phoneNumberErr: '',
+        emailErr: '',
+        genderErr: '',
+        professionErr: '',
+    }
+
+    onChangeFullname = event => {
+        this.setState({fullName: event.target.value})
+    }
+
+    onChangePhoneNumber = event => {
+        this.setState({phoneNumber: event.target.value})
+    }
+
+    onChangeEmail = event => {
+        this.setState({email: event.target.value})
+    }
+
+    onChangeGender = event => {
+        this.setState({gender: event.target.value})
+    }
+
+    onChangeProfession = event => {
+        this.setState({profession: event.target.value})
     }
 
     getAllProfession = async () => {
@@ -20,74 +50,145 @@ class InformationPage extends Component {
             id: profession.id,
             name: profession.name,
         }))
+        professions.push({
+            id: 0,
+            name: 'Khác',
+        })
         this.setState({professionList: professions})
     }
 
+    errorFullName = msg => {
+        this.setState({showSubmitError: true, fullNameErr: msg, phoneNumberErr: '', emailErr: '', genderErr: '', professionErr: ''})
+    }
+
+    errorPhoneNumber = msg => {
+        this.setState({showSubmitError: true, fullNameErr: '', phoneNumberErr: msg, emailErr: '', genderErr: '', professionErr: ''})
+    }
+
+    errorEmail = msg => {
+        this.setState({showSubmitError: true, fullNameErr: '', phoneNumberErr: '', emailErr: msg, genderErr: '', professionErr: ''})
+    }
+
+    errorGender = msg => {
+        this.setState({showSubmitError: true, fullNameErr: '', phoneNumberErr: '', emailErr: '', genderErr: msg, professionErr: ''})
+    }
+
+    errorProfession = msg => {
+        this.setState({showSubmitError: true, fullNameErr: '', phoneNumberErr: '', emailErr: '', genderErr: '', professionErr: msg})
+    }
+
+    onSubmitSuccess = email => {
+        const {history} = this.props
+
+        Cookies.set('email', email, {
+            expires: 30,
+            path: '/',
+        })
+        history.push('/')
+    }
+
+    fillInfo = async event => {
+        event.preventDefault()
+        const username = Cookies.get('username')
+        const {fullName, phoneNumber, email, gender, profession} = this.state
+        if (fullName.length === 0) {
+            this.errorFullName("Họ tên không được để trống.")
+            return false
+        }
+        if (phoneNumber.length > 11) {
+            this.errorPhoneNumber("Số điện thoại không hợp lệ.")
+            return false
+        }
+        if (email.length === 0) {
+            this.errorEmail("Email không được để trống.")
+            return false
+        }
+        if (gender.length === 0) {
+            this.errorGender("Vui lòng chọn giới tính.")
+            return false
+        }
+        if (isNaN(profession)) {
+            this.errorProfession("Vui lòng chọn nghề nghiệp.")
+            return false
+        }
+
+        const userInfo = {username: username, fullName, phoneNumber, email, gender, profession}
+
+        const url = 'http://localhost:8080/api/customer/fill-info'
+        const options = {
+            method: 'POST',
+            body: JSON.stringify(userInfo),
+            headers: {
+                Accept: 'application/json',
+                'Content-type': 'application/json',
+            },
+        }
+        const response = await fetch(url, options)
+        const data = await response.json()
+        if (response.ok === true) {
+            this.onSubmitSuccess(data.email)
+        } else {
+            this.errorProfession(data.errorMsg)
+        }
+    }
+
     render() {
-        const {professionList} = this.state
+        const {professionList, showSubmitError, fullNameErr, phoneNumberErr, emailErr, genderErr, professionErr} = this.state
         const registryUsername = Cookies.get('username')
         return (
             <>
                 <div className="wrapper">
-                    <div className="form_wrap">
+                    <form className="form_wrap" onSubmit={this.fillInfo}>
                         <div className="form_1 data_info">
                             <h2>Thông tin người dùng</h2>
-                            <form>
-                                <div className="form_container">
-                                    <div className="input_wrap">
-                                        <label>Tên đăng nhập</label>
-                                        <input type="text" name="Email Address" className="input" id="email" disabled value={registryUsername} />
-                                    </div>
-                                    <div className="input_wrap">
-                                        <label>Họ tên</label>
-                                        <input type="text" name="fullName" className="input" />
-                                    </div>
-                                    <div className="input_wrap">
-                                        <label>Số điện thoại</label>
-                                        <input type="number" name="phoneNumber" className="input"  />
-                                    </div>
-                                    <div className="input_wrap">
-                                        <label>Email</label>
-                                        <input type="text" name="email" className="input" />
-                                    </div>
-                                    <div className="input_wrap">
-                                        <label>Giới tính</label>
-                                        <div>
-                                            <input type="radio" name="gender" className="gender-radio" value="NU" />Nữ
-                                            <input type="radio" name="gender" className="gender-radio" value="NAM" />Nam
-                                            <input type="radio" name="gender" className="gender-radio" value="AN" />Bí mật
-                                        </div>
-                                    </div>
-                                    <div className="input_wrap">
-                                        <label>Nghề nghiệp</label>
-                                        <select name="professionId" className="input" onClick={() => {
-                                            this.getAllProfession()
-                                        }} >
-                                            <option value="" disabled selected hidden>Select</option>
-                                            {professionList.map(profession => (
-                                                <option value={profession.id}>{profession.name}</option>
-                                            ))}
-                                            <option value="0">Khác</option>
-                                        </select>
-                                    </div>
+                            <div className="form_container form_wrap">
+                                <div className="input_wrap">
+                                    <label>Tên đăng nhập</label>
+                                    <input type="text" className="input" id="email" disabled value={registryUsername} />
                                 </div>
-                            </form>
+                                <div className="input_wrap">
+                                    <label>Họ tên <span className="require-label">*</span></label>
+                                    <input type="text" className="input" onChange={this.onChangeFullname} />
+                                    {showSubmitError && <p className="error-message">{fullNameErr}</p>}
+                                </div>
+                                <div className="input_wrap">
+                                    <label>Số điện thoại</label>
+                                    <input type="number" className="input" onChange={this.onChangePhoneNumber} />
+                                    {showSubmitError && <p className="error-message">{phoneNumberErr}</p>}
+                                </div>
+                                <div className="input_wrap">
+                                    <label>Email <span className="require-label">*</span></label>
+                                    <input type="text" className="input" onChange={this.onChangeEmail} />
+                                    {showSubmitError && <p className="error-message">{emailErr}</p>}
+                                </div>
+                                <div className="input_wrap">
+                                    <label>Giới tính <span className="require-label">*</span></label>
+                                    <div>
+                                        <input type="radio" name="gender" className="gender-radio" value="NU" onChange={this.onChangeGender} />Nữ
+                                        <input type="radio" name="gender" className="gender-radio" value="NAM" onChange={this.onChangeGender} />Nam
+                                        <input type="radio" name="gender" className="gender-radio" value="AN" onChange={this.onChangeGender} />Bí mật
+                                    </div>
+                                    {showSubmitError && <p className="error-message">{genderErr}</p>}
+                                </div>
+                                <div className="input_wrap">
+                                    <label>Nghề nghiệp <span className="require-label">*</span></label>
+                                    <select className="input" onChange={this.onChangeProfession} onClick={this.getAllProfession} >
+                                        <option value="" disabled selected hidden>Select</option>
+                                        {professionList.map(profession => (
+                                            <option value={profession.id}>{profession.name}</option>
+                                        ))}
+                                    </select>
+                                    {showSubmitError && <p className="error-message">{professionErr}</p>}
+                                </div>
+                            </div>
+                            <div className="btns_wrap">
+                                <div className="common_btns form_1_btns">
+                                    <button type="submit" className="btn_next">Xác thực <span className="icon"><ion-icon
+                                        name="arrow-forward-sharp"></ion-icon></span></button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div className="btns_wrap">
-                        <div className="common_btns form_1_btns">
-                            <button type="button" className="btn_next">Xác thực <span className="icon"><ion-icon
-                                name="arrow-forward-sharp"></ion-icon></span></button>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="modal_wrapper">
-                    <div className="shadow"></div>
-                    <div className="success_wrap">
-                        <span className="modal_icon"><ion-icon name="checkmark-sharp"></ion-icon></span>
-                        <p>You have successfully completed the process.</p>
-                    </div>
+                    </form>
                 </div>
             </>
         )

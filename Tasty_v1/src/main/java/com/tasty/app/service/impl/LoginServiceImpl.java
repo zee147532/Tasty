@@ -8,10 +8,10 @@ import com.tasty.app.repository.ProfessionRepository;
 import com.tasty.app.request.InfoRequest;
 import com.tasty.app.request.RegistryRequest;
 import com.tasty.app.request.VerifyRequest;
+import com.tasty.app.response.InfoResponse;
 import com.tasty.app.response.RegistryResponse;
 import com.tasty.app.service.LoginService;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -57,27 +57,38 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public String fillInfo(InfoRequest request) {
+    public InfoResponse fillInfo(InfoRequest request) {
         String username = request.getUsername();
         String email = request.getEmail();
+        InfoResponse response = new InfoResponse();
+        response.setEmail(email);
         if (Objects.nonNull(customerRepository.findByEmail(email))) {
-            return "Fail.";
+            response.setErrorMsg("Địa chỉ email đã được sử dụng.");
+            response.setStatusCode(400);
+            return response;
         }
-//        Profession profession = professionRepository.getReferenceById(request.getProfessionId());
-//        Customer customer = customerRepository.findByUsername(username)
-//            .fullName(request.getFullName())
-//            .phoneNumber(request.getPhoneNumber())
-//            .email(email)
-//            .gender(request.getGender())
-//            .profession(profession)
-//            .status(true)
-//            .confirmed(false);
-//
-//        customerRepository.save(customer);
 
-        sendCode(email);
+        try {
+            sendCode(email);
+        } catch (Exception e) {
+            response.setStatusCode(400);
+            response.setErrorMsg("Không thể gửi mã xác thực đến email của bạn, vui lòng thử lại.");
+            return response;
+        }
 
-        return "Success.";
+        Profession profession = professionRepository.getReferenceById(request.getProfession());
+        Customer customer = customerRepository.findByUsername(username)
+            .fullName(request.getFullName())
+            .phoneNumber(request.getPhoneNumber())
+            .email(email)
+            .gender(request.getGender())
+            .profession(profession)
+            .status(true)
+            .confirmed(false);
+
+        customerRepository.save(customer);
+        response.setStatusCode(200);
+        return response;
     }
 
     public String verify(VerifyRequest request) {
@@ -99,7 +110,7 @@ public class LoginServiceImpl implements LoginService {
         redisTemplate.delete(email);
 
         // TODO: Tạo mã xác nhận và lưu vào redis cùng email với thời gian tồn tại là 5 phút
-        String generatedCode = RandomStringUtils.random(6,false,true);
+        String generatedCode = RandomStringUtils.random(6, false, true);
         redisTemplate.opsForValue().set(email, generatedCode, PERMISSION_CACHE_TTL);
 
         // TODO: Gửi mail xác nhận
