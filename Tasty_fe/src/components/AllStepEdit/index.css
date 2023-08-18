@@ -1,0 +1,145 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+.todo-container {
+    font-family: 'Roboto', sans-serif;
+    width: 60%;
+    margin: 20px auto;
+    background: #fff;
+    border: 1px solid #42368C;
+    border-radius:5px;
+    padding: 30px;
+    color: #42368C;
+    font-weight: 500;
+    position: relative;
+}
+
+h1 {
+    margin-top: 0;
+    line-height: 35px
+}
+
+.tasks-container {
+    margin-bottom: 20px;
+    color: black;
+}
+
+.step-list {
+    width: 80%;
+    display: inline-flex;
+    /*float: left;*/
+}
+.task-actions {
+    width: 20%;
+    display: inline-block;
+    /*float: left;*/
+}
+
+.task-item-container {
+    margin-bottom: 20px;
+    display: table;
+    width: 100%;
+}
+
+.step-index {
+    float: left;
+    width: fit-content;
+    color: #007BE2;
+    width: 15%;
+}
+
+.step-content {
+    float: left;
+    margin-left: 10px;
+    letter-spacing: 0.5px;
+    color: #3e4c59;
+    width: 85%;
+}
+
+.todo-icons {
+    margin-left: 10px;
+    float: right;
+    display: block;
+    cursor: pointer;
+    position: relative;
+}
+
+.todo-icons:before {
+    content: attr(data-hover);
+    font-family: 'roboto', sans-serif;
+    font-size: 12px;
+    visibility: hidden;
+    opacity: 0;
+    width: fit-content;
+    background-color: grey;
+    color: #000;
+    text-align: center;
+    border-radius: 3px;
+    padding: 3px 3px;
+    transition: opacity 1s ease-in-out;
+
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    top: -90%;
+}
+
+.todo-icons:hover:before {
+    opacity: 1;
+    visibility: visible;
+}
+
+.step-content:first-letter {
+    text-transform: uppercase
+}
+
+.resolved {
+    text-decoration: line-through
+}
+
+.add-tasks-container {
+    width: 100%;
+}
+
+textarea, input {
+    width: 100%;
+    margin: 0;
+    resize: vertical;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 30px;
+    border: 1px solid #42368C;
+    white-space: pre-wrap
+}
+
+.add-task-btn {
+    display: block;
+    width: 100%;
+    font-weight: bold
+}
+
+.clear-resolved {
+    text-align: right;
+    display: inline-block;
+    padding-bottom: 15px;
+    width: max-content;
+    font-size: 14px;
+    font-weight: 800;
+    text-decoration: underline;
+    position: absolute;
+    top: 37px;
+    right: 30px;
+    cursor: pointer;
+}
+
+.display {
+    display: block;
+}
+
+.none {
+    display: none
+}
+input {
+    font-family: 'roboto', sans-serif;
+    padding-left: 7px;
+}

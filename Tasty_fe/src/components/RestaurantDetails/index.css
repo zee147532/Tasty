@@ -186,7 +186,7 @@
 @media screen and (min-width: 768px) {
   .food-item-list-container {
     width: 80%;
-    display: flex;
+    /*display: flex;*/
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
@@ -323,4 +323,38 @@
   align-items: center;
   height: 60vh;
   width: 100%;
+}
+
+.step {
+  display: flex;
+}
+
+.stepContent {
+  width: 95%;
+  margin: 10px;
+  display: flex;
+}
+
+.stepButton {
+  /*border: 0;*/
+  border-radius: 4px;
+  width: 50px;
+  height: 40px;
+  margin: auto 4px;
+}
+.stepButton:hover {
+  border: 1px solid grey;
+}
+.stepButton:active {
+  background: grey;
+}
+.stepIndex {
+  display: flex;
+}
+.stepText {
+  width: 90%;
+  line-break: loose;
+  /*word-break: break-all;*/
+  /*word-wrap: break-word;*/
+  /*height: auto;*/
 }
