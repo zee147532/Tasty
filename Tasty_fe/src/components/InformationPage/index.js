@@ -84,7 +84,7 @@ class InformationPage extends Component {
             expires: 30,
             path: '/',
         })
-        history.push('/')
+        history.push('/verification-code')
     }
 
     fillInfo = async event => {

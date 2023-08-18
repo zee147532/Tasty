@@ -8,6 +8,7 @@ import com.tasty.app.repository.ProfessionRepository;
 import com.tasty.app.request.InfoRequest;
 import com.tasty.app.request.RegistryRequest;
 import com.tasty.app.request.VerifyRequest;
+import com.tasty.app.response.HttpResponse;
 import com.tasty.app.response.InfoResponse;
 import com.tasty.app.response.RegistryResponse;
 import com.tasty.app.service.LoginService;
@@ -91,25 +92,30 @@ public class LoginServiceImpl implements LoginService {
         return response;
     }
 
-    public String verify(VerifyRequest request) {
+    public HttpResponse verify(VerifyRequest request) {
         // TODO: Lấy mã xác thực đúng từ redis sử dung email
         String correctCode = mapper.convertValue(redisTemplate.opsForValue().get(request.getEmail()), String.class);
+        HttpResponse response = new HttpResponse();
 
         if (correctCode.equals(request.getVerifyCode())) {
             Customer customer = customerRepository.findByEmail(request.getEmail());
             customer.setConfirmed(true);
             customerRepository.save(customer);
-            return "Success.";
+            response.setStatusCode(200);
+            response.setMsg("Success.");
+            return response;
         }
 
-        return "Fail.";
+        response.setStatusCode(400);
+        response.setMsg("Mã xác thực không chính xác. Vui lòng thử lại.");
+        return response;
     }
 
     public String sendCode(String email) {
-        // TODO: Xóa mã theo email trên redis
+        // Xóa mã theo email trên redis
         redisTemplate.delete(email);
 
-        // TODO: Tạo mã xác nhận và lưu vào redis cùng email với thời gian tồn tại là 5 phút
+        // Tạo mã xác nhận và lưu vào redis cùng email với thời gian tồn tại là 5 phút
         String generatedCode = RandomStringUtils.random(6, false, true);
         redisTemplate.opsForValue().set(email, generatedCode, PERMISSION_CACHE_TTL);
 

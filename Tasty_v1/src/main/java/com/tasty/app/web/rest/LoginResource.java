@@ -3,6 +3,7 @@ package com.tasty.app.web.rest;
 import com.tasty.app.request.InfoRequest;
 import com.tasty.app.request.RegistryRequest;
 import com.tasty.app.request.VerifyRequest;
+import com.tasty.app.response.HttpResponse;
 import com.tasty.app.response.InfoResponse;
 import com.tasty.app.response.RegistryResponse;
 import com.tasty.app.service.LoginService;
@@ -34,14 +35,18 @@ public class LoginResource {
 
     @PostMapping("/registry/verify")
     public ResponseEntity verify(@RequestBody VerifyRequest request) {
-        String response = loginService.verify(request);
-        return ResponseEntity.ok(response);
+        HttpResponse response = loginService.verify(request);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
     @PostMapping("/registry/resend-code")
     public ResponseEntity resendCode(@RequestParam String email) {
-        String response = loginService.sendCode(email);
-        return ResponseEntity.ok(response);
+        try {
+            String response = loginService.sendCode(email);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Không thể gửi mã xác thực đến email của bạn, vui lòng thử lại sau ít phút.");
+        }
     }
 
     @PostMapping("/customer/fill-info")
