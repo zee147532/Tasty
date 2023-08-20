@@ -5,8 +5,8 @@ import {AiFillStar} from 'react-icons/ai'
 
 import Header from '../Header'
 import Footer from '../Footer'
-import RestaurantFoodItem from '../RestaurantFoodItem'
 import AllStepEdit from "../AllStepEdit";
+import IngredientListEdit from "../IngredientListEdit";
 
 import './index.css'
 
@@ -95,7 +95,6 @@ class RestaurantDetails extends Component {
       reviewsCount = 2500000,
       costForTwo = 200,
       cuisine = 'abcdefg'
-    // } = restaurantData
 
     return (
       <>
@@ -132,7 +131,10 @@ class RestaurantDetails extends Component {
               </div>
             </div>
           </div>
-          <AllStepEdit />
+          <div className="step-body">
+            <AllStepEdit />
+            <IngredientListEdit />
+          </div>
         </div>
         <Footer />
       </>

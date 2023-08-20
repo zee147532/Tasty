@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+.ingredient-container {
+    font-family: 'Roboto', sans-serif;
+    width: 30%;
+    margin: 20px auto;
+    background-color: #e3e3f3;
+    border: 1px solid #42368C;
+    border-radius:5px;
+    padding: 30px;
+    color: #42368C;
+    font-weight: 500;
+    position: relative;
+}
+
+h1 {
+    margin-top: 0;
+    line-height: 35px
+}
+
+.ingredients-container {
+    margin-top: 20px;
+    color: black;
+    background-color: white;
+    border-radius: 3px;
+}
+
+.ingredient-list {
+    width: 90%;
+    display: inline-flex;
+}
+.ingredient-actions {
+    width: fit-content;
+    display: inline-block;
+}
+
+.task-item-container {
+    margin-bottom: 20px;
+    display: table;
+    width: 100%;
+}
+
+.ingredient-content {
+    float: left;
+    letter-spacing: 0.5px;
+    color: #3e4c59;
+    width: 85%;
+}
+
+.remove-icons {
+    margin-left: 5px;
+    float: right;
+    display: block;
+    cursor: pointer;
+    position: relative;
+}
+
+.ingredient-content:first-letter {
+    text-transform: uppercase
+}
+
+.resolved {
+    text-decoration: line-through
+}
+
+.add-ingredient-container {
+    width: 100%;
+    display: flex;
+}
+
+.add-name {
+    width: 50%;
+    background-color: white;
+    border: 0;
+    margin-left: 2px;
+    border-radius: 3px;
+}
+
+.add-unit {
+    width: 25%;
+    background-color: #fff;
+    border: 0;
+    margin-left: 2px;
+    border-radius: 3px;
+}
+
+.add-quantity {
+    width: 25%;
+    background-color: #fff;
+    border: 0;
+    margin-left: 2px;
+    border-radius: 3px;
+}
+
+textarea, input {
+    width: 100%;
+    margin: 0;
+    resize: vertical;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 30px;
+    border: 1px solid #42368C;
+    white-space: pre-wrap
+}
+
+.add-task-btn {
+    display: block;
+    width: 100%;
+    font-weight: bold
+}
+
+.clear-resolved {
+    text-align: right;
+    display: inline-block;
+    padding-bottom: 15px;
+    width: max-content;
+    font-size: 14px;
+    font-weight: 800;
+    text-decoration: underline;
+    position: absolute;
+    top: 37px;
+    right: 30px;
+    cursor: pointer;
+}
+
+.display {
+    display: block;
+}
+
+.none {
+    display: none
+}
+input {
+    font-family: 'roboto', sans-serif;
+    padding-left: 7px;
+}
