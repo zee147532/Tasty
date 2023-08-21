@@ -6,7 +6,7 @@ class IngredientListEdit extends Component {
         addValue: '',
         addUnit: NaN,
         addQuantity: NaN,
-        allIngredients: [{id: 1, name: 'Bỏ chảo vào dầu', quantity: 0, unit: 'gram'}],
+        allIngredients: this.props.ingredients,
         count: 0,
         units: [{id: 1, name: 'Củ'}, {id: 2, name: 'Quả'}, {id: 3, name: 'gram'}, {id: 4, name: 'kilogram'}],
         editable: true,
@@ -61,7 +61,6 @@ class IngredientListEdit extends Component {
 
     render() {
         const {allIngredients, addValue, units, editable} = this.state
-
         return (
             <div className="ingredient-container">
                 <h1>Nguyên liệu:</h1>

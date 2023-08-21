@@ -5,7 +5,7 @@ class AllStepEdit extends Component {
     state = {
         addValue: '',
         edit: {id: NaN, value: ''},
-        allSteps: [{id: 1, content: 'Bỏ chảo vào dầu'}],
+        allSteps: this.props.steps,
         count: 0,
         editable: true,
     }

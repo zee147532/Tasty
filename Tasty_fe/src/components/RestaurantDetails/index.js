@@ -22,6 +22,7 @@ class RestaurantDetails extends Component {
     restaurantData: {},
     apiStatus: apiStatusConstants.initial,
     allStep: [],
+    allIngredients: [],
     stepInsert: '',
     index: 0,
   }
@@ -71,8 +72,9 @@ class RestaurantDetails extends Component {
       const updatedData = this.getFormattedData(fetchedData)
       this.setState({
         restaurantData: updatedData,
-        // foodItemData: updatedFoodItemData,
+        allStep: fetchedData.steps,
         apiStatus: apiStatusConstants.success,
+        allIngredients: fetchedData.ingredients,
       })
     } else {
       this.setState({
@@ -82,7 +84,7 @@ class RestaurantDetails extends Component {
   }
 
   renderRestaurantDetailsView = () => {
-    const {restaurantData} = this.state
+    const {restaurantData, allStep, allIngredients} = this.state
 
     return (
       <>
@@ -124,8 +126,8 @@ class RestaurantDetails extends Component {
             </div>
           </div>
           <div className="step-body">
-            <AllStepEdit  />
-            <IngredientListEdit />
+            <AllStepEdit steps={allStep} />
+            <IngredientListEdit ingredients={allIngredients} />
           </div>
         </div>
         <Footer />
@@ -135,7 +137,7 @@ class RestaurantDetails extends Component {
 
   insert = () => {
     const {stepInsert, index, allStep} = this.state
-    const newStep = {index: index + 1, content: stepInsert}
+    const newStep = {id: index + 1, content: stepInsert}
     const preArray = allStep
     this.setState({allStep: [...allStep, newStep], index: index + 1 })
   }
