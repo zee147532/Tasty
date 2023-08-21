@@ -3,7 +3,7 @@
 .ingredient-container {
     font-family: 'Roboto', sans-serif;
     width: 30%;
-    margin: 20px auto;
+    margin: 20px 7px;
     background-color: #e3e3f3;
     border: 1px solid #42368C;
     border-radius:5px;
@@ -31,7 +31,8 @@ h1 {
 }
 .ingredient-actions {
     width: fit-content;
-    display: inline-block;
+    display: inline-flex;
+    /*margin: auto;*/
 }
 
 .task-item-container {
@@ -134,4 +135,35 @@ textarea, input {
 input {
     font-family: 'roboto', sans-serif;
     padding-left: 7px;
+}
+
+.add-button {
+    text-align: center;
+    width: 100px;
+    align-self: center;
+    background-color: #79bd2e;
+    color: #fff;
+    vertical-align: center;
+    border-radius: 4px;
+    padding: 5px;
+    margin: 5px auto;
+    cursor: pointer;
+}
+
+.add-icon {
+    font-size: 12px;
+    padding: 5px;
+}
+
+.remove-icon {
+    font-size: 16px;
+}
+
+.warning {
+    /*box-shadow: 3px 3px 3px 3px red;*/
+    box-shadow: rgb(255, 0, 0) 0 0 4px 1px;
+}
+
+.disable {
+    display: none;
 }

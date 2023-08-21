@@ -8,7 +8,8 @@ class IngredientListEdit extends Component {
         addQuantity: NaN,
         allIngredients: [{id: 1, name: 'Bỏ chảo vào dầu', quantity: 0, unit: 'gram'}],
         count: 0,
-        units: [{id: 1, name: 'Củ'}, {id: 2, name: 'Quả'}, {id: 3, name: 'gram'}, {id: 4, name: 'kilogram'}]
+        units: [{id: 1, name: 'Củ'}, {id: 2, name: 'Quả'}, {id: 3, name: 'gram'}, {id: 4, name: 'kilogram'}],
+        editable: true,
     }
 
     /* Delete a task */
@@ -32,61 +33,71 @@ class IngredientListEdit extends Component {
     }
 
     /* Add a new step to the list of steps on key press enter */
-    onKeyPressAdd = (e) => {
-        const {allIngredients, units, addQuantity, addUnit, count} = this.state
-        if (isNaN(addUnit)) {
+    addIngredient = (e) => {
+        const {allIngredients, units, addValue, addQuantity, addUnit, count} = this.state
+        const unit = units.find((item) => {
+            return item.id == addUnit
+        })
+        if (addValue.length === 0) {
+            document.getElementsByClassName('add-name').item(0).classList.add("warning")
+            return;
+        }
+        if (!unit) {
+            document.getElementsByClassName('add-unit').item(0).classList.add("warning")
             return
         }
-        let unit
-        for (let x = 0; x < units.length; x++) {
-            if (units[x].id === addUnit) {
-                unit = units[x]
-            }
+        if (addQuantity < 1 || isNaN(addQuantity)) {
+            document.getElementsByClassName('add-quantity').item(0).classList.add("warning")
+            return;
         }
-        // const unit = units.find((item) => {
-        //     return item.id === addUnit
-        // })
-        console.log(unit)
-        if (e.keyCode === 13 && e.shiftKey === false && e.target.value !== '') {
-            e.preventDefault()
-            allIngredients.push({
-                id: count + 1,
-                name: e.target.value,
-                quantity: addQuantity,
-                unit: 2,
-            })
-            this.setState({allIngredients: [...allIngredients], addValue: '', count: count + 1})
-        }
+        e.preventDefault()
+        allIngredients.push({id: count + 1,
+            name: addValue,
+            quantity: addQuantity,
+            unit: unit.name,
+        })
+        this.setState({allIngredients: [...allIngredients], addValue: '', count: count + 1})
     }
 
     render() {
-        const {allIngredients, addValue, units} = this.state
+        const {allIngredients, addValue, units, editable} = this.state
 
         return (
             <div className="ingredient-container">
                 <h1>Nguyên liệu:</h1>
-                <div className="add-ingredient-container">
+                <div className={`add-ingredient-container ${editable ? '' : ' disable'}`}>
                     <input className="add-name"
                         placeholder="Tên nguyên liệu"
                         value={addValue}
-                        onChange={(e) => this.setState({addValue: e.target.value})}
-                        onKeyDown={this.onKeyPressAdd}>
+                        onChange={(e) => {
+                            this.setState({addValue: e.target.value})
+                            e.target.classList.remove("warning")
+                        }}>
                     </input>
                     <select className="add-unit"
-                    onChange={(e) => this.setState({addUnit: e.target.value})}>
+                        onChange={(e) => {
+                            this.setState({addUnit: e.target.value})
+                            e.target.classList.remove("warning")
+                        }}>
                         <option value="0" disabled selected hidden>Đơn vị</option>
                         {units.map(unit => (
                             <option value={unit.id}>{unit.name}</option>
                         ))}
                     </select>
                     <input type="number" className="add-quantity" placeholder="Số lượng"
-                           onChange={(e) => this.setState({addQuantity: e.target.value})} />
+                           onChange={(e) => {
+                               this.setState({addQuantity: e.target.value})
+                               e.target.classList.remove("warning")
+                           }} />
+                </div>
+                <div className={`add-button ${editable ? '' : ' disable'}`} onClick={this.addIngredient}>
+                    Thêm<span className="add-icon material-symbols-outlined">south</span>
                 </div>
                 <div className="ingredients-container">
-                    {allIngredients .map(ingredient => {
+                    {allIngredients.map(ingredient => {
                         return (
                             <div key={ingredient.id} className="task-item-container">
-                                <div className="clear-resolved" onClick={this.clearAll}>
+                                <div className={`clear-resolved ${editable ? '' : ' disable'}`} onClick={this.clearAll}>
                                     Xóa tất cả
                                 </div>
                                 <div className="ingredient-list">
@@ -94,10 +105,10 @@ class IngredientListEdit extends Component {
                                         className="ingredient-content"> {ingredient.name} ({ingredient.quantity} {ingredient.unit.toLowerCase()})
                                     </span>
                                 </div>
-                                <div className="ingredient-actions">
+                                <div className={`ingredient-actions ${editable ? '' : ' disable'}`}>
                                     <div className="remove-icons"
                                          onClick={() => this.deleteIngredient(ingredient.id)}>
-                                        x
+                                        <span className="remove-icon material-symbols-outlined">close</span>
                                     </div>
                                 </div>
                             </div>

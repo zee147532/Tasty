@@ -42,7 +42,6 @@ h1 {
 
 .step-index {
     float: left;
-    width: fit-content;
     color: #007BE2;
     width: 15%;
 }
@@ -142,4 +141,8 @@ textarea, input {
 input {
     font-family: 'roboto', sans-serif;
     padding-left: 7px;
+}
+
+.disable {
+    display: none;
 }

@@ -7,9 +7,10 @@ class AllStepEdit extends Component {
         edit: {id: NaN, value: ''},
         allSteps: [{id: 1, content: 'Bỏ chảo vào dầu'}],
         count: 0,
+        editable: true,
     }
 
-    /* Delete a task */
+    /* Delete a step */
     deleteStep = (id) => {
         const {allSteps} = this.state
         let index;
@@ -64,7 +65,7 @@ class AllStepEdit extends Component {
     }
 
     render() {
-        const {allSteps, edit, addValue} = this.state
+        const {allSteps, edit, addValue, editable} = this.state
 
         return (
             <div className="todo-container">
@@ -73,7 +74,7 @@ class AllStepEdit extends Component {
                     {allSteps.map((stepItem, index) => {
                         return (
                             <div key={stepItem.id} className="task-item-container">
-                                <div className="clear-resolved" onClick={this.clearAll}>
+                                <div className={`clear-resolved ${editable ? '' : ' disable'}`} onClick={this.clearAll}>
                                     Xóa tất cả
                                 </div>
                                 <div className="step-list">
@@ -82,7 +83,7 @@ class AllStepEdit extends Component {
                                         className="step-content"> {stepItem.content}
                                     </span>
                                 </div>
-                                <div className="task-actions">
+                                <div className={`task-actions ${editable ? '' : ' disable'}`}>
                                     <div className="task-icons anchor material-symbols-outlined layer-1 todo-icons"
                                          onClick={() => this.deleteStep(stepItem.id)} data-hover="Xóa">
                                         delete
@@ -105,7 +106,7 @@ class AllStepEdit extends Component {
                                 </div>
                                 <input
                                     key={stepItem.id}
-                                    className={edit.id === stepItem.id ? "display" : "none"}
+                                    className={edit.id === stepItem.id ? "display" : "none" }
                                     value={edit.value}
                                     onChange={(e) => this.setState({edit: {
                                         id: edit.id,
@@ -117,7 +118,7 @@ class AllStepEdit extends Component {
                         )
                     })}
                 </div>
-                <div className="add-tasks-container">
+                <div className={`add-tasks-container ${editable ? '' : ' disable'}`}>
                     <div className="add-task-btn">Thêm bước:</div>
                     <input
                         placeholder="Nhấn enter để thêm bước thực hiện ..."

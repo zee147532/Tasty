@@ -1,26 +1,25 @@
 package com.tasty.app.service.impl;
 
-import com.tasty.app.domain.Post;
-import com.tasty.app.domain.StepToCook;
-import com.tasty.app.repository.PostRepository;
-import com.tasty.app.repository.StepToCookRepository;
-import com.tasty.app.response.PostsResponse;
+import com.tasty.app.domain.*;
+import com.tasty.app.repository.*;
+import com.tasty.app.repository.projection.PostsDetail;
+import com.tasty.app.response.*;
 import com.tasty.app.service.PostService;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.tasty.app.service.dto.PostDTO;
+import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Service Implementation for managing {@link Post}.
@@ -33,11 +32,17 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
 
-    @Autowired
-    private StepToCookRepository stepToCookRepository;
+    private final StepToCookRepository stepToCookRepository;
 
-    public PostServiceImpl(PostRepository postRepository) {
+    private final DishTypeRepository dishTypeRepository;
+
+    private final IngredientOfDishRepository ingredientOfDishRepository;
+
+    public PostServiceImpl(PostRepository postRepository, StepToCookRepository stepToCookRepository, DishTypeRepository dishTypeRepository, IngredientOfDishRepository ingredientRepository) {
         this.postRepository = postRepository;
+        this.stepToCookRepository = stepToCookRepository;
+        this.dishTypeRepository = dishTypeRepository;
+        this.ingredientOfDishRepository = ingredientRepository;
     }
 
     @Override
@@ -163,5 +168,32 @@ public class PostServiceImpl implements PostService {
         stepToCookRepository.deleteAllByPost(post);
         postRepository.delete(post);
         return "Success.";
+    }
+
+    @Override
+    public PostsDetailResponse getDetail(Long id) {
+        PostsDetail postsDetail = postRepository.getDetail(id);
+        if (Objects.isNull(postsDetail)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy bài viết.");
+        }
+        List<DishType> dishTypes = dishTypeRepository.getAllType(id);
+        List<StepToCook> steps = stepToCookRepository.findAllByPost_Id(id);
+        List<IngredientOfDish> ingredients = ingredientOfDishRepository.findAllByPosts(id);
+        return new PostsDetailResponse(
+            postsDetail.getId(),
+            postsDetail.getTitle(),
+            dishTypes.stream().map(dt -> dt.getName()).collect(Collectors.toList()),
+            postsDetail.getDescription(),
+            Strings.isBlank(postsDetail.getImageUrl()) ? "https://icon-library.com/images/meat-icon-png/meat-icon-png-11.jpg" : postsDetail.getImageUrl(),
+            Objects.nonNull(postsDetail.getRating()) ? postsDetail.getRating() : 0D,
+            postsDetail.getTotalReviews(),
+            steps.stream().map(s -> new StepResponse(s.getId(), s.getContent())).collect(Collectors.toList()),
+            ingredients.stream().map(i -> new IngredientResponse(
+                i.getIngredient().getId(),
+                i.getIngredient().getName(),
+                i.getUnit(),
+                i.getQuantity())
+            ).collect(Collectors.toList())
+        );
     }
 }

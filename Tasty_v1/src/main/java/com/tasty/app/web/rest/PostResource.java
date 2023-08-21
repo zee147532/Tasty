@@ -2,6 +2,7 @@ package com.tasty.app.web.rest;
 
 import com.tasty.app.domain.Post;
 import com.tasty.app.repository.PostRepository;
+import com.tasty.app.response.PostsDetailResponse;
 import com.tasty.app.service.PostService;
 import com.tasty.app.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
@@ -195,5 +196,11 @@ public class PostResource {
         Pageable pageable = PageRequest.of(page - 1, 6, sort);
         Map<String, Object> responses = postService.getPosts(keyword, pageable);
         return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping("/customer/posts/{id}")
+    public ResponseEntity getPostsDetail(@PathVariable Long id) {
+        PostsDetailResponse response = postService.getDetail(id);
+        return ResponseEntity.ok(response);
     }
 }

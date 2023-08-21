@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.tasty.app.response.HttpResponse;
+import com.tasty.app.response.PostsDetailResponse;
 import com.tasty.app.response.PostsResponse;
 import com.tasty.app.service.dto.PostDTO;
 import org.springframework.data.domain.Page;
@@ -69,4 +71,6 @@ public interface PostService {
     Post updatePost(PostDTO dto);
 
     String removePost(Long id);
+
+    PostsDetailResponse getDetail(Long id);
 }

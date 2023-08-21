@@ -2,6 +2,7 @@ package com.tasty.app.repository;
 
 import com.tasty.app.domain.IngredientOfDish;
 import org.springframework.data.jpa.repository.*;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,4 +17,9 @@ public interface IngredientOfDishRepository extends JpaRepository<IngredientOfDi
 
     @Modifying
     void deleteAllByPost_IdAndIngredient_Id(Long postsId, Long ingredientId);
+
+    @Query("SELECT iod FROM IngredientOfDish iod " +
+        "JOIN iod.post p " +
+        "WHERE p.id = :id")
+    List<IngredientOfDish> findAllByPosts(@Param("id") Long postsId);
 }
