@@ -13,6 +13,8 @@ import InformationPage from "./components/InformationPage";
 import VerificationCode from "./components/VerificationCode";
 import RegistrySuccess from './components/RegistrySuccess'
 import PersonalProfile from './components/PersonalProfile'
+import Comment from './components/Comment'
+import Rating from './components/Rating'
 
 import './App.css'
 
@@ -25,6 +27,8 @@ const App = () => (
     <Route exact path="/registry/success" component={RegistrySuccess} />
     <Route exact path="/profile" component={PersonalProfile} />
     <Route exact path="/" component={Home} />
+    <Route exact path="/comment" component={Comment} />
+    <Route exact path="/rating" component={Rating} />
     <Route
       exact
       path="/restaurant/:id"

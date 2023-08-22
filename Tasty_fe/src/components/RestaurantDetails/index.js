@@ -7,6 +7,7 @@ import Header from '../Header'
 import Footer from '../Footer'
 import AllStepEdit from "../AllStepEdit";
 import IngredientListEdit from "../IngredientListEdit";
+import Comment from '../Comment'
 
 import './index.css'
 
@@ -197,6 +198,9 @@ class RestaurantDetails extends Component {
                                 onAdd={this.addIngredient}
                                 clearAll={this.clearAllIngredients}
                                 editalble={editable} />
+          </div>
+          <div>
+            <Comment postsId={3} />
           </div>
         </div>
         <Footer />
