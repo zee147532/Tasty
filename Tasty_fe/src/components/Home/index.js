@@ -16,7 +16,7 @@ const Home = () => {
   return (
     <>
       <Header />
-      <AllRestaurantsList />
+      <AllRestaurantsList paging={true} url={"http://localhost:8080/api/customer/posts"}/>
       <Footer />
     </>
   )

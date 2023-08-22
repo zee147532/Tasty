@@ -191,9 +191,11 @@ public class PostResource {
     @GetMapping("/customer/posts")
     public ResponseEntity getAllPosts(@RequestParam(required = false, defaultValue = "") String keyword,
                                                            @RequestParam(required = false, defaultValue = "1") Integer page,
-                                                           @RequestParam(required = false, defaultValue = "DESC") String sortType) {
+                                                           @RequestParam(required = false, defaultValue = "6") Integer pageSize,
+                                                           @RequestParam(required = false, defaultValue = "DESC") String sortType,
+                                      @RequestParam(required = false,defaultValue = "true") Boolean paging) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortType), "id");
-        Pageable pageable = PageRequest.of(page - 1, 6, sort);
+        Pageable pageable = PageRequest.of(paging ? page - 1 : 0, paging ? pageSize : Integer.MAX_VALUE, sort);
         Map<String, Object> responses = postService.getPosts(keyword, pageable);
         return ResponseEntity.ok(responses);
     }

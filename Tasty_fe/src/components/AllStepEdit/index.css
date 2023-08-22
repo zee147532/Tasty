@@ -18,23 +18,21 @@ h1 {
     line-height: 35px
 }
 
-.tasks-container {
+.steps-container {
     margin-bottom: 20px;
     color: black;
 }
 
 .step-list {
-    width: 80%;
+    width: 100%;
     display: inline-flex;
-    /*float: left;*/
 }
-.task-actions {
-    width: 20%;
+.step-actions {
+    width: 15%;
     display: inline-block;
-    /*float: left;*/
 }
 
-.task-item-container {
+.ingredient-item-container {
     margin-bottom: 20px;
     display: table;
     width: 100%;
@@ -43,7 +41,7 @@ h1 {
 .step-index {
     float: left;
     color: #007BE2;
-    width: 15%;
+    width: 80px;
 }
 
 .step-content {
@@ -95,7 +93,7 @@ h1 {
     text-decoration: line-through
 }
 
-.add-tasks-container {
+.add-step-container {
     width: 100%;
 }
 
@@ -111,7 +109,7 @@ textarea, input {
     white-space: pre-wrap
 }
 
-.add-task-btn {
+.add-step-btn {
     display: block;
     width: 100%;
     font-weight: bold
@@ -123,7 +121,7 @@ textarea, input {
     padding-bottom: 15px;
     width: max-content;
     font-size: 14px;
-    font-weight: 800;
+    font-weight: 500;
     text-decoration: underline;
     position: absolute;
     top: 37px;
@@ -145,4 +143,8 @@ input {
 
 .disable {
     display: none;
+}
+
+.step-width {
+    width: 85%;
 }

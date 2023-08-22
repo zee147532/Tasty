@@ -23,19 +23,18 @@ h1 {
     color: black;
     background-color: white;
     border-radius: 3px;
+    padding: 10px 5px;
 }
 
 .ingredient-list {
-    width: 90%;
     display: inline-flex;
 }
 .ingredient-actions {
     width: fit-content;
     display: inline-flex;
-    /*margin: auto;*/
 }
 
-.task-item-container {
+.ingredient-item-container {
     margin-bottom: 20px;
     display: table;
     width: 100%;
@@ -45,7 +44,6 @@ h1 {
     float: left;
     letter-spacing: 0.5px;
     color: #3e4c59;
-    width: 85%;
 }
 
 .remove-icons {
@@ -105,7 +103,7 @@ textarea, input {
     white-space: pre-wrap
 }
 
-.add-task-btn {
+.add-ingredient-btn {
     display: block;
     width: 100%;
     font-weight: bold
@@ -117,7 +115,7 @@ textarea, input {
     padding-bottom: 15px;
     width: max-content;
     font-size: 14px;
-    font-weight: 800;
+    font-weight: 500;
     text-decoration: underline;
     position: absolute;
     top: 37px;
@@ -166,4 +164,8 @@ input {
 
 .disable {
     display: none;
+}
+
+.ingredient-width {
+    width: 90%;
 }

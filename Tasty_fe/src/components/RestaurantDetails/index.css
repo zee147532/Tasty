@@ -329,3 +329,17 @@
   display: flex;
   width: 90%;
 }
+
+.update-action {
+  display: block;
+}
+
+.action-button {
+  background-color: #7abd38;
+  font-size: 18px;
+  border-radius: 5px;
+}
+
+.edit-icon {
+  font-size: 18px;
+}

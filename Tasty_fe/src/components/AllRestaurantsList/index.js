@@ -9,6 +9,7 @@ import RestaurantHeader from '../RestaurantHeader'
 import RestaurantCard from '../RestaurantCard'
 
 import './index.css'
+import {keyword} from "chalk";
 
 const sortByOptions = [
   {
@@ -37,20 +38,26 @@ class AllRestaurantsList extends Component {
     currentPage: 1,
     apiStatus: apiStatusConstants.initial,
     totalPage: 99,
-    keyword: "",
+    keyword: '',
   }
 
   componentDidMount() {
     this.getRestaurants()
   }
 
+  changeKeyword = keyword => {
+    this.setState({keyword})
+  }
+
   getRestaurants = async () => {
     this.setState({
       apiStatus: apiStatusConstants.inProgress,
     })
+    const paging = this.props.paging
     const jwtToken = Cookies.get('jwt_token')
     const {activeOptionId, currentPage, keyword} = this.state
-    const apiUrl = `http://localhost:8080/api/customer/posts?page=${currentPage}&sortType=${activeOptionId}`
+    const url = this.props.url
+    const apiUrl = `${url}?page=${currentPage}&paging=${paging}&pageSize=6&sortType=${activeOptionId}&keyword=${keyword}`
     const options = {
       headers: {
         Authorization: `Bearer ${jwtToken}`,
@@ -93,6 +100,8 @@ class AllRestaurantsList extends Component {
           activeOptionId={activeOptionId}
           sortByOptions={sortByOptions}
           changeSortBy={this.changeSortBy}
+          search={this.getRestaurants}
+          onChangeKeyword={this.changeKeyword}
         />
         <hr className="hr-line" />
         <ul className="restaurant-list">
@@ -164,27 +173,30 @@ class AllRestaurantsList extends Component {
   }
 
   render() {
-    const {currentPage} = this.state
+    const {currentPage, totalPage} = this.state
+    const paging = this.props.paging
+    const hasNext = currentPage < totalPage
+    const hasPrev = currentPage > 1
     return (
       <div>
         {/*<ReactSlider />*/}
         <div className="all-restaurant-responsive-container">
           {this.renderRestaurants()}
-          <div className="restaurant-navigation">
+          <div className={`restaurant-navigation ${paging ? '' : 'disable'}`}>
             <button
               type="button"
-              className="arrow-button"
+              className={`arrow-button ${hasPrev ? '' : 'un-clickable'}`}
               onClick={this.leftArrowClicked}
             >
-              <RiArrowDropLeftLine size={20} color="red" className="arrow" />
+              <RiArrowDropLeftLine size={25} color={`${hasPrev ? 'red' : 'grey'}`} className="arrow" />
             </button>
             <span className="current-page">{currentPage}</span>
             <button
               type="button"
-              className="arrow-button"
+              className={`arrow-button ${hasNext ? '' : 'un-clickable'}`}
               onClick={this.rightArrowClicked}
             >
-              <RiArrowDropRightLine size={20} color="red" className="arrow" />
+              <RiArrowDropRightLine size={25} color={`${hasNext ? 'red' : 'grey'}`} className="arrow" />
             </button>
           </div>
         </div>

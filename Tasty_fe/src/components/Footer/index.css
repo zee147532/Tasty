@@ -7,6 +7,7 @@
   min-height: 30vh;
   margin-top: 20px;
   padding: 40px;
+  margin-bottom: auto;
 }
 @media screen and (min-width: 768px) {
   .footer-container {

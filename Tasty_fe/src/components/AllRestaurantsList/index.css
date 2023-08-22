@@ -176,6 +176,11 @@
   outline: none;
   cursor: pointer;
 }
+
+.un-clickable {
+  cursor: unset;
+}
+
 .arrow {
   color: #334155;
 }
@@ -208,4 +213,8 @@
 
     color: #334155;
   }
+}
+
+.disable {
+  display: none;
 }

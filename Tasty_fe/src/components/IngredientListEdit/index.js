@@ -9,32 +9,22 @@ class IngredientListEdit extends Component {
         allIngredients: this.props.ingredients,
         count: 0,
         units: [{id: 1, name: 'Củ'}, {id: 2, name: 'Quả'}, {id: 3, name: 'gram'}, {id: 4, name: 'kilogram'}],
-        editable: true,
     }
 
     /* Delete a task */
     deleteIngredient = (id) => {
-        const {allIngredients} = this.state
-        let index;
-        for (let x = 0; x < allIngredients.length; x++) {
-            if (allIngredients[x].id === id) {
-                index = x
-                break
-            }
-        }
-        allIngredients.splice(index, 1)
-        this.setState({allIngredients: [...allIngredients]})
+        this.props.onDelete(id)
     }
 
 
     /* Clear all step */
     clearAll = () => {
-        this.setState({allIngredients: []})
+        this.props.clearAll()
     }
 
     /* Add a new step to the list of steps on key press enter */
     addIngredient = (e) => {
-        const {allIngredients, units, addValue, addQuantity, addUnit, count} = this.state
+        const {units, addValue, addQuantity, addUnit, count} = this.state
         const unit = units.find((item) => {
             return item.id == addUnit
         })
@@ -51,16 +41,18 @@ class IngredientListEdit extends Component {
             return;
         }
         e.preventDefault()
-        allIngredients.push({id: count + 1,
+        const item = {id: count + 1,
             name: addValue,
             quantity: addQuantity,
             unit: unit.name,
-        })
-        this.setState({allIngredients: [...allIngredients], addValue: '', count: count + 1})
+        }
+        this.props.onAdd(item)
+        this.setState({addValue: '', count: count + 1})
     }
 
     render() {
-        const {allIngredients, addValue, units, editable} = this.state
+        const {allIngredients, addValue, units} = this.state
+        const editable = this.props.editalble
         return (
             <div className="ingredient-container">
                 <h1>Nguyên liệu:</h1>
@@ -93,13 +85,13 @@ class IngredientListEdit extends Component {
                     Thêm<span className="add-icon material-symbols-outlined">south</span>
                 </div>
                 <div className="ingredients-container">
-                    {allIngredients.map(ingredient => {
+                    {this.props.ingredients.map(ingredient => {
                         return (
-                            <div key={ingredient.id} className="task-item-container">
+                            <div key={ingredient.id} className="ingredient-item-container">
                                 <div className={`clear-resolved ${editable ? '' : ' disable'}`} onClick={this.clearAll}>
                                     Xóa tất cả
                                 </div>
-                                <div className="ingredient-list">
+                                <div className={`ingredient-list ${editable ? ' ingredient-width' : ''}`}>
                                     <span
                                         className="ingredient-content"> {ingredient.name} ({ingredient.quantity} {ingredient.unit.toLowerCase()})
                                     </span>

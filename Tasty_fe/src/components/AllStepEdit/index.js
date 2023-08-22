@@ -5,25 +5,12 @@ class AllStepEdit extends Component {
     state = {
         addValue: '',
         edit: {id: NaN, value: ''},
-        allSteps: this.props.steps,
-        count: 0,
-        editable: true,
     }
 
     /* Delete a step */
     deleteStep = (id) => {
-        const {allSteps} = this.state
-        let index;
-        for (let x = 0; x < allSteps.length; x++) {
-            if (allSteps[x].id === id) {
-                index = x
-                break
-            }
-        }
-        allSteps.splice(index, 1)
-        this.setState({allSteps: [...allSteps]})
+        this.props.onDelete(id)
     }
-
 
     /* Clear all step */
     clearAll = () => {
@@ -32,15 +19,16 @@ class AllStepEdit extends Component {
 
     /* Add a new step to the list of steps on key press enter */
     onKeyPressAdd = (e) => {
-        const {allSteps, count} = this.state
         console.log(e.target.value.length, e)
         if (e.keyCode === 13 && e.shiftKey === false && e.target.value !== '') {
             e.preventDefault()
-            allSteps.push({
-                "id": count + 1,
+            const id = Math.max(...this.props.steps.map(i => i.id))
+            const item = {
+                "id": id + 1,
                 "content": e.target.value
-            })
-            this.setState({allSteps: [...allSteps], addValue: '', count: count + 1})
+            }
+            this.props.onAdd(item)
+            this.setState({addValue: ''})
         }
     }
 
@@ -48,49 +36,45 @@ class AllStepEdit extends Component {
     onKeyPressEdit = (e) => {
         if (e.keyCode === 13 && e.shiftKey === false && e.target.value !== '') {
             e.preventDefault()
-            this.updateTask()
+            this.updateStep()
         }
     }
 
     /* Update task */
-    updateTask = () => {
-        const {allSteps, edit} = this.state
-        for (let x = 0; x < allSteps.length; x++) {
-            if (allSteps[x].id === edit.id) {
-                allSteps[x].content = edit.value;
-                break;
-            }
-        }
-        this.setState({allSteps: [...allSteps], edit: {}})
+    updateStep = () => {
+        const {edit} = this.state
+        this.props.onUpdate(edit)
+        this.setState({edit: {}})
     }
 
     render() {
-        const {allSteps, edit, addValue, editable} = this.state
+        const {edit, addValue} = this.state
+        const editable = this.props.editable
 
         return (
             <div className="todo-container">
                 <h1>Các bước thực hiện:</h1>
-                <div className="tasks-container">
-                    {allSteps.map((stepItem, index) => {
+                <div className="steps-container">
+                    {this.props.steps.map((stepItem, index) => {
                         return (
-                            <div key={stepItem.id} className="task-item-container">
+                            <div key={stepItem.id} className="ingredient-item-container">
                                 <div className={`clear-resolved ${editable ? '' : ' disable'}`} onClick={this.clearAll}>
                                     Xóa tất cả
                                 </div>
-                                <div className="step-list">
+                                <div className={`step-list ${editable ? 'step-width' : ''}`}>
                                     <span className="task step-index"> Bước {index + 1}:</span>
                                     <span
                                         className="step-content"> {stepItem.content}
                                     </span>
                                 </div>
-                                <div className={`task-actions ${editable ? '' : ' disable'}`}>
+                                <div className={`step-actions ${editable ? '' : ' disable'}`}>
                                     <div className="task-icons anchor material-symbols-outlined layer-1 todo-icons"
                                          onClick={() => this.deleteStep(stepItem.id)} data-hover="Xóa">
                                         delete
                                     </div>
                                     {edit.id === stepItem.id ?
                                         <div className="task-icons anchor material-symbols-outlined layer-1 todo-icons"
-                                             onClick={this.updateTask} data-hover="Lưu">
+                                             onClick={this.updateStep} data-hover="Lưu">
                                             save
                                         </div>
                                         :
@@ -118,8 +102,8 @@ class AllStepEdit extends Component {
                         )
                     })}
                 </div>
-                <div className={`add-tasks-container ${editable ? '' : ' disable'}`}>
-                    <div className="add-task-btn">Thêm bước:</div>
+                <div className={`add-step-container ${editable ? '' : ' disable'}`}>
+                    <div className="add-step-btn">Thêm bước:</div>
                     <input
                         placeholder="Nhấn enter để thêm bước thực hiện ..."
                         value={addValue}

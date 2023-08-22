@@ -21,14 +21,71 @@ class RestaurantDetails extends Component {
   state = {
     restaurantData: {},
     apiStatus: apiStatusConstants.initial,
-    allStep: [],
+    allSteps: [],
     allIngredients: [],
     stepInsert: '',
     index: 0,
+    editable: true,
   }
 
   componentDidMount() {
     this.getRestaurantData()
+  }
+
+  deleteIngredient = id => {
+    const {allIngredients} = this.state
+    let index;
+    for (let x = 0; x < allIngredients.length; x++) {
+      if (allIngredients[x].id === id) {
+        index = x
+        break
+      }
+    }
+    allIngredients.splice(index, 1)
+    this.setState({allIngredients: [...allIngredients]})
+  }
+
+  addIngredient = item => {
+    const {allIngredients} = this.state
+    allIngredients.push(item)
+    this.setState({allIngredients})
+  }
+
+  clearAllIngredients = () => {
+    this.setState({allIngredients: []})
+  }
+
+  deleteStep = id => {
+    const {allSteps} = this.state
+    let index;
+    for (let x = 0; x < allSteps.length; x++) {
+      if (allSteps[x].id === id) {
+        index = x
+        break
+      }
+    }
+    allSteps.splice(index, 1)
+    this.setState({allSteps: [...allSteps]})
+  }
+
+  addStep = item => {
+    const {allSteps} = this.state
+    allSteps.push(item)
+  }
+
+  updateStep = edit => {
+    const {allSteps} = this.state
+    for (let x = 0; x < allSteps.length; x++) {
+      if (allSteps[x].id === edit.id) {
+        allSteps[x].content = edit.value;
+        break;
+      }
+    }
+    this.setState({allSteps})
+  }
+
+  clearAllSteps = () => {
+    this.setState({allSteps: []})
   }
 
   getFormattedData = data => ({
@@ -42,18 +99,17 @@ class RestaurantDetails extends Component {
     tags: data.tags,
   })
 
-  getFoodItemFormattedData = data => ({
-    imageUrl: data.imageUrl,
-    name: data.name,
-    cost: data.cost,
-    rating: data.rating,
-    id: data.id,
-  })
-
   getRestaurantData = async () => {
     const {match} = this.props
     const {params} = match
     const {id} = params
+
+    if (id == 'new') {
+      this.setState({
+        apiStatus: apiStatusConstants.success,
+      })
+      return
+    }
 
     this.setState({
       apiStatus: apiStatusConstants.inProgress,
@@ -72,7 +128,7 @@ class RestaurantDetails extends Component {
       const updatedData = this.getFormattedData(fetchedData)
       this.setState({
         restaurantData: updatedData,
-        allStep: fetchedData.steps,
+        allSteps: fetchedData.steps,
         apiStatus: apiStatusConstants.success,
         allIngredients: fetchedData.ingredients,
       })
@@ -84,7 +140,7 @@ class RestaurantDetails extends Component {
   }
 
   renderRestaurantDetailsView = () => {
-    const {restaurantData, allStep, allIngredients} = this.state
+    const {restaurantData, allSteps, allIngredients, editable} = this.state
 
     return (
       <>
@@ -124,10 +180,23 @@ class RestaurantDetails extends Component {
                 </div>
               </div>
             </div>
+            <div className="update-action">
+              <button className="action-button">Chỉnh sửa <span className="material-symbols-outlined edit-icon">edit_square</span></button>
+              <button className="action-button">Lưu <span className="material-symbols-outlined edit-icon">upgrade</span></button>
+            </div>
           </div>
           <div className="step-body">
-            <AllStepEdit steps={allStep} />
-            <IngredientListEdit ingredients={allIngredients} />
+            <AllStepEdit steps={allSteps}
+                         onDelete={this.deleteStep}
+                         onAdd={this.addStep}
+                         onUpdate={this.updateStep}
+                         clearAll={this.clearAllSteps}
+                         editable={editable} />
+            <IngredientListEdit ingredients={allIngredients}
+                                onDelete={this.deleteIngredient}
+                                onAdd={this.addIngredient}
+                                clearAll={this.clearAllIngredients}
+                                editalble={editable} />
           </div>
         </div>
         <Footer />
@@ -136,10 +205,10 @@ class RestaurantDetails extends Component {
   }
 
   insert = () => {
-    const {stepInsert, index, allStep} = this.state
+    const {stepInsert, index, allSteps} = this.state
     const newStep = {id: index + 1, content: stepInsert}
-    const preArray = allStep
-    this.setState({allStep: [...allStep, newStep], index: index + 1 })
+    const preArray = allSteps
+    this.setState({allSteps: [...allSteps, newStep], index: index + 1 })
   }
 
   insertStep = event => {
@@ -177,11 +246,9 @@ class RestaurantDetails extends Component {
       case apiStatusConstants.success:
         return this.renderRestaurantDetailsView()
       case apiStatusConstants.failure:
-        return this.renderRestaurantDetailsView()
-        // return this.renderFailureView()
+        return this.renderFailureView()
       case apiStatusConstants.inProgress:
-        return this.renderRestaurantDetailsView()
-        // return this.renderLoadingView()
+        return this.renderLoadingView()
       default:
         return null
     }
