@@ -2,6 +2,7 @@ package com.tasty.app.web.rest;
 
 import com.tasty.app.domain.Evaluation;
 import com.tasty.app.repository.EvaluationRepository;
+import com.tasty.app.response.RatingResponse;
 import com.tasty.app.service.EvaluationService;
 import com.tasty.app.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -177,5 +178,11 @@ public class EvaluationResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @GetMapping("/customer/posts/{postId}/rating")
+    public ResponseEntity getRating(@PathVariable("postId") Long postsId) {
+        RatingResponse response = evaluationService.getRating(postsId);
+        return ResponseEntity.ok(response);
     }
 }

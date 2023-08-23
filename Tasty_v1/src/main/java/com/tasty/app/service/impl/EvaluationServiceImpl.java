@@ -4,6 +4,7 @@ import com.tasty.app.domain.Evaluation;
 import com.tasty.app.domain.Post;
 import com.tasty.app.repository.EvaluationRepository;
 import com.tasty.app.repository.PostRepository;
+import com.tasty.app.response.RatingResponse;
 import com.tasty.app.service.EvaluationService;
 
 import java.util.List;
@@ -132,5 +133,14 @@ public class EvaluationServiceImpl implements EvaluationService {
     @Override
     public Double calculateByPost(Long postId) {
         return evaluationRepository.calculateByPost(postId);
+    }
+
+    @Override
+    public RatingResponse getRating(Long postsId) {
+        // TODO: Lấy username từ token
+        String username = "tiennd1";
+
+        Evaluation evaluation = evaluationRepository.getRate(postsId, username);
+        return new RatingResponse(evaluation.getId(), evaluation.getPoint(), evaluation.getComment());
     }
 }

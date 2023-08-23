@@ -3,7 +3,7 @@
 .ingredient-container {
     font-family: 'Roboto', sans-serif;
     width: 30%;
-    margin: 20px 7px;
+    margin: 20px 7px 0 7px;
     background-color: #e3e3f3;
     border: 1px solid #42368C;
     border-radius:5px;

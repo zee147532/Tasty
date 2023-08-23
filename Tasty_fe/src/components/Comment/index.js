@@ -74,7 +74,7 @@ class Comment extends Component {
                         <span id="comment-input" role="textbox" contentEditable className="comment-input"
                               onKeyDown={this.onKeyDownComment}/>
                         <button className='primaryContained float-right' type="submit" onClick={this.addComment}>
-                            <span className="material-symbols-outlined">send</span>
+                            <span className="material-symbols-rounded">send</span>
                         </button>
                     </div>
                 </div>
@@ -98,7 +98,7 @@ class Comment extends Component {
                                             <div className="comment-reply">
                                                 <a className="reply-button"
                                                    onClick={() => this.setState({addSub: comment.id})}>Trả lời
-                                                    <span className="material-symbols-outlined reply-icon">reply</span>
+                                                    <span className="material-symbols-rounded reply-icon">reply</span>
                                                 </a>
                                             </div>
                                         </div>
@@ -110,7 +110,7 @@ class Comment extends Component {
                                               onKeyDown={this.onKeyDownSubComment}/>
                                         <button className='primaryContained float-right' type="submit"
                                                 onClick={() => this.addSubComment(comment.id)}>
-                                            <span className="material-symbols-outlined">send</span>
+                                            <span className="material-symbols-rounded">send</span>
                                         </button>
                                     </div>
                                     {subComments.filter(sc => {

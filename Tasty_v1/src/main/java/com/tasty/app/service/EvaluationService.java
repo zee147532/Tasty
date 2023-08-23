@@ -5,6 +5,7 @@ import com.tasty.app.domain.Evaluation;
 import java.util.List;
 import java.util.Optional;
 
+import com.tasty.app.response.RatingResponse;
 import com.tasty.app.service.dto.EvaluationDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -66,4 +67,5 @@ public interface EvaluationService {
     String updateEvaluation(EvaluationDTO dto);
     String deleteEvaluation(Long id);
     Double calculateByPost(Long postId);
+    RatingResponse getRating(Long postsId);
 }

@@ -68,17 +68,17 @@ class AllStepEdit extends Component {
                                     </span>
                                 </div>
                                 <div className={`step-actions ${editable ? '' : ' disable'}`}>
-                                    <div className="task-icons anchor material-symbols-outlined layer-1 todo-icons"
+                                    <div className="task-icons anchor material-symbols-rounded layer-1 todo-icons"
                                          onClick={() => this.deleteStep(stepItem.id)} data-hover="Xóa">
                                         delete
                                     </div>
                                     {edit.id === stepItem.id ?
-                                        <div className="task-icons anchor material-symbols-outlined layer-1 todo-icons"
+                                        <div className="task-icons anchor material-symbols-rounded layer-1 todo-icons"
                                              onClick={this.updateStep} data-hover="Lưu">
                                             save
                                         </div>
                                         :
-                                        <div className="task-icons anchor material-symbols-outlined layer-1 todo-icons" onClick={() => {
+                                        <div className="task-icons anchor material-symbols-rounded layer-1 todo-icons" onClick={() => {
                                                 this.setState({edit: {
                                                     id: stepItem.id,
                                                     value: stepItem.content

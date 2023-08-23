@@ -32,6 +32,10 @@ public class Evaluation implements Serializable {
     )
     private Post post;
 
+    @ManyToOne
+    @JoinColumn(name = "customer")
+    private Customer customer;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -86,7 +90,20 @@ public class Evaluation implements Serializable {
         return this;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Evaluation customer(Customer customer) {
+        this.setCustomer(customer);
+        return this;
+    }
+
+// jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
     public boolean equals(Object o) {
@@ -105,13 +122,14 @@ public class Evaluation implements Serializable {
         return getClass().hashCode();
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "Evaluation{" +
-            "id=" + getId() +
-            ", point=" + getPoint() +
-            ", comment='" + getComment() + "'" +
-            "}";
+            "id=" + id +
+            ", point=" + point +
+            ", comment='" + comment + '\'' +
+            ", post=" + post +
+            ", customer=" + customer +
+            '}';
     }
 }

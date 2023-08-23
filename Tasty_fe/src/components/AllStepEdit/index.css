@@ -3,7 +3,7 @@
 .todo-container {
     font-family: 'Roboto', sans-serif;
     width: 70%;
-    margin: 20px auto;
+    margin: 20px auto 0;
     background: #fff;
     border: 1px solid #42368C;
     border-radius:5px;

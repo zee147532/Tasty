@@ -82,7 +82,7 @@ class IngredientListEdit extends Component {
                            }} />
                 </div>
                 <div className={`add-button ${editable ? '' : ' disable'}`} onClick={this.addIngredient}>
-                    Thêm<span className="add-icon material-symbols-outlined">south</span>
+                    Thêm<span className="add-icon material-symbols-rounded">south</span>
                 </div>
                 <div className="ingredients-container">
                     {this.props.ingredients.map(ingredient => {
@@ -99,7 +99,7 @@ class IngredientListEdit extends Component {
                                 <div className={`ingredient-actions ${editable ? '' : ' disable'}`}>
                                     <div className="remove-icons"
                                          onClick={() => this.deleteIngredient(ingredient.id)}>
-                                        <span className="remove-icon material-symbols-outlined">close</span>
+                                        <span className="remove-icon material-symbols-rounded">close</span>
                                     </div>
                                 </div>
                             </div>

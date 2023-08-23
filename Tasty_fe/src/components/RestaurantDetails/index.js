@@ -8,6 +8,7 @@ import Footer from '../Footer'
 import AllStepEdit from "../AllStepEdit";
 import IngredientListEdit from "../IngredientListEdit";
 import Comment from '../Comment'
+import Rating from '../Rating'
 
 import './index.css'
 
@@ -182,11 +183,11 @@ class RestaurantDetails extends Component {
               </div>
             </div>
             <div className="update-action">
-              <button className="action-button">Chỉnh sửa <span className="material-symbols-outlined edit-icon">edit_square</span></button>
-              <button className="action-button">Lưu <span className="material-symbols-outlined edit-icon">upgrade</span></button>
+              <button className="action-button">Chỉnh sửa <span className="material-symbols-rounded edit-icon">edit_square</span></button>
+              <button className="action-button">Lưu <span className="material-symbols-rounded edit-icon">upgrade</span></button>
             </div>
           </div>
-          <div className="step-body">
+          <div className="block-body">
             <AllStepEdit steps={allSteps}
                          onDelete={this.deleteStep}
                          onAdd={this.addStep}
@@ -199,8 +200,9 @@ class RestaurantDetails extends Component {
                                 clearAll={this.clearAllIngredients}
                                 editalble={editable} />
           </div>
-          <div>
-            <Comment postsId={3} />
+          <div className="block-body">
+            <Comment />
+            <Rating />
           </div>
         </div>
         <Footer />
