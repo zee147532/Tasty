@@ -25,11 +25,11 @@ class Login extends Component {
     const {history} = this.props
 
     Cookies.set('jwt_token', data.jwtToken, {
-      maxage: 14400,
+      expires: 14400,
       path: '/',
     })
     Cookies.set('username', data.username, {
-      maxage: 14400,
+      expires: 14400,
       path: '/',
     })
     history.push('/')
