@@ -3,10 +3,12 @@ package com.tasty.app.service;
 import com.tasty.app.domain.Comment;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.tasty.app.request.CommentRequest;
-import com.tasty.app.service.dto.CommentDTO;
+import com.tasty.app.response.HttpResponse;
+import com.tasty.app.service.dto.CommentResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -61,11 +63,11 @@ public interface CommentService {
      */
     void delete(Long id);
 
-    List<CommentDTO> getByPosts(Long postId);
+    Map<String, Object> getByPosts(Long postId);
 
     String addComment(CommentRequest request);
 
-    String updateComment(CommentRequest request);
+    HttpResponse updateComment(CommentRequest request);
 
     String deleteComment(Long id);
 }

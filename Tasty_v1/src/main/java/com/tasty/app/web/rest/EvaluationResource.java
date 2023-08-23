@@ -2,8 +2,10 @@ package com.tasty.app.web.rest;
 
 import com.tasty.app.domain.Evaluation;
 import com.tasty.app.repository.EvaluationRepository;
+import com.tasty.app.request.RatingRequest;
 import com.tasty.app.response.RatingResponse;
 import com.tasty.app.service.EvaluationService;
+import com.tasty.app.service.dto.EvaluationDTO;
 import com.tasty.app.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -183,6 +185,17 @@ public class EvaluationResource {
     @GetMapping("/customer/posts/{postId}/rating")
     public ResponseEntity getRating(@PathVariable("postId") Long postsId) {
         RatingResponse response = evaluationService.getRating(postsId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/customer/posts/rating")
+    public ResponseEntity createRating(@RequestBody EvaluationDTO dto) {
+        RatingResponse response = new RatingResponse();
+        if (Objects.isNull(dto.getId())) {
+            response = evaluationService.createEvaluation(dto);
+        } else {
+            response = evaluationService.updateEvaluation(dto);
+        }
         return ResponseEntity.ok(response);
     }
 }

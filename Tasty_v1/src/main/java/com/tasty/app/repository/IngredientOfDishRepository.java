@@ -18,6 +18,9 @@ public interface IngredientOfDishRepository extends JpaRepository<IngredientOfDi
     @Modifying
     void deleteAllByPost_IdAndIngredient_Id(Long postsId, Long ingredientId);
 
+    @Modifying
+    void deleteAllByPost_Id(Long postsId);
+
     @Query("SELECT iod FROM IngredientOfDish iod " +
         "JOIN iod.post p " +
         "WHERE p.id = :id")

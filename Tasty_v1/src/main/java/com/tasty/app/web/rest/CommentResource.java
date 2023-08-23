@@ -2,11 +2,16 @@ package com.tasty.app.web.rest;
 
 import com.tasty.app.domain.Comment;
 import com.tasty.app.repository.CommentRepository;
+import com.tasty.app.request.CommentRequest;
+import com.tasty.app.response.HttpResponse;
 import com.tasty.app.service.CommentService;
 import com.tasty.app.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -175,5 +180,24 @@ public class CommentResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @PostMapping("/customer/comment")
+    public ResponseEntity updateCustomerComment(@RequestBody CommentRequest request) {
+        HttpResponse response = commentService.updateComment(request);
+        return ResponseEntity.status(response.getStatusCode()).body(response.getMsg());
+    }
+
+    @GetMapping("/customer/posts/{postsId}/comment")
+    public ResponseEntity getCommentByPosts(@PathVariable("postsId") Long postsId) {
+        Map<String, Object> response = commentService.getByPosts(postsId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/test")
+    public void test() {
+        LocalDateTime fromDate = LocalDateTime.of(2023, 5, 27, 12, 20, 21);
+        LocalDateTime toDate = LocalDateTime.of(2023, 7, 27, 1, 55, 12);
+        ChronoUnit.MINUTES.between(fromDate, toDate);
     }
 }

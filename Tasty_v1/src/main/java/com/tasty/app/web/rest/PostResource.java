@@ -2,6 +2,7 @@ package com.tasty.app.web.rest;
 
 import com.tasty.app.domain.Post;
 import com.tasty.app.repository.PostRepository;
+import com.tasty.app.request.PostsRequest;
 import com.tasty.app.response.PostsDetailResponse;
 import com.tasty.app.service.PostService;
 import com.tasty.app.web.rest.errors.BadRequestAlertException;
@@ -203,6 +204,12 @@ public class PostResource {
     @GetMapping("/customer/posts/{id}")
     public ResponseEntity getPostsDetail(@PathVariable Long id) {
         PostsDetailResponse response = postService.getDetail(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/customer/posts")
+    public ResponseEntity updatePosts(@RequestBody PostsRequest request) {
+        Post response = postService.createPost(request);
         return ResponseEntity.ok(response);
     }
 }

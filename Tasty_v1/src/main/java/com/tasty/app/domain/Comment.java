@@ -2,6 +2,7 @@ package com.tasty.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
@@ -42,8 +43,40 @@ public class Comment implements Serializable {
     @JsonIgnoreProperties(value = { "comments", "post", "supperComment" }, allowSetters = true)
     private Comment supperComment;
 
+    @ManyToOne
+    @JoinColumn(name = "customer")
+    private Customer customer;
+
+    @Column(name = "created_time")
+    private LocalDateTime createdTime;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
+    public LocalDateTime getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(LocalDateTime createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public Comment createdTime(LocalDateTime createdTime) {
+        this.setCreatedTime(createdTime);
+        return this;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Comment customer(Customer customerid) {
+        this.setCustomer(customer);
+        return this;
+    }
     public Long getId() {
         return this.id;
     }

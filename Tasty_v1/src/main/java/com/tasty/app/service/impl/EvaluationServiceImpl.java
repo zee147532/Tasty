@@ -1,7 +1,9 @@
 package com.tasty.app.service.impl;
 
+import com.tasty.app.domain.Customer;
 import com.tasty.app.domain.Evaluation;
 import com.tasty.app.domain.Post;
+import com.tasty.app.repository.CustomerRepository;
 import com.tasty.app.repository.EvaluationRepository;
 import com.tasty.app.repository.PostRepository;
 import com.tasty.app.response.RatingResponse;
@@ -12,6 +14,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import com.tasty.app.service.dto.EvaluationDTO;
+import com.tasty.app.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -30,10 +33,12 @@ public class EvaluationServiceImpl implements EvaluationService {
 
     private final EvaluationRepository evaluationRepository;
     private final PostRepository postRepository;
+    private final CustomerRepository customerRepository;
 
-    public EvaluationServiceImpl(EvaluationRepository evaluationRepository, PostRepository postRepository) {
+    public EvaluationServiceImpl(EvaluationRepository evaluationRepository, PostRepository postRepository, CustomerRepository customerRepository) {
         this.evaluationRepository = evaluationRepository;
         this.postRepository = postRepository;
+        this.customerRepository = customerRepository;
     }
 
     @Override
@@ -93,35 +98,53 @@ public class EvaluationServiceImpl implements EvaluationService {
     }
 
     @Override
-    public String createEvaluation(EvaluationDTO dto) {
+    public RatingResponse createEvaluation(EvaluationDTO dto) {
         Post post = postRepository.getReferenceById(dto.getPostId());
         if (Objects.isNull(post.getId())) {
-            return "Fail.";
+            throw new BadRequestAlertException("Không thể thêm đánh giá", "posts", "postsnotfound");
         }
+        // TODO: Lấy username từ token
+        String username = "tiennd";
+        Customer customer = customerRepository.findByUsername(username);
+         if (Objects.isNull(customer)) {
+             throw new BadRequestAlertException("Không thể thêm đánh giá", "customer", "customernotfound");
+         }
 
         Evaluation evaluation = new Evaluation()
             .point(dto.getPoint())
             .comment(dto.getComment())
-            .post(post);
+            .post(post)
+            .customer(customer);
 
-        evaluationRepository.save(evaluation);
-        return "Success.";
+        evaluation = evaluationRepository.save(evaluation);
+        return new RatingResponse(evaluation.getId(), evaluation.getPoint(), evaluation.getComment());
     }
 
     @Override
-    public String updateEvaluation(EvaluationDTO dto) {
+    public RatingResponse updateEvaluation(EvaluationDTO dto) {
         Post post = postRepository.getReferenceById(dto.getPostId());
         if (Objects.isNull(post.getId())) {
-            return "Fail.";
+            throw new BadRequestAlertException("Không thể thêm đánh giá", "posts", "postsnotfound");
+        }
+
+        // TODO: Lấy username từ token
+        String username = "tiennd";
+        Customer customer = customerRepository.findByUsername(username);
+        if (Objects.isNull(customer)) {
+            throw new BadRequestAlertException("Không thể thêm đánh giá", "customer", "customernotfound");
         }
 
         Evaluation evaluation = evaluationRepository.getReferenceById(dto.getId());
+        if (Objects.isNull(evaluation)) {
+            evaluation = new Evaluation();
+        }
         evaluation.point(dto.getPoint())
             .comment(dto.getComment())
-            .post(post);
+            .post(post)
+            .customer(customer);
 
-        evaluationRepository.save(evaluation);
-        return "Success.";
+        evaluation = evaluationRepository.save(evaluation);
+        return new RatingResponse(evaluation.getId(), evaluation.getPoint(), evaluation.getComment());
     }
 
     @Override
@@ -138,7 +161,7 @@ public class EvaluationServiceImpl implements EvaluationService {
     @Override
     public RatingResponse getRating(Long postsId) {
         // TODO: Lấy username từ token
-        String username = "tiennd1";
+        String username = "tiennd";
 
         Evaluation evaluation = evaluationRepository.getRate(postsId, username);
         return new RatingResponse(evaluation.getId(), evaluation.getPoint(), evaluation.getComment());

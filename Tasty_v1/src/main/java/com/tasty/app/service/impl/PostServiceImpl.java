@@ -3,23 +3,27 @@ package com.tasty.app.service.impl;
 import com.tasty.app.domain.*;
 import com.tasty.app.repository.*;
 import com.tasty.app.repository.projection.PostsDetail;
+import com.tasty.app.request.PostsRequest;
 import com.tasty.app.response.*;
 import com.tasty.app.service.PostService;
 
+import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import com.tasty.app.service.dto.PostDTO;
 import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
+import static com.tasty.app.domain.enumeration.TypeOfImage.DISH;
 
 /**
  * Service Implementation for managing {@link Post}.
@@ -37,12 +41,20 @@ public class PostServiceImpl implements PostService {
     private final DishTypeRepository dishTypeRepository;
 
     private final IngredientOfDishRepository ingredientOfDishRepository;
+    private final CustomerRepository customerRepository;
+    private final ImageRepository imageRepository;
+    private final TypeOfDishRepository typeOfDishRepository;
+    private final IngredientRepository ingredientRepository;
 
-    public PostServiceImpl(PostRepository postRepository, StepToCookRepository stepToCookRepository, DishTypeRepository dishTypeRepository, IngredientOfDishRepository ingredientRepository) {
+    public PostServiceImpl(PostRepository postRepository, StepToCookRepository stepToCookRepository, DishTypeRepository dishTypeRepository, IngredientOfDishRepository ingredientRepository, CustomerRepository customerRepository, ImageRepository imageRepository, TypeOfDishRepository typeOfDishRepository, IngredientRepository ingredientRepository1) {
         this.postRepository = postRepository;
         this.stepToCookRepository = stepToCookRepository;
         this.dishTypeRepository = dishTypeRepository;
         this.ingredientOfDishRepository = ingredientRepository;
+        this.customerRepository = customerRepository;
+        this.imageRepository = imageRepository;
+        this.typeOfDishRepository = typeOfDishRepository;
+        this.ingredientRepository = ingredientRepository1;
     }
 
     @Override
@@ -123,21 +135,70 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post createPost(PostDTO dto) {
-        Post post = new Post().title(dto.getTitle())
-            .content(dto.getContent())
-            .description(dto.getDescription())
-            .status(dto.getStatus())
-            .createdDate(dto.getCreatedDate());
-
-        postRepository.save(post);
-
-        for (PostDTO.Step step : dto.getSteps()) {
-            StepToCook stepToCook = new StepToCook().content(step.getContent())
-                .index(step.getIndex());
-
-            stepToCookRepository.save(stepToCook);
+    public Post createPost(PostsRequest request) {
+        Post post = new Post();
+        // TODO: Lấy username từ token
+        String username = "tiennd";
+        // TODO: Lưu ảnh vào minio
+        String imageUrl = "";
+        if (Objects.isNull(request.getId())) {
+            post.setCreatedDate(LocalDate.now());
+            Customer customer = customerRepository.findByUsername(username);
+            post.setAuthor(customer);
+        } else {
+            post = postRepository.getReferenceById(request.getId());
+            imageRepository.deleteAllByPost_IdAndType(request.getId(), DISH);
+            typeOfDishRepository.deleteAllByPost_Id(post.getId());
+            stepToCookRepository.deleteAllByPost(post);
+            ingredientOfDishRepository.deleteAllByPost_Id(post.getId());
         }
+        post.setTitle(request.getTitle());
+        post.setDescription(request.getDescription());
+        post.setStatus(true);
+
+        post = postRepository.save(post);
+
+        Image image = new Image();
+        image.setType(DISH);
+        image.setUri(imageUrl);
+        image.setPost(post);
+        imageRepository.save(image);
+
+        List<TypeOfDish> allNewType = new ArrayList<>();
+        List<DishType> dishTypes = dishTypeRepository.findByListName(request.getTypes());
+        Post finalPost = post;
+        dishTypes.forEach(dishType -> allNewType.add(new TypeOfDish()
+            .type(dishType)
+            .post(finalPost)
+        ));
+        typeOfDishRepository.saveAll(allNewType);
+
+        List<StepToCook> allSteps = new ArrayList<>();
+        AtomicLong index = new AtomicLong(1);
+        request.getSteps().forEach(step -> allSteps.add(
+            new StepToCook()
+                .content(step.getContent())
+                .index(index.getAndIncrement())
+                .post(finalPost)
+        ));
+        stepToCookRepository.saveAll(allSteps);
+
+        List<IngredientOfDish> allIngredient = new ArrayList<>();
+        request.getIngredient().forEach(i -> {
+            Ingredient ingredient = ingredientRepository.findByName(i.getName());
+            if (Objects.isNull(ingredient)) {
+                ingredient = new Ingredient()
+                    .name(i.getName());
+                ingredient = ingredientRepository.save(ingredient);
+            }
+            allIngredient.add(
+                new IngredientOfDish().unit(i.getUnit())
+                    .quantity(i.getQuantity().longValue())
+                    .post(finalPost)
+                    .ingredient(ingredient)
+            );
+        });
+        ingredientOfDishRepository.saveAll(allIngredient);
 
         return post;
     }

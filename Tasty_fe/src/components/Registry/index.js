@@ -32,7 +32,7 @@ class Login extends Component {
     const {history} = this.props
 
     Cookies.set('username', username, {
-      expires: 30,
+      maxage: 1800,
       path: '/',
     })
     history.push('/info-page')

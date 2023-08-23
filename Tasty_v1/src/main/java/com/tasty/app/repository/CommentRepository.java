@@ -18,4 +18,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @Modifying
     void deleteAllBySupperComment_Id(Long id);
+
+    List<Comment> findAllBySupperCommentIn(List<Comment> comments);
 }

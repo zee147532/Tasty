@@ -13,4 +13,5 @@ import java.util.List;
 @Repository
 public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
     List<Ingredient> findAllByType_Id(Long id);
+    Ingredient findByName(String name);
 }

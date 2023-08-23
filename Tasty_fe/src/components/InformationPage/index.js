@@ -81,7 +81,7 @@ class InformationPage extends Component {
         const {history} = this.props
 
         Cookies.set('email', email, {
-            expires: 30,
+            maxage: 1800,
             path: '/',
         })
         history.push('/verification-code')

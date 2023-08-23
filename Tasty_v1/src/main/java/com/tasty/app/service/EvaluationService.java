@@ -63,8 +63,8 @@ public interface EvaluationService {
 
     List<Evaluation> findByPost(Long postId);
 
-    String createEvaluation(EvaluationDTO dto);
-    String updateEvaluation(EvaluationDTO dto);
+    RatingResponse createEvaluation(EvaluationDTO dto);
+    RatingResponse updateEvaluation(EvaluationDTO dto);
     String deleteEvaluation(Long id);
     Double calculateByPost(Long postId);
     RatingResponse getRating(Long postsId);

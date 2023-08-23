@@ -21,11 +21,15 @@ class Login extends Component {
     this.setState({password: event.target.value})
   }
 
-  onSubmitSuccess = jwtToken => {
+  onSubmitSuccess = data => {
     const {history} = this.props
 
-    Cookies.set('jwt_token', jwtToken, {
-      expires: 30,
+    Cookies.set('jwt_token', data.jwtToken, {
+      maxage: 14400,
+      path: '/',
+    })
+    Cookies.set('username', data.username, {
+      maxage: 14400,
       path: '/',
     })
     history.push('/')
@@ -52,7 +56,7 @@ class Login extends Component {
     console.log(response)
     const data = await response.json()
     if (response.ok === true) {
-      this.onSubmitSuccess(data.jwtToken)
+      this.onSubmitSuccess(data)
     } else {
       this.onSubmitFailure(data.errorMsg)
     }

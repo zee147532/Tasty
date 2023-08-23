@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.tasty.app.request.PostsRequest;
 import com.tasty.app.response.HttpResponse;
 import com.tasty.app.response.PostsDetailResponse;
 import com.tasty.app.response.PostsResponse;
@@ -66,7 +67,7 @@ public interface PostService {
 
     Map<String, Object> getPosts(String keyword, Pageable pageable);
 
-    Post createPost(PostDTO dto);
+    Post createPost(PostsRequest request);
 
     Post updatePost(PostDTO dto);
 

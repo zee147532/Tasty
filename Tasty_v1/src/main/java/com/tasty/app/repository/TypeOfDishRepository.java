@@ -12,4 +12,7 @@ import org.springframework.stereotype.Repository;
 public interface TypeOfDishRepository extends JpaRepository<TypeOfDish, Long> {
     @Modifying
     void deleteAllByPost_IdAndType_Id(Long postId, Long typeId);
+
+    @Modifying
+    void deleteAllByPost_Id(Long postId);
 }

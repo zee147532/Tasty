@@ -6,8 +6,13 @@ import com.tasty.app.request.VerifyRequest;
 import com.tasty.app.response.HttpResponse;
 import com.tasty.app.response.InfoResponse;
 import com.tasty.app.response.RegistryResponse;
+import com.tasty.app.service.dto.CustomerDetail;
+
+import java.util.Map;
 
 public interface LoginService {
+    Map<String, String> customerLogin(CustomerDetail customerDetail);
+
     RegistryResponse registry(RegistryRequest request);
 
     InfoResponse fillInfo(InfoRequest request);

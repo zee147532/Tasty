@@ -11,12 +11,20 @@ import com.tasty.app.request.VerifyRequest;
 import com.tasty.app.response.HttpResponse;
 import com.tasty.app.response.InfoResponse;
 import com.tasty.app.response.RegistryResponse;
+import com.tasty.app.security.jwt.TokenProvider;
 import com.tasty.app.service.LoginService;
+import com.tasty.app.service.dto.CustomerDetail;
+import com.tasty.app.web.rest.errors.BadRequestAlertException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -26,15 +34,40 @@ public class LoginServiceImpl implements LoginService {
     private final RedisTemplate<String, String> redisTemplate;
     private static final Duration PERMISSION_CACHE_TTL = Duration.ofMinutes(5);
     private final ObjectMapper mapper;
+    private final TokenProvider tokenProvider;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     public LoginServiceImpl(ObjectMapper mapper,
                             CustomerRepository customerRepository,
                             ProfessionRepository professionRepository,
-                            RedisTemplate<String, String> redisTemplate) {
+                            RedisTemplate<String, String> redisTemplate, TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder) {
         this.customerRepository = customerRepository;
         this.professionRepository = professionRepository;
         this.redisTemplate = redisTemplate;
         this.mapper = mapper;
+        this.tokenProvider = tokenProvider;
+        this.authenticationManagerBuilder = authenticationManagerBuilder;
+    }
+
+    public Map<String, String> customerLogin(CustomerDetail customerDetail) {
+        Customer customer = customerRepository.findByUsername(customerDetail.getUsername());
+        if (Objects.isNull(customer)) {
+            throw new BadRequestAlertException("Tên đăng nhập hoặc mật khẩu không chính xác.", "customer", "customernotfound");
+        }
+        if (!customerDetail.getPassword().equals(customer.getPassword())) {
+            throw new BadRequestAlertException("Tên đăng nhập hoặc mật khẩu không chính xác.", "customer", "customernotfound");
+        }
+
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+            customerDetail.getUsername(),
+            customerDetail.getPassword()
+        );
+        String token = tokenProvider.createToken(authenticationToken, true);
+
+        Map<String, String> result = new HashMap<>();
+        result.put("jwtToken", token);
+        result.put("username", customer.getUsername());
+        return result;
     }
 
     @Override

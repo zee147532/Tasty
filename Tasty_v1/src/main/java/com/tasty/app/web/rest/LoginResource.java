@@ -7,11 +7,12 @@ import com.tasty.app.response.HttpResponse;
 import com.tasty.app.response.InfoResponse;
 import com.tasty.app.response.RegistryResponse;
 import com.tasty.app.service.LoginService;
+import com.tasty.app.service.dto.CustomerDetail;
+import com.tasty.app.web.rest.errors.BadRequestAlertException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -21,10 +22,13 @@ public class LoginResource {
     private LoginService loginService;
 
     @PostMapping("/login")
-    public ResponseEntity login() {
-        Map<String, String> response = new HashMap<>();
-        response.put("jwtToken", "123456789");
-        return ResponseEntity.ok(response);
+    public ResponseEntity login(@RequestBody CustomerDetail customerDetail) {
+        try {
+            Map<String, String> response = loginService.customerLogin(customerDetail);
+            return ResponseEntity.ok(response);
+        } catch (BadRequestAlertException e) {
+            return ResponseEntity.status(400).body(Map.of("errorMsg", e.getMessage()));
+        }
     }
 
     @PostMapping("/registry")
