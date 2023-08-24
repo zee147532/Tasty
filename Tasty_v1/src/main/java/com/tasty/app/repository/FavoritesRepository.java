@@ -1,6 +1,7 @@
 package com.tasty.app.repository;
 
 import com.tasty.app.domain.Favorites;
+import com.tasty.app.domain.Post;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -12,4 +13,7 @@ import org.springframework.stereotype.Repository;
 public interface FavoritesRepository extends JpaRepository<Favorites, Long> {
     @Modifying
     void deleteAllByCustomer_Username(String username);
+
+    @Modifying
+    void deleteAllByPost(Post post);
 }

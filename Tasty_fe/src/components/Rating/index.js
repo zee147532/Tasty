@@ -21,7 +21,6 @@ class Rating extends Component {
 
     componentDidMount() {
         const username = Cookies.get('username')
-        console.log('abc')
         if (username || true) {
             this.getRateByUsername()
             this.setState({logged: true})

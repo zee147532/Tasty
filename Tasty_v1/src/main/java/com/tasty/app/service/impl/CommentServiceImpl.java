@@ -163,9 +163,9 @@ public class CommentServiceImpl implements CommentService {
         if (Objects.isNull(post.getId())) {
             throw new BadRequestAlertException("Không thể thêm đánh giá", "posts", "postsnotfound");
         }
-        Comment comment = new Comment();
+        Comment comment = new Comment().createdTime(LocalDateTime.now());
         if (Objects.nonNull(request.getId())) {
-            comment = commentRepository.findById(request.getId()).orElse(new Comment());
+            comment = commentRepository.findById(request.getId()).orElse(new Comment().createdTime(LocalDateTime.now()));
         }
 
         Comment superComment = Objects.isNull(request.getSupperCommentId())
@@ -187,7 +187,7 @@ public class CommentServiceImpl implements CommentService {
             commentRepository.deleteAllBySupperComment_Id(id);
         }
         commentRepository.delete(comment);
-        return null;
+        return "Success.";
     }
 
     public String getTime(LocalDateTime time) {

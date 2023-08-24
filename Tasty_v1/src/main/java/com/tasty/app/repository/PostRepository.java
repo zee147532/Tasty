@@ -34,4 +34,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
         "WHERE p.id = :id " +
         "GROUP BY p.id")
     PostsDetail getDetail(@Param("id") Long id);
+
+    Long countAllByAuthor_Username(String username);
 }

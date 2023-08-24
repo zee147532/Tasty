@@ -47,6 +47,8 @@ public class Customer implements Serializable {
     @Column(name = "confirmed")
     private Boolean confirmed;
 
+    private String description;
+
     @OneToMany(mappedBy = "customer")
     @JsonIgnoreProperties(value = { "customer", "post" }, allowSetters = true)
     private Set<Favorites> favorites = new HashSet<>();
@@ -253,6 +255,19 @@ public class Customer implements Serializable {
 
     public Customer profession(Profession profession) {
         this.setProfession(profession);
+        return this;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Customer description(String description) {
+        this.setDescription(description);
         return this;
     }
 

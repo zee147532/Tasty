@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import com.tasty.app.service.dto.PostDTO;
+import com.tasty.app.web.rest.errors.BadRequestAlertException;
 import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,8 +46,11 @@ public class PostServiceImpl implements PostService {
     private final ImageRepository imageRepository;
     private final TypeOfDishRepository typeOfDishRepository;
     private final IngredientRepository ingredientRepository;
+    private final FavoritesRepository favoritesRepository;
+    private final CommentRepository commentRepository;
+    private final EvaluationRepository evaluationRepository;
 
-    public PostServiceImpl(PostRepository postRepository, StepToCookRepository stepToCookRepository, DishTypeRepository dishTypeRepository, IngredientOfDishRepository ingredientRepository, CustomerRepository customerRepository, ImageRepository imageRepository, TypeOfDishRepository typeOfDishRepository, IngredientRepository ingredientRepository1) {
+    public PostServiceImpl(PostRepository postRepository, StepToCookRepository stepToCookRepository, DishTypeRepository dishTypeRepository, IngredientOfDishRepository ingredientRepository, CustomerRepository customerRepository, ImageRepository imageRepository, TypeOfDishRepository typeOfDishRepository, IngredientRepository ingredientRepository1, FavoritesRepository favoritesRepository, CommentRepository commentRepository, EvaluationRepository evaluationRepository) {
         this.postRepository = postRepository;
         this.stepToCookRepository = stepToCookRepository;
         this.dishTypeRepository = dishTypeRepository;
@@ -55,6 +59,9 @@ public class PostServiceImpl implements PostService {
         this.imageRepository = imageRepository;
         this.typeOfDishRepository = typeOfDishRepository;
         this.ingredientRepository = ingredientRepository1;
+        this.favoritesRepository = favoritesRepository;
+        this.commentRepository = commentRepository;
+        this.evaluationRepository = evaluationRepository;
     }
 
     @Override
@@ -225,8 +232,17 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public String removePost(Long id) {
-        Post post = postRepository.getReferenceById(id);
+        Post post = postRepository.findById(id).orElse(new Post());
+        if (Objects.isNull(post.getId())) {
+            throw new BadRequestAlertException("Không tìm thấy bài viết.", "posts", "postsnotfound");
+        }
         stepToCookRepository.deleteAllByPost(post);
+        ingredientOfDishRepository.deleteAllByPost_Id(post.getId());
+        favoritesRepository.deleteAllByPost(post);
+        commentRepository.deleteAllByPost(post);
+        evaluationRepository.deleteAllByPost(post);
+        imageRepository.deleteAllByPost_IdAndType(post.getId(), DISH);
+        typeOfDishRepository.deleteAllByPost_Id(post.getId());
         postRepository.delete(post);
         return "Success.";
     }

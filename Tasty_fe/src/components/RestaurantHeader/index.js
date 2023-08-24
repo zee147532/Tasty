@@ -16,10 +16,15 @@ const RestaurantHeader = props => {
 
   const keyPressSearch = e => {
     const {search} = props
-    if (e.keyCode === 13 && e.shiftKey === false && e.target.value !== '') {
+    if (e.keyCode === 13 && e.shiftKey === false) {
       e.preventDefault()
       search()
     }
+  }
+
+  const clickSearch = (e) => {
+    const {search} = props
+    search()
   }
 
   const [isOpen, setIsOpen] = useState(false);
@@ -52,11 +57,14 @@ const RestaurantHeader = props => {
             ))}
           </select>
           <div className={`input-box ${isOpen ? "open" : ""}`}>
-            <i className="uil import-image" csr="https://img.icons8.com/fluency-systems-regular/48/image--v1.png"></i>
             <input type="text" placeholder="Search..." onChange={changeKeyword} onKeyDown={keyPressSearch} />
             <span className="search">
             <i className="uil uil-search search-icon" onClick={() => {
-              setIsOpen(true);
+              if (isOpen) {
+                clickSearch()
+              } else {
+                setIsOpen(true);
+              }
             }}></i>
           </span>
             <i className="uil uil-times close-icon" onClick={() => {

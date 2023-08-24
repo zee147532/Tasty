@@ -79,10 +79,12 @@ class AllRestaurantsList extends Component {
         restaurantList: updatedData,
         apiStatus: apiStatusConstants.success,
         totalPage: fetchedData.totalPage,
+        keyword: '',
       })
     } else {
       this.setState({
         apiStatus: apiStatusConstants.failure,
+        keyword: ','
       })
     }
   }
@@ -92,7 +94,7 @@ class AllRestaurantsList extends Component {
   }
 
   renderRestaurantListView = () => {
-    const {restaurantList, activeOptionId} = this.state
+    const {restaurantList, activeOptionId, keyword} = this.state
 
     return (
       <>

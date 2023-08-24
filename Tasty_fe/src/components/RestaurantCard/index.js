@@ -9,14 +9,14 @@ const RestaurantCard = props => {
   return (
     <li className="restaurant-item">
       <Link to={`/restaurant/${id}`} className="link-item">
-        <div class="image-div">
+        <div className="image-div">
           <img src={imageUrl} alt="restaurant" className="restaurant-image" />
         </div>
         <div>
           <h1 className="restaurant-name">{name}</h1>
           <p className="restaurant-cuisine">
             {cuisine.map(c => (
-              <h4 class="cuisine-tag">{c}</h4>
+              <h4 className="cuisine-tag">{c}</h4>
             ))}
           </p>
           <div className="rating-container">

@@ -1,6 +1,7 @@
 package com.tasty.app.repository;
 
 import com.tasty.app.domain.Comment;
+import com.tasty.app.domain.Post;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -18,6 +19,9 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @Modifying
     void deleteAllBySupperComment_Id(Long id);
+
+    @Modifying
+    void deleteAllByPost(Post post);
 
     List<Comment> findAllBySupperCommentIn(List<Comment> comments);
 }

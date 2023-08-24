@@ -166,6 +166,7 @@ body {
   color: #475569;
   font-family: 'Roboto';
   font-size: 16px;
+  margin: 0;
 }
 
 .sort-by-select {

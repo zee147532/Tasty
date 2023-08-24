@@ -2,6 +2,7 @@ package com.tasty.app.web.rest;
 
 import com.tasty.app.domain.Customer;
 import com.tasty.app.repository.CustomerRepository;
+import com.tasty.app.request.CustomerRequest;
 import com.tasty.app.service.CustomerService;
 import com.tasty.app.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -177,5 +178,15 @@ public class CustomerResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @PostMapping("/customer")
+    public ResponseEntity updateCustomer(@RequestBody CustomerRequest request) {
+        return customerService.updateCustomer(request);
+    }
+
+    @GetMapping("/customer/profile/{username}")
+    public ResponseEntity getCustomerProfile(@PathVariable("username") String username) {
+        return customerService.getCustomerProfile(username);
     }
 }

@@ -28,8 +28,28 @@ img {
     background: none;
     border: none;
     color: inherit;
-    padding: 0;
+    padding: 10px 0 10px 0;
     cursor: pointer;
+}
+
+.profile-user-settings .open .dropdown-menu {
+    display: grid;
+    min-width: 100px;
+    padding: 0;
+    margin: -10px 0 0 10px;
+}
+
+.profile-user-settings .open .dropdown-menu .dropdown-item {
+    width: fit-content;
+}
+
+
+.profile-user-settings .btn:focus {
+    outline: none;
+}
+
+.profile-user-settings .btn:active {
+    background-color: #fff;
 }
 
 .btn:focus {
@@ -78,6 +98,7 @@ img {
 
 .profile-user-settings {
     margin-top: 1.1rem;
+    display: flex;
 }
 
 .profile-user-name {
@@ -391,4 +412,13 @@ Remove or comment-out the code block below to see how the browser will fall-back
     border: 4px solid #428bca;
     border-radius: 0 0 8px 8px;
     padding : 5px 15px;
+}
+
+.gender-icon {
+    font-size: 24px;
+    margin-left: 5px;
+}
+
+.double-arrow {
+    font-size: 12px;
 }

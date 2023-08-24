@@ -1,6 +1,7 @@
 package com.tasty.app.repository;
 
 import com.tasty.app.domain.Evaluation;
+import com.tasty.app.domain.Post;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -24,4 +25,7 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long> {
         "AND e.customer.username = :username")
     Evaluation getRate(@Param("postsId") Long postsId,
                        @Param("username") String username);
+
+    @Modifying
+    void deleteAllByPost(Post post);
 }

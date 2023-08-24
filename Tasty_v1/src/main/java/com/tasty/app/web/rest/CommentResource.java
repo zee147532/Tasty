@@ -194,6 +194,12 @@ public class CommentResource {
         return ResponseEntity.ok(response);
     }
 
+    @DeleteMapping("/customer/comment/{id}")
+    public ResponseEntity deleteCustomerComment(@PathVariable("id") Long id) {
+        String response = commentService.deleteComment(id);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/test")
     public void test() {
         LocalDateTime fromDate = LocalDateTime.of(2023, 5, 27, 12, 20, 21);

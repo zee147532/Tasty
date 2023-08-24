@@ -22,6 +22,10 @@ public class Image {
     @JoinColumn(name = "ingredient")
     private Ingredient ingredient;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "customer")
+    private Customer customer;
+
     @Override
     public String toString() {
         return "Image{" +
@@ -30,6 +34,7 @@ public class Image {
             ", uri='" + uri + '\'' +
             ", post=" + post +
             ", ingredient=" + ingredient +
+            ", customer=" + customer +
             '}';
     }
 
@@ -73,14 +78,23 @@ public class Image {
         this.uri = uri;
     }
 
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
     public Image() {
     }
 
-    public Image(Long id, TypeOfImage type, String uri, Post post, Ingredient ingredient) {
+    public Image(Long id, TypeOfImage type, String uri, Post post, Ingredient ingredient, Customer customer) {
         this.id = id;
         this.type = type;
         this.uri = uri;
         this.post = post;
         this.ingredient = ingredient;
+        this.customer = customer;
     }
 }

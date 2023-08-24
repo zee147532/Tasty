@@ -212,4 +212,10 @@ public class PostResource {
         Post response = postService.createPost(request);
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/customer/posts/{id}")
+    public ResponseEntity deleteCustomerPosts(@PathVariable("id") Long id) {
+        String response = postService.removePost(id);
+        return ResponseEntity.ok(response);
+    }
 }

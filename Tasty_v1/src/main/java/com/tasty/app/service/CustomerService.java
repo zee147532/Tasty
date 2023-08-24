@@ -5,9 +5,12 @@ import com.tasty.app.domain.Customer;
 import java.util.List;
 import java.util.Optional;
 
+import com.tasty.app.request.CustomerRequest;
+import com.tasty.app.response.CustomerProfileResponse;
 import com.tasty.app.service.dto.CustomerDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 
 /**
  * Service Interface for managing {@link Customer}.
@@ -64,7 +67,9 @@ public interface CustomerService {
 
     String createCustomer(CustomerDTO dto);
 
-    String updateCustomer(CustomerDTO dto);
+    ResponseEntity updateCustomer(CustomerRequest request);
 
     String deleteCustomer(String username);
+
+    ResponseEntity getCustomerProfile(String username);
 }

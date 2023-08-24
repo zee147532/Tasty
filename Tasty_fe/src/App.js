@@ -25,7 +25,7 @@ const App = () => (
     <Route exact path="/info-page" component={InformationPage} />
     <Route exact path="/verification-code" component={VerificationCode} />
     <Route exact path="/registry/success" component={RegistrySuccess} />
-    <Route exact path="/profile" component={PersonalProfile} />
+    <Route exact path="/profile/:username" component={PersonalProfile} />
     <Route exact path="/" component={Home} />
     <Route exact path="/comment" component={Comment} />
     <Route exact path="/rating" component={Rating} />
