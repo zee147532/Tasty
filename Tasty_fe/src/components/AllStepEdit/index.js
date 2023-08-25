@@ -88,9 +88,9 @@ class AllStepEdit extends Component {
                                         </div>
                                     }
                                 </div>
+                                <div className={`edit-input ${edit.id === stepItem.id ? "" : "none"}`}>
                                 <input
                                     key={stepItem.id}
-                                    className={edit.id === stepItem.id ? "display" : "none" }
                                     value={edit.value}
                                     onChange={(e) => this.setState({edit: {
                                         id: edit.id,
@@ -98,6 +98,11 @@ class AllStepEdit extends Component {
                                     }})}
                                     onKeyDown={this.onKeyPressEdit}>
                                 </input>
+                                <span className="cancel-edit material-symbols-rounded" onClick={() => {
+                                    this.setState({edit: {id: NaN, value: ''}})
+                                }
+                                }>close</span>
+                                </div>
                             </div>
                         )
                     })}

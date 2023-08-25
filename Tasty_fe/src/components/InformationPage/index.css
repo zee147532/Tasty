@@ -94,8 +94,19 @@ h2 {
     font-weight: 400;
 }
 
+.gender-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.gender-container div input {
+    height: 14px;
+    width: auto;
+    margin: 2px 4px;
+}
+
 .gender-radio {
-    margin-left: 20px;
+    display: flex;
 }
 
 .wrapper .form_wrap .input_wrap{
@@ -243,8 +254,7 @@ h2 {
     font-size: 12px;
     margin-top: 3px;
     margin-bottom: 0px;
-    font-family: 'Roboto';
-    font-size: 12px;
+    font-family: 'Roboto', sans-serif;
     line-height: 16px;
     color: #ff0b37;
 }

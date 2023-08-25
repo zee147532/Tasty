@@ -57,7 +57,7 @@ class Rating extends Component {
         const {rate} = this.state
         return (
             <>
-                <p className="comment-title">Bình luận:</p>
+                <p className="comment-title">Đánh giá:</p>
                 <p className={`rating-title ${rate !== 0 ? 'disable' : ''}`}>Bạn chưa từng đánh giá món ăn này!</p>
                 <div className="rating-div">
                     <div className="rating-group">

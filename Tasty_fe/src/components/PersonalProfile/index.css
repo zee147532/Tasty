@@ -12,7 +12,7 @@
     background-color: #fafafa;
 }
 
-img {
+.profile-image img {
     display: block;
 }
 
@@ -39,21 +39,12 @@ img {
     margin: -10px 0 0 10px;
 }
 
-.profile-user-settings .open .dropdown-menu .dropdown-item {
-    width: fit-content;
-}
-
-
 .profile-user-settings .btn:focus {
     outline: none;
 }
 
 .profile-user-settings .btn:active {
     background-color: #fff;
-}
-
-.btn:focus {
-    outline: 0.5rem auto #4d90fe;
 }
 
 .visually-hidden {
@@ -421,4 +412,8 @@ Remove or comment-out the code block below to see how the browser will fall-back
 
 .double-arrow {
     font-size: 12px;
+}
+
+.edit-profile {
+    padding: 20px 40px;
 }

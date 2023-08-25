@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
 .all-restaurant-responsive-container {
   display: flex;
   flex-direction: column;
@@ -13,7 +15,7 @@
   }
 }
 .restaurant-list {
-  padding-left: 0px;
+  padding-left: 0;
   list-style-type: none;
   width: 90%;
 }
@@ -38,7 +40,7 @@
 
 @media screen and (min-width: 768px) {
   .restaurant-error-view-container {
-    margin-top: 0px;
+    margin-top: 0;
     margin-left: 30px;
     width: 80%;
     padding-bottom: 0;
@@ -58,7 +60,7 @@
 }
 
 .restaurant-failure-heading-text {
-  font-family: DM Sans;
+  font-family: 'Roboto', sans-serif;
   font-style: normal;
   font-weight: bold;
   font-size: 20px;
@@ -74,7 +76,7 @@
 
 @media screen and (min-width: 768px) {
   .restaurant-failure-heading-text {
-    font-family: DM Sans;
+    font-family: 'Roboto', sans-serif;
     font-style: normal;
     font-weight: bold;
     font-size: 32px;
@@ -90,7 +92,7 @@
 }
 
 .restaurant-failure-description {
-  font-family: DM Sans;
+  font-family: 'Roboto', sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
@@ -106,7 +108,7 @@
 
 @media screen and (min-width: 768px) {
   .restaurant-failure-description {
-    font-family: DM Sans;
+    font-family: 'Roboto', sans-serif;
     font-style: normal;
     font-weight: normal;
     font-size: 20px;
@@ -123,7 +125,7 @@
 .error-button {
   background-color: #f7931e;
   border-radius: 8px;
-  font-family: Inter;
+  font-family: 'Roboto', sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 12px;
@@ -138,7 +140,7 @@
   .error-button {
     background-color: #f7931e;
     border-radius: 12px;
-    font-family: DM Sans;
+    font-family: 'Roboto', sans-serif;
     font-style: normal;
     font-weight: 500;
     font-size: 14px;
@@ -171,7 +173,7 @@
 
 .arrow-button {
   border: none;
-  padding: 0px;
+  padding: 0;
   background-color: transparent;
   outline: none;
   cursor: pointer;
@@ -185,7 +187,7 @@
   color: #334155;
 }
 .current-page {
-  font-family: Bree Serif;
+  font-family: 'Roboto', sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
@@ -202,7 +204,7 @@
 }
 @media screen and (min-width: 768px) {
   .current-page {
-    font-family: Bree Serif;
+    font-family: 'Roboto', sans-serif;
     font-style: normal;
     font-weight: normal;
     font-size: 20px;

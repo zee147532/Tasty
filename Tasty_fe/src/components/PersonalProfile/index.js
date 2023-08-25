@@ -111,10 +111,10 @@ class PersonalProfile extends Component {
                                             aria-expanded="false">
                                         <i className="fas fa-cog" aria-hidden="true"></i>
                                     </button>
-                                    <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <a className="dropdown-item" href="#">Chỉnh sửa</a>
-                                        <a className="dropdown-item" href="#">Đổi mật khẩu</a>
-                                    </div>
+                                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <li><a className="dropdown-item" href="#" data-toggle="modal" data-target="#edit-profile">Chỉnh sửa</a></li>
+                                        <li><a className="dropdown-item" href="#" data-toggle="modal" data-target="#change-password">Đổi mật khẩu</a></li>
+                                    </ul>
                                 </div>
                             </div>
                             <div className="profile-stats">
@@ -151,6 +151,77 @@ class PersonalProfile extends Component {
                         </div>
                     </div>
                 </main>
+
+                {/*The edit profile modal*/}
+                <div className="modal fade" id="edit-profile" tabIndex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 className="modal-title" id="modalLabel">Modal Title</h4>
+                            </div>
+                            <div className="edit-profile">
+                                <div className="form-group">
+                                    <label htmlFor="username">Tên đăng nhập</label>
+                                    <input type="text" className="form-control" id="username" disabled value={customerProfile.username} name="username" />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="full_name">Họ tên <span className="require-label">*</span></label>
+                                    <input type="text" className="form-control" id="full_name" name="full_name" />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="email">Email</label>
+                                    <input type="text" className="form-control" id="email" name="email" disabled />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="phone_number">Số điện thoại</label>
+                                    <input type="number" className="form-control" id="phone_number" name="phone_number" />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="gender">Giới tính <span className="require-label">*</span></label>
+                                    <div className="gender-container">
+                                        <div className="gender-radio">
+                                            <input type="radio" name="gender" value="NU" onChange={this.onChangeGender}  /><label>Nữ</label>
+                                        </div>
+                                        <div className="gender-radio">
+                                            <input type="radio" name="gender" value="NAM" onChange={this.onChangeGender} /><label>Nam</label>
+                                        </div>
+                                        <div className="gender-radio">
+                                            <input type="radio" name="gender" value="AN" onChange={this.onChangeGender} /><label>Bí mật</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                                <button type="button" className="btn btn-success" data-dismiss="modal">Lưu</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/*The change password modal*/}
+                <div className="modal fade" id="change-password" tabIndex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 className="modal-title" id="modalLabel">Modal Title</h4>
+                            </div>
+                            <div className="modal-body">
+                                Modal content...
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                                <button type="button" className="btn btn-success" data-dismiss="modal">Lưu</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </>
         )
     }

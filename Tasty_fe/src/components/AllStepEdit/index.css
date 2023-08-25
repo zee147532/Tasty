@@ -13,7 +13,7 @@
     position: relative;
 }
 
-h1 {
+.todo-container h1 {
     margin-top: 0;
     line-height: 35px
 }
@@ -27,6 +27,7 @@ h1 {
     width: 100%;
     display: inline-flex;
 }
+
 .step-actions {
     width: 15%;
     display: inline-block;
@@ -62,7 +63,7 @@ h1 {
 
 .todo-icons:before {
     content: attr(data-hover);
-    font-family: 'roboto', sans-serif;
+    font-family: 'Roboto', sans-serif;
     font-size: 12px;
     visibility: hidden;
     opacity: 0;
@@ -97,7 +98,24 @@ h1 {
     width: 100%;
 }
 
-textarea, input {
+.edit-input input {
+    width: moz fit-content;
+}
+
+.edit-input {
+    width: 100%;
+    margin-right: 0;
+    display: flex;
+}
+
+
+
+.cancel-edit {
+    padding: 3px 0;
+    cursor: pointer;
+}
+
+.add-step-container input {
     width: 100%;
     margin: 0;
     resize: vertical;
@@ -129,16 +147,12 @@ textarea, input {
     cursor: pointer;
 }
 
-.display {
-    display: block;
-}
-
 .none {
     display: none
 }
 input {
     font-family: 'roboto', sans-serif;
-    padding-left: 7px;
+    padding: 0 7px;
 }
 
 .disable {

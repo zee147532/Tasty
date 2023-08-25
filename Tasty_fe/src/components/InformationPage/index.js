@@ -163,10 +163,16 @@ class InformationPage extends Component {
                                 </div>
                                 <div className="input_wrap">
                                     <label>Giới tính <span className="require-label">*</span></label>
-                                    <div>
-                                        <input type="radio" name="gender" className="gender-radio" value="NU" onChange={this.onChangeGender} />Nữ
-                                        <input type="radio" name="gender" className="gender-radio" value="NAM" onChange={this.onChangeGender} />Nam
-                                        <input type="radio" name="gender" className="gender-radio" value="AN" onChange={this.onChangeGender} />Bí mật
+                                    <div className="gender-container">
+                                        <div className="gender-radio">
+                                            <input type="radio" name="gender" value="NU" onChange={this.onChangeGender}  /><label>Nữ</label>
+                                        </div>
+                                        <div className="gender-radio">
+                                            <input type="radio" name="gender" value="NAM" onChange={this.onChangeGender} /><label>Nam</label>
+                                        </div>
+                                        <div className="gender-radio">
+                                            <input type="radio" name="gender" value="AN" onChange={this.onChangeGender} /><label>Bí mật</label>
+                                        </div>
                                     </div>
                                     {showSubmitError && <p className="error-message">{genderErr}</p>}
                                 </div>

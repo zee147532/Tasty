@@ -4,12 +4,10 @@ import Cookies from 'js-cookie'
 
 import {RiArrowDropLeftLine, RiArrowDropRightLine} from 'react-icons/ri'
 
-import ReactSlider from '../ReactSlider'
 import RestaurantHeader from '../RestaurantHeader'
 import RestaurantCard from '../RestaurantCard'
 
 import './index.css'
-import {keyword} from "chalk";
 
 const sortByOptions = [
   {

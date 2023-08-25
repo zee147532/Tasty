@@ -123,10 +123,6 @@ textarea, input {
     cursor: pointer;
 }
 
-.display {
-    display: block;
-}
-
 .none {
     display: none
 }
