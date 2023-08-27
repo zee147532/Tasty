@@ -45,7 +45,6 @@ class InformationPage extends Component {
         }
         const response = await fetch(url, options)
         const data = await response.json()
-        console.log(data)
         const professions = data.map(profession => ({
             id: profession.id,
             name: profession.name,

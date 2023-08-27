@@ -4,7 +4,8 @@ import com.tasty.app.domain.Customer;
 import com.tasty.app.domain.Image;
 import com.tasty.app.domain.Profession;
 import com.tasty.app.repository.*;
-import com.tasty.app.request.CustomerRequest;
+import com.tasty.app.request.ChangePasswordRequest;
+import com.tasty.app.service.dto.CustomerDetailDTO;
 import com.tasty.app.response.CustomerProfileResponse;
 import com.tasty.app.security.jwt.TokenProvider;
 import com.tasty.app.service.CustomerService;
@@ -151,23 +152,23 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public ResponseEntity updateCustomer(CustomerRequest request) {
+    public ResponseEntity updateCustomer(CustomerDetailDTO dto) {
         String token = servletRequest.getHeader(AUTHORIZATION).substring(7);
         if (!tokenProvider.validateToken(token)) {
             return ResponseEntity.status(401).body(Map.of("errorMsg","Phiên đăng nhập đã hết. Vui lòng đăng nhập lại."));
         }
         String username = tokenProvider.getAuthentication(token).getName();
-        if (!username.equals(request.getUsername())) {
+        if (!username.equals(dto.getUsername())) {
             return ResponseEntity.status(403).body(Map.of("errorMsg","Bạn không có quyền chỉnh sửa thông tin của người dùng này."));
         }
-        Profession profession = professionRepository.getReferenceById(request.getProfessionId());
-        Customer customer = customerRepository.findByUsername(request.getUsername());
-        customer.fullName(request.getFullName())
-            .phoneNumber(request.getPhoneNumber())
+        Profession profession = professionRepository.getReferenceById(dto.getProfessionId());
+        Customer customer = customerRepository.findByUsername(dto.getUsername());
+        customer.fullName(dto.getFullName())
+            .phoneNumber(dto.getPhoneNumber())
             .status(true)
-            .gender(request.getGender())
+            .gender(dto.getGender())
             .profession(profession)
-            .description(request.getDescription());
+            .description(dto.getDescription());
 
         customerRepository.save(customer);
         return ResponseEntity.ok("Success.");
@@ -202,5 +203,61 @@ public class CustomerServiceImpl implements CustomerService {
         );
 
         return ResponseEntity.ok(response);
+    }
+
+    @Override
+    public ResponseEntity getCustomerDetail(String username) {
+        String token = servletRequest.getHeader(AUTHORIZATION).substring(7);
+        if (!tokenProvider.validateToken(token)) {
+            return ResponseEntity.status(401).body(Map.of("errorMsg","Phiên đăng nhập đã hết. Vui lòng đăng nhập lại."));
+        }
+        String loggedUsername = tokenProvider.getAuthentication(token).getName();
+        if (!loggedUsername.equals(username)) {
+            return ResponseEntity.status(403).body(Map.of("errorMsg","Bạn không có quyền xem thông tin của người dùng này."));
+        }
+        Customer customer = customerRepository.findByUsername(username);
+        if (Objects.isNull(customer)) {
+            return ResponseEntity.status(400).body(Map.of("errorMsg", String.format("Không thể tìm thấy người dùng %s", username)));
+        }
+
+        Image image = imageRepository.findByTypeAndCustomer(CUSTOMER, customer);
+
+        CustomerDetailDTO response = new CustomerDetailDTO(
+            customer.getId(),
+            customer.getUsername(),
+            customer.getFullName(),
+            customer.getPhoneNumber(),
+            customer.getEmail(),
+            customer.getGender(),
+            customer.getProfession().getId(),
+            customer.getDescription(),
+            Objects.isNull(image) ? "" : image.getUri(),
+            null
+        );
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    public ResponseEntity changePassword(ChangePasswordRequest request) {
+        String token = servletRequest.getHeader(AUTHORIZATION).substring(7);
+        if (!tokenProvider.validateToken(token)) {
+            return ResponseEntity.status(401).body(Map.of("errorMsg","Phiên đăng nhập đã hết. Vui lòng đăng nhập lại."));
+        }
+        String loggedUsername = tokenProvider.getAuthentication(token).getName();
+        if (!loggedUsername.equals(request.getUsername())) {
+            return ResponseEntity.status(403).body(Map.of("errorMsg","Bạn không có quyền thay đổi mật khẩu của người dùng này."));
+        }
+        Customer customer = customerRepository.findByUsername(request.getUsername());
+        if (Objects.isNull(customer)) {
+            return ResponseEntity.status(400).body(Map.of("errorMsg", String.format("Không thể tìm thấy người dùng %s", request.getUsername())));
+        }
+
+        if (!customer.getPassword().equals(request.getOldPassword())) {
+            return ResponseEntity.status(400).body(Map.of("errorMsg", "Mật khẩu không chính xác."));
+        }
+
+        customer.setPassword(request.getNewPassword());
+        customerRepository.save(customer);
+        return ResponseEntity.ok("Success");
     }
 }

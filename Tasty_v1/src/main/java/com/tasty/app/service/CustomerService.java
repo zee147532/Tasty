@@ -5,8 +5,8 @@ import com.tasty.app.domain.Customer;
 import java.util.List;
 import java.util.Optional;
 
-import com.tasty.app.request.CustomerRequest;
-import com.tasty.app.response.CustomerProfileResponse;
+import com.tasty.app.request.ChangePasswordRequest;
+import com.tasty.app.service.dto.CustomerDetailDTO;
 import com.tasty.app.service.dto.CustomerDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -67,9 +67,12 @@ public interface CustomerService {
 
     String createCustomer(CustomerDTO dto);
 
-    ResponseEntity updateCustomer(CustomerRequest request);
+    ResponseEntity updateCustomer(CustomerDetailDTO dto);
 
     String deleteCustomer(String username);
 
     ResponseEntity getCustomerProfile(String username);
+    ResponseEntity getCustomerDetail(String username);
+
+    ResponseEntity changePassword(ChangePasswordRequest request);
 }

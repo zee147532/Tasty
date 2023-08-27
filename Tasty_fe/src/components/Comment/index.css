@@ -52,9 +52,9 @@
     width: 7%;
 }
 .comment-container section.comment-module ul li .comment .comment-img img {
-                            width: 50px;
-                            height: 50px;
-                        }
+    width: 50px;
+    height: 50px;
+}
 
 .comment-container section.comment-module ul li .comment .comment-content {
     width: 93%;

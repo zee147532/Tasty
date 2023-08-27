@@ -2,7 +2,8 @@ package com.tasty.app.web.rest;
 
 import com.tasty.app.domain.Customer;
 import com.tasty.app.repository.CustomerRepository;
-import com.tasty.app.request.CustomerRequest;
+import com.tasty.app.request.ChangePasswordRequest;
+import com.tasty.app.service.dto.CustomerDetailDTO;
 import com.tasty.app.service.CustomerService;
 import com.tasty.app.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -16,7 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -181,12 +181,22 @@ public class CustomerResource {
     }
 
     @PostMapping("/customer")
-    public ResponseEntity updateCustomer(@RequestBody CustomerRequest request) {
-        return customerService.updateCustomer(request);
+    public ResponseEntity updateCustomer(@ModelAttribute CustomerDetailDTO dto) {
+        return customerService.updateCustomer(dto);
     }
 
     @GetMapping("/customer/profile/{username}")
     public ResponseEntity getCustomerProfile(@PathVariable("username") String username) {
         return customerService.getCustomerProfile(username);
+    }
+
+    @GetMapping("/customer/profile/{username}/detail")
+    public ResponseEntity getCustomerProfileDetail(@PathVariable("username") String username) {
+        return customerService.getCustomerDetail(username);
+    }
+
+    @PostMapping("/customer/password")
+    public ResponseEntity changePassword(@RequestBody ChangePasswordRequest request) {
+        return customerService.changePassword(request);
     }
 }
