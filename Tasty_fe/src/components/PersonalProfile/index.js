@@ -159,11 +159,14 @@ class PersonalProfile extends Component {
     update = async () => {
         const {customerDetail, jwtToken} = this.state
         const apiUrl = 'http://localhost:8080/api/customer'
+        // const form = document.getElementById('form')
+        // const data = new FormData(form)
+        // data.append(customerDetail)
+        console.log(customerDetail)
         const options = {
             headers: {
                 Authorization: `Bearer ${jwtToken}`,
-                Accept: 'application/json',
-                'Content-type': 'application/json',
+                "Content-Type": "application/x-www-form-urlencoded",
             },
             body: JSON.stringify(customerDetail),
             method: 'POST',
@@ -180,7 +183,7 @@ class PersonalProfile extends Component {
         const {customerDetail, professionList, srcImage} = this.state
 
         return (
-            <div className="edit-profile">
+            <form className="edit-profile" id="form">
                 <div className="form-group">
                     <label htmlFor="username">Tên đăng nhập</label>
                     <input type="text" className="form-control" id="username" disabled value={customerDetail.username} name="username" />
@@ -189,7 +192,7 @@ class PersonalProfile extends Component {
                     <label htmlFor="full_name">Họ tên <span className="require-label">*</span></label>
                     <input
                         value={customerDetail.fullName} type="text" className="form-control"
-                        id="full_name" name="full_name" onChange={this.changeFullName} />
+                        id="full_name" name="fullName" onChange={this.changeFullName} />
                 </div>
                 <div className="form-group">
                     <label htmlFor="email">Email</label>
@@ -199,7 +202,7 @@ class PersonalProfile extends Component {
                     <label htmlFor="phone_number">Số điện thoại</label>
                     <input
                         value={customerDetail.phoneNumber} type="number" className="form-control"
-                        id="phone_number" name="phone_number" onChange={this.changePhoneNumber} />
+                        id="phone_number" name="phoneNumber" onChange={this.changePhoneNumber} />
                 </div>
                 <div className="form-group">
                     <label htmlFor="gender">Giới tính <span className="require-label">*</span></label>
@@ -217,7 +220,7 @@ class PersonalProfile extends Component {
                 </div>
                 <div className="form-group">
                     <label htmlFor="profession">Nghề nghiệp</label>
-                    <select className="form-control" value={customerDetail.professionId} onChange={this.changeProfession} >
+                    <select className="form-control" name="professionId" value={customerDetail.professionId} onChange={this.changeProfession} >
                         <option value="" disabled selected hidden>Select</option>
                         {professionList.map(profession => (
                             <option value={profession.id}>{profession.name}</option>
@@ -235,7 +238,7 @@ class PersonalProfile extends Component {
                             <span className="picture-image" dangerouslySetInnerHTML={{__html: '<p>Chọn ảnh</p>'}}></span>
                         )}
                     </label>
-                    <input type="file" name="picture-input" id="picture-input" onChange={this.importImage}/>
+                    <input type="file" name="imageFile" id="picture-input" onChange={this.importImage}/>
                 </div>
                 <div className="form-group">
                     <label htmlFor="description">Mô tả bản thân</label>
@@ -243,7 +246,7 @@ class PersonalProfile extends Component {
                         value={customerDetail.description} className="form-control" rows="4"
                         name="description" id="description" onChange={this.changeDescription} />
                 </div>
-            </div>
+            </form>
         )
     }
 
@@ -302,8 +305,8 @@ class PersonalProfile extends Component {
                     <div className="container">
                         <div className="profile">
                             <div className="profile-image">
-                                {/*<img src={`${(!customerProfile.imageUrl || customerProfile.imageUrl.length < 1) ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSheI9UkWllIpSNbs2UdE18KLLswgDON9qzXg&usqp=CAU' : customerProfile.imageUrl}`}  alt={''}/>*/}
-                                <Avatar alt={customerProfile.username.toUpperCase()} src={customerProfile.imageUrl} />
+                                <img src={`${(!customerProfile.imageUrl || customerProfile.imageUrl.length < 1) ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSheI9UkWllIpSNbs2UdE18KLLswgDON9qzXg&usqp=CAU' : customerProfile.imageUrl}`}  alt={''}/>
+                                {/*<Avatar alt={customerProfile.username.toUpperCase()} src={customerProfile.imageUrl} />*/}
                             </div>
                             <div className="profile-user-settings">
                                 <h1 className="profile-user-name">{customerProfile.username}
