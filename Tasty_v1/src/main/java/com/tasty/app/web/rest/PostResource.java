@@ -83,7 +83,7 @@ public class PostResource {
     /**
      * {@code PUT  /posts/:id} : Updates an existing post.
      *
-     * @param id the id of the post to save.
+     * @param id   the id of the post to save.
      * @param post the post to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated post,
      * or with status {@code 400 (Bad Request)} if the post is not valid,
@@ -115,7 +115,7 @@ public class PostResource {
     /**
      * {@code PATCH  /posts/:id} : Partial updates given fields of an existing post, field will ignore if it is null
      *
-     * @param id the id of the post to save.
+     * @param id   the id of the post to save.
      * @param post the post to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated post,
      * or with status {@code 400 (Bad Request)} if the post is not valid,
@@ -123,7 +123,7 @@ public class PostResource {
      * or with status {@code 500 (Internal Server Error)} if the post couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PatchMapping(value = "/posts/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PatchMapping(value = "/posts/{id}", consumes = {"application/json", "application/merge-patch+json"})
     public ResponseEntity<Post> partialUpdatePost(@PathVariable(value = "id", required = false) final Long id, @RequestBody Post post)
         throws URISyntaxException {
         log.debug("REST request to partial update Post partially : {}, {}", id, post);
@@ -191,10 +191,10 @@ public class PostResource {
 
     @GetMapping("/customer/posts")
     public ResponseEntity getAllPosts(@RequestParam(required = false, defaultValue = "") String keyword,
-                                                           @RequestParam(required = false, defaultValue = "1") Integer page,
-                                                           @RequestParam(required = false, defaultValue = "6") Integer pageSize,
-                                                           @RequestParam(required = false, defaultValue = "DESC") String sortType,
-                                      @RequestParam(required = false,defaultValue = "true") Boolean paging) {
+                                      @RequestParam(required = false, defaultValue = "1") Integer page,
+                                      @RequestParam(required = false, defaultValue = "6") Integer pageSize,
+                                      @RequestParam(required = false, defaultValue = "DESC") String sortType,
+                                      @RequestParam(required = false, defaultValue = "true") Boolean paging) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortType), "id");
         Pageable pageable = PageRequest.of(paging ? page - 1 : 0, paging ? pageSize : Integer.MAX_VALUE, sort);
         Map<String, Object> responses = postService.getPosts(keyword, pageable);
@@ -216,6 +216,12 @@ public class PostResource {
     @DeleteMapping("/customer/posts/{id}")
     public ResponseEntity deleteCustomerPosts(@PathVariable("id") Long id) {
         String response = postService.removePost(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/customer/{username}/posts")
+    public ResponseEntity getPostsByUsername(@PathVariable("username") String username) {
+        Map<String, Object> response = postService.getPostsByUsername(username);
         return ResponseEntity.ok(response);
     }
 }

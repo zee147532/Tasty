@@ -36,4 +36,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     PostsDetail getDetail(@Param("id") Long id);
 
     Long countAllByAuthor_Username(String username);
+
+    List<Post> findAllByAuthor_Username(String username);
 }

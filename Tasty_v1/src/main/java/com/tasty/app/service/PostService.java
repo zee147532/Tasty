@@ -66,6 +66,7 @@ public interface PostService {
     void delete(Long id);
 
     Map<String, Object> getPosts(String keyword, Pageable pageable);
+    Map<String, Object> getPostsByUsername(String username);
 
     Post createPost(PostsRequest request);
 

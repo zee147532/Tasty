@@ -142,6 +142,23 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public Map<String, Object> getPostsByUsername(String username) {
+        List<Post> postList = postRepository.findAllByAuthor_Username(username);
+        List<PostsResponse> data = postList.stream().map(p -> new PostsResponse(
+            p.getId(),
+            p.getContent(),
+            List.of("abc", "123"),
+            "https://icon-library.com/images/meat-icon-png/meat-icon-png-11.jpg",
+            4.23,
+            2500000l
+        )).collect(Collectors.toList());
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", data);
+        result.put("totalPage", 1);
+        return result;
+    }
+
+    @Override
     public Post createPost(PostsRequest request) {
         Post post = new Post();
         // TODO: Lấy username từ token

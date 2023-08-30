@@ -156,19 +156,28 @@ class PersonalProfile extends Component {
         this.setState({customerDetail})
     }
 
-    update = async () => {
+    update = async (e) => {
+        e.preventDefault();
         const {customerDetail, jwtToken} = this.state
         const apiUrl = 'http://localhost:8080/api/customer'
-        // const form = document.getElementById('form')
-        // const data = new FormData(form)
-        // data.append(customerDetail)
-        console.log(customerDetail)
+        const data = new FormData(document.getElementById('form'))
+        // data.append('id', customerDetail.id)
+        // data.append('username', customerDetail.username)
+        // data.append('fullName', customerDetail.fullName)
+        // data.append('phoneNumber', customerDetail.phoneNumber)
+        // data.append('email', customerDetail.email)
+        // data.append('gender', customerDetail.gender)
+        // data.append('professionId', customerDetail.professionId)
+        // data.append('description', customerDetail.description)
+        // data.append('imageUrl', customerDetail.imageUrl)
+        // data.append('imageFile', customerDetail.imageFile)
+        console.log(data.get('username'), customerDetail)
         const options = {
             headers: {
                 Authorization: `Bearer ${jwtToken}`,
-                "Content-Type": "application/x-www-form-urlencoded",
+                "Content-Type": "multipart/form-data",
             },
-            body: JSON.stringify(customerDetail),
+            body: data,
             method: 'POST',
         }
         const response = await fetch(apiUrl, options)
@@ -183,7 +192,7 @@ class PersonalProfile extends Component {
         const {customerDetail, professionList, srcImage} = this.state
 
         return (
-            <form className="edit-profile" id="form">
+            <div className="edit-profile">
                 <div className="form-group">
                     <label htmlFor="username">Tên đăng nhập</label>
                     <input type="text" className="form-control" id="username" disabled value={customerDetail.username} name="username" />
@@ -246,7 +255,7 @@ class PersonalProfile extends Component {
                         value={customerDetail.description} className="form-control" rows="4"
                         name="description" id="description" onChange={this.changeDescription} />
                 </div>
-            </form>
+            </div>
         )
     }
 
@@ -299,6 +308,7 @@ class PersonalProfile extends Component {
 
     renderProfileView = () => {
         const {customerProfile}  = this.state
+        console.log(customerProfile.username)
         return (
             <>
                 <header className="profile-header">
@@ -357,7 +367,7 @@ class PersonalProfile extends Component {
 
                         <div className="tab-content clearfix">
                             <div className="tab-pane active" id="1b">
-                                <AllRestaurantsList paging={false} url={"http://localhost:8080/api/customer/posts"}/>
+                                <AllRestaurantsList paging={false} url={"http://localhost:8080/api/customer/" + customerProfile.username + "/posts"}/>
                             </div>
                             <div className="tab-pane" id="2b">
                                 <AllRestaurantsList paging={false} url={"http://localhost:8080/api/customer/posts"}/>
@@ -369,7 +379,7 @@ class PersonalProfile extends Component {
                 {/*The edit profile modal*/}
                 <div className="modal fade" id="edit-profile" tabIndex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
                     <div className="modal-dialog" role="document">
-                        <div className="modal-content">
+                        <form onSubmit={this.update} id="form" className="modal-content">
                             <div className="modal-header">
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
@@ -379,9 +389,9 @@ class PersonalProfile extends Component {
                             {this.renderDetailContainer()}
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                                <button onClick={this.update} type="button" className="btn btn-success" data-dismiss="modal">Lưu</button>
+                                <button type="submit" form="form" className="btn btn-success" data-dismiss="modal">Lưu</button>
                             </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
 
