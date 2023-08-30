@@ -18,11 +18,12 @@
   }
 }
 .cuisine-tag {
-  margin-right: 5px;
+  margin-right: 10px;
   background: #e8f0ff;
-  padding: 0 5px;
+  /*padding: 0 2px;*/
   border-radius: 4px;
   color: #000000;
+  font-size: 14px;
 }
 .image-div {
   width: 160px;
@@ -32,8 +33,9 @@
   text-align: center;
 }
 .restaurant-image {
-  height: 100%;
-  width: fit-content;
+  height: 100px;
+  width: 160px;
+  object-fit: cover;
   border-radius: 8px;
 }
 

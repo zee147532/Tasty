@@ -88,7 +88,7 @@ public class StepToCookServiceImpl implements StepToCookService {
 
     @Override
     public List<StepToCook> findByPost(Long postId) {
-        return stepToCookRepository.findAllByPost_Id(postId);
+        return stepToCookRepository.findAllByPost_IdOrderByIndexAsc(postId);
     }
 
     @Override

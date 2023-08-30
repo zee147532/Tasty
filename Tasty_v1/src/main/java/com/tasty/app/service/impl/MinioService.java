@@ -50,7 +50,7 @@ public class MinioService {
     public String getObject(String filename) {
 //        InputStream stream;
         try {
-            return  minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
+            return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
                 .bucket(bucketName)
                 .object(filename)
                 .method(Method.GET)
@@ -74,7 +74,7 @@ public class MinioService {
         } catch (Exception e) {
             log.error("Happened error when upload file: ", e);
         }
-        return fileName;
+        return getObject(fileName);
     }
 
     private String getPreSignedUrl(String filename) {

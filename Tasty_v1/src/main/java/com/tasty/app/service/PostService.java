@@ -6,13 +6,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.tasty.app.request.PostsImageRequest;
 import com.tasty.app.request.PostsRequest;
 import com.tasty.app.response.HttpResponse;
 import com.tasty.app.response.PostsDetailResponse;
 import com.tasty.app.response.PostsResponse;
+import com.tasty.app.service.dto.FileDTO;
 import com.tasty.app.service.dto.PostDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 
 /**
  * Service Interface for managing {@link Post}.
@@ -75,4 +78,6 @@ public interface PostService {
     String removePost(Long id);
 
     PostsDetailResponse getDetail(Long id);
+
+    ResponseEntity updateImage(FileDTO dto);
 }

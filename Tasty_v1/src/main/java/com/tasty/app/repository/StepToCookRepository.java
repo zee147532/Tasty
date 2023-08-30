@@ -16,5 +16,5 @@ public interface StepToCookRepository extends JpaRepository<StepToCook, Long> {
     @Modifying
     void deleteAllByPost(Post post);
 
-    List<StepToCook> findAllByPost_Id(Long postId);
+    List<StepToCook> findAllByPost_IdOrderByIndexAsc(Long postId);
 }

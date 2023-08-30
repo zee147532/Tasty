@@ -2,9 +2,11 @@ package com.tasty.app.web.rest;
 
 import com.tasty.app.domain.Post;
 import com.tasty.app.repository.PostRepository;
+import com.tasty.app.request.PostsImageRequest;
 import com.tasty.app.request.PostsRequest;
 import com.tasty.app.response.PostsDetailResponse;
 import com.tasty.app.service.PostService;
+import com.tasty.app.service.dto.FileDTO;
 import com.tasty.app.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -223,5 +225,10 @@ public class PostResource {
     public ResponseEntity getPostsByUsername(@PathVariable("username") String username) {
         Map<String, Object> response = postService.getPostsByUsername(username);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/customer/posts/{postsId}/image")
+    public ResponseEntity updatePostsImage(@ModelAttribute FileDTO dto) {
+        return postService.updateImage(dto);
     }
 }

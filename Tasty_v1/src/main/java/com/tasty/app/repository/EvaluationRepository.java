@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Spring Data JPA repository for the Evaluation entity.
@@ -28,4 +29,11 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long> {
 
     @Modifying
     void deleteAllByPost(Post post);
+
+    @Query("SELECT COUNT(e) AS totalReview, " +
+        "SUM(e.point) AS totalPoint " +
+        "FROM Evaluation e " +
+        "JOIN e.post p " +
+        "WHERE p.id = :id")
+    Map<String, Object> getRate(@Param("id") Long postsId);
 }

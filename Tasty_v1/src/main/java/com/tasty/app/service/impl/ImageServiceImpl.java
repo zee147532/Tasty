@@ -7,7 +7,9 @@ import com.tasty.app.repository.PostRepository;
 import com.tasty.app.service.ImageService;
 import com.tasty.app.service.dto.ImageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ImageServiceImpl implements ImageService {
     @Autowired
     private PostRepository postRepository;

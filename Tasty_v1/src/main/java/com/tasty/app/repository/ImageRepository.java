@@ -2,6 +2,7 @@ package com.tasty.app.repository;
 
 import com.tasty.app.domain.Customer;
 import com.tasty.app.domain.Image;
+import com.tasty.app.domain.Post;
 import com.tasty.app.domain.enumeration.TypeOfImage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -12,4 +13,6 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
     void deleteAllByPost_IdAndType(Long postsId, TypeOfImage type);
 
     Image findByTypeAndCustomer(TypeOfImage type, Customer customer);
+
+    Image findByTypeAndPost(TypeOfImage type, Post post);
 }
