@@ -459,3 +459,51 @@ Remove or comment-out the code block below to see how the browser will fall-back
 .picture-img {
     max-width: 100%;
 }
+
+.change-password-container {
+    width: 400px;
+}
+
+.inputBox input{
+    position: relative;
+    width: 100%;
+    background: #fff;
+    border: none;
+    outline: none;
+    padding: 10px;
+    color: #fff;
+}
+
+.inputBox{
+    position: relative;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    height: 34px;
+}
+
+.show {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0 10px;
+    width: fit-content;
+    height: 100%;
+    background: #fff;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.show::before{
+    content: 'visibility';
+    font-size: 0.6em;
+    color: #333;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
+.show.hide::before{
+    content: 'visibility-off';
+}

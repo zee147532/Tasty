@@ -397,7 +397,7 @@ class PersonalProfile extends Component {
 
                 {/*The change password modal*/}
                 <div className="modal fade" id="change-password" tabIndex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-                    <div className="modal-dialog" role="document">
+                    <div className="modal-dialog change-password-container" role="document">
                         <div className="modal-content">
                             <div className="modal-header">
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
@@ -406,10 +406,27 @@ class PersonalProfile extends Component {
                                 <h4 className="modal-title" id="modalLabel">Modal Title</h4>
                             </div>
                             <div className="modal-body">
-                                Modal content...
+                                <div className="edit-profile">
+                                    <div className="form-group">
+                                        <label htmlFor="old-password" aria-required={true}>Mật khẩu cũ</label>
+                                        <input type="password" className="form-control" id="old-password" name="old-password" />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="new-password">Mật khẩu mới</label>
+                                        <input type="password" className="form-control" id="new-password" name="new-password" />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="confirm-password">Xác nhận mật khẩu</label>
+                                        <div className="inputBox">
+                                            <input type="password" placeholder="password" id="myPassword"/>
+                                            <span className="material-symbols-rounded show"></span>
+                                            {/*<span className="material-symbols-rounded">visibility-off</span>*/}
+                                        </div>
+                                        {/*https://codepen.io/saad-muhammad01/pen/OJrJxVm*/}
+                                    </div>
+                                </div>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Hủy</button>
                                 <button type="button" className="btn btn-success" data-dismiss="modal">Lưu</button>
                             </div>
                         </div>
