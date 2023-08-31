@@ -37,7 +37,7 @@ public class MinioService {
 //                        .filename(item.get().objectName())
 //                        .size(item.get().size())
 //                        .url(getPreSignedUrl(item.get().objectName()))
-                    );
+                );
             }
             return objects;
         } catch (Exception e) {
@@ -48,8 +48,8 @@ public class MinioService {
     }
 
     public String getObject(String filename) {
-//        InputStream stream;
         try {
+            minioClient.ignoreCertCheck();
             return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
                 .bucket(bucketName)
                 .object(filename)
@@ -65,6 +65,7 @@ public class MinioService {
         String uuidName = UUID.randomUUID().toString();
         String fileName = uuidName + "." + FilenameUtils.getExtension(request.getFile().getOriginalFilename());
         try {
+            minioClient.ignoreCertCheck();
             minioClient.putObject(PutObjectArgs.builder()
                 .bucket(bucketName)
                 .object(fileName)
