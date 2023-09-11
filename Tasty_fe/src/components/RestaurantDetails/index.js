@@ -28,6 +28,7 @@ class RestaurantDetails extends Component {
     stepInsert: '',
     index: 0,
     editable: true,
+    postsId: ''
   }
 
   componentDidMount() {
@@ -106,6 +107,8 @@ class RestaurantDetails extends Component {
     const {params} = match
     const {id} = params
 
+    this.setState({postsId: id})
+
     if (id == 'new') {
       this.setState({
         apiStatus: apiStatusConstants.success,
@@ -142,7 +145,7 @@ class RestaurantDetails extends Component {
   }
 
   renderRestaurantDetailsView = () => {
-    const {restaurantData, allSteps, allIngredients, editable} = this.state
+    const {postsId, restaurantData, allSteps, allIngredients, editable} = this.state
 
     return (
       <>
@@ -200,10 +203,12 @@ class RestaurantDetails extends Component {
                                 clearAll={this.clearAllIngredients}
                                 editalble={editable} />
           </div>
-          <div className="block-body">
-            <Comment />
-            <Rating />
-          </div>
+          {(postsId !== 'new') && (
+              <div className="block-body">
+                <Comment/>
+                <Rating/>
+              </div>
+          )}
         </div>
         <Footer />
       </>

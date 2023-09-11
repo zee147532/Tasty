@@ -91,6 +91,47 @@ class AllRestaurantsList extends Component {
     this.setState({activeOptionId}, this.getRestaurants)
   }
 
+  changeImage = async (file) => {
+    this.setState({
+      apiStatus: apiStatusConstants.inProgress,
+    })
+    // var myHeader = new Headers();
+    // myHeader.append("Content-Type", "multipart/form-data")
+    var data = new FormData()
+    data.append('file', file)
+    const apiUrl = 'http://localhost:8080/api/customer/posts/search'
+    const options = {
+      // headers: myHeader,
+      body: data,
+      method: 'POST',
+    }
+    await fetch(apiUrl, options)
+        .then(response => {
+          const fetchedData = response.json()
+          fetchedData.then(restaurants => {
+            const updatedData = restaurants.map(restaurant => ({
+                name: restaurant.name,
+                cuisine: restaurant.cuisine,
+                id: restaurant.id,
+                imageUrl: restaurant.imageUrl,
+                rating: restaurant.rating,
+                totalReviews: restaurant.totalReviews,
+              }
+            ))
+            this.setState({
+              restaurantList: updatedData,
+              apiStatus: apiStatusConstants.success,
+              totalPage: 1,
+            })
+          })
+        })
+        .catch(() => {
+          this.setState({
+            apiStatus: apiStatusConstants.failure,
+          })
+        })
+  }
+
   renderRestaurantListView = () => {
     const {restaurantList, activeOptionId, keyword} = this.state
 
@@ -102,6 +143,8 @@ class AllRestaurantsList extends Component {
           changeSortBy={this.changeSortBy}
           search={this.getRestaurants}
           onChangeKeyword={this.changeKeyword}
+          changeImage={this.changeImage}
+
         />
         <hr className="hr-line" />
         <ul className="restaurant-list">

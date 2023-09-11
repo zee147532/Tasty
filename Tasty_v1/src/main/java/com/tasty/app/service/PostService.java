@@ -79,5 +79,9 @@ public interface PostService {
 
     PostsDetailResponse getDetail(Long id);
 
-    ResponseEntity updateImage(FileDTO dto);
+    void updateImage(FileDTO dto, Long postsId);
+
+    ResponseEntity findByImage(FileDTO dto);
+
+    ResponseEntity findByImageCalorie(FileDTO dto);
 }

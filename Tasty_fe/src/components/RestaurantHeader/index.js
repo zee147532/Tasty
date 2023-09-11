@@ -1,9 +1,14 @@
-import {BsFilterRight} from 'react-icons/bs'
+import {BsFilterRight, BsImage} from 'react-icons/bs'
 
 import './index.css'
 import {useState} from "react";
 
 const RestaurantHeader = props => {
+  const onChangeImage = e => {
+    const {changeImage} = props
+    changeImage(e.target.files[0])
+  }
+
   const onChangeSortBy = event => {
     const {changeSortBy} = props
     changeSortBy(event.target.value)
@@ -56,6 +61,14 @@ const RestaurantHeader = props => {
               </option>
             ))}
           </select>
+          {isOpen && (
+            <div className="input-box">
+              <input type="file" id="search-image" className="search-image" onChange={onChangeImage} />
+              <label htmlFor="search-image" tabIndex="0">
+                <span className="material-symbols-rounded search search-icon">image</span>
+              </label>
+            </div>
+          )}
           <div className={`input-box ${isOpen ? "open" : ""}`}>
             <input type="text" placeholder="Search..." onChange={changeKeyword} onKeyDown={keyPressSearch} />
             <span className="search">

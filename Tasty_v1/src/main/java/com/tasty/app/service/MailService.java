@@ -5,6 +5,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+
+import com.tasty.app.exception.BadRequestException;
+import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -90,6 +93,18 @@ public class MailService {
         String content = templateEngine.process(templateName, context);
         String subject = messageSource.getMessage(titleKey, null, locale);
         sendEmail(user.getEmail(), subject, content, false, true);
+    }
+
+    @Async
+    public void sendVerificationEmail(String to, String code) {
+        if (Strings.isBlank(to)) {
+            throw new BadRequestException("Địa chỉ email không hợp lệ. Vui lòng thử lại.");
+        }
+        Context context = new Context(Locale.ENGLISH);
+        context.setVariable("code", code);
+        String content = templateEngine.process("mail/verificationEmail.html", context);
+        String subject = "Xác thực tài khoản Tasty Kitchens";
+        sendEmail(to, subject, content, false, true);
     }
 
     @Async

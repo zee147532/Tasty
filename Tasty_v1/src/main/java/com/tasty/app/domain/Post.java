@@ -37,6 +37,9 @@ public class Post implements Serializable {
     @Column(name = "created_date")
     private LocalDate createdDate;
 
+    @Column(name = "other_name")
+    private String otherName;
+
     @OneToMany(mappedBy = "post")
     @JsonIgnoreProperties(value = { "customer", "post" }, allowSetters = true)
     private Set<Favorites> favorites = new HashSet<>();
@@ -143,6 +146,19 @@ public class Post implements Serializable {
 
     public void setCreatedDate(LocalDate createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public String getOtherName() {
+        return otherName;
+    }
+
+    public void setOtherName(String otherName) {
+        this.otherName = otherName;
+    }
+
+    public Post otherName(String otherName) {
+        this.setOtherName(otherName);
+        return this;
     }
 
     public Set<Favorites> getFavorites() {
@@ -359,7 +375,6 @@ public class Post implements Serializable {
 
     @Override
     public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
         return getClass().hashCode();
     }
 
@@ -367,12 +382,20 @@ public class Post implements Serializable {
     @Override
     public String toString() {
         return "Post{" +
-            "id=" + getId() +
-            ", title='" + getTitle() + "'" +
-            ", content='" + getContent() + "'" +
-            ", description='" + getDescription() + "'" +
-            ", status='" + getStatus() + "'" +
-            ", createdDate='" + getCreatedDate() + "'" +
-            "}";
+            "id=" + id +
+            ", title='" + title + '\'' +
+            ", content='" + content + '\'' +
+            ", description='" + description + '\'' +
+            ", status=" + status +
+            ", createdDate=" + createdDate +
+            ", otherName='" + otherName + '\'' +
+            ", favorites=" + favorites +
+            ", stepToCooks=" + stepToCooks +
+            ", comments=" + comments +
+            ", evaluations=" + evaluations +
+            ", ingredientOfDishes=" + ingredientOfDishes +
+            ", typeOfDishes=" + typeOfDishes +
+            ", author=" + author +
+            '}';
     }
 }

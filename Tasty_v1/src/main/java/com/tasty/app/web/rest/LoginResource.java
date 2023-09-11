@@ -58,4 +58,10 @@ public class LoginResource {
         InfoResponse response = loginService.fillInfo(request);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
+
+    @PostMapping("/test/email")
+    public ResponseEntity sendMail() {
+        loginService.sendCode("zeezxt@gmail.com");
+        return ResponseEntity.ok("Success.");
+    }
 }

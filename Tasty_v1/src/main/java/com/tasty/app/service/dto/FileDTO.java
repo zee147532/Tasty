@@ -1,6 +1,7 @@
 package com.tasty.app.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +14,7 @@ public class FileDTO implements Serializable {
 
     private static final long serialVersionUID = 232836038145089522L;
     @SuppressWarnings("java:S1948")
+    @JsonProperty("file")
     private MultipartFile file;
 
     public MultipartFile getFile() {

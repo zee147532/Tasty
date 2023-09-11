@@ -384,7 +384,7 @@ class PersonalProfile extends Component {
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
-                                <h4 className="modal-title" id="modalLabel">Modal Title</h4>
+                                <h4 className="modal-title" id="modalLabel">Cập nhật thông tin</h4>
                             </div>
                             {this.renderDetailContainer()}
                             <div className="modal-footer">
@@ -409,16 +409,24 @@ class PersonalProfile extends Component {
                                 <div className="edit-profile">
                                     <div className="form-group">
                                         <label htmlFor="old-password" aria-required={true}>Mật khẩu cũ</label>
-                                        <input type="password" className="form-control" id="old-password" name="old-password" />
+                                        <div className="inputBox">
+                                            <input type="password" placeholder="Old password" id="myPassword"/>
+                                            <span className="material-symbols-rounded show"></span>
+                                            {/*<span className="material-symbols-rounded">visibility-off</span>*/}
+                                        </div>
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="new-password">Mật khẩu mới</label>
-                                        <input type="password" className="form-control" id="new-password" name="new-password" />
+                                        <div className="inputBox">
+                                            <input type="password" placeholder="New password" id="myPassword"/>
+                                            <span className="material-symbols-rounded show"></span>
+                                            {/*<span className="material-symbols-rounded">visibility-off</span>*/}
+                                        </div>
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="confirm-password">Xác nhận mật khẩu</label>
                                         <div className="inputBox">
-                                            <input type="password" placeholder="password" id="myPassword"/>
+                                            <input type="password" placeholder="Confirm password" id="myPassword"/>
                                             <span className="material-symbols-rounded show"></span>
                                             {/*<span className="material-symbols-rounded">visibility-off</span>*/}
                                         </div>

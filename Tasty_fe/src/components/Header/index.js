@@ -28,10 +28,8 @@ class Header extends Component {
     }
 
     loadCustomer = () => {
-        console.log(1)
         const username = Cookies.get('username')
         this.setState({username})
-        console.log(2)
     }
 
     componentDidMount() {

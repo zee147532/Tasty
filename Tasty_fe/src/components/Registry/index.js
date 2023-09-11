@@ -5,7 +5,7 @@ import image from './logo.png'
 
 import '../Login/index.css'
 
-class Login extends Component {
+class Registry extends Component {
   state = {
     username: '',
     password: '',
@@ -204,4 +204,4 @@ class Login extends Component {
   }
 }
 
-export default Login
+export default Registry

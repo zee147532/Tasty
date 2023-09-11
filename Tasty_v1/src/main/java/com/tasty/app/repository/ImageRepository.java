@@ -12,6 +12,9 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
     @Modifying
     void deleteAllByPost_IdAndType(Long postsId, TypeOfImage type);
 
+    @Modifying
+    void deleteAllByCustomer_UsernameAndType(String username, TypeOfImage type);
+
     Image findByTypeAndCustomer(TypeOfImage type, Customer customer);
 
     Image findByTypeAndPost(TypeOfImage type, Post post);

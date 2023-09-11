@@ -1,25 +1,120 @@
-import {Redirect} from 'react-router-dom'
-import Cookies from 'js-cookie'
-import Header from '../Header'
-
-import AllRestaurantsList from '../AllRestaurantsList'
-import Cart from '../Cart'
 import Footer from '../Footer'
 
 import './index.css'
+import {Link} from "react-router-dom";
+import {Component} from "react";
+import Cookies from "js-cookie";
 
-const Home = () => {
-  // const jwtToken = Cookies.get('jwt_token')
-  // if (jwtToken === undefined) {
-  //   return <Redirect to="/login" />
-  // }
-  return (
-    <>
-      <Header />
-      <AllRestaurantsList paging={true} url={"http://localhost:8080/api/customer/posts"}/>
-      <Footer />
-    </>
-  )
+class Home extends Component {
+    state = {
+        username: '',
+    }
+
+    onClickAllPosts = () => {
+        const {history} = this.props
+        history.push('/posts')
+    }
+
+    onClickNewPosts = () => {
+        const {history} = this.props
+        history.push('/posts/new')
+    }
+
+    onClickLogout = () => {
+        var warning = "Bạn có chắc muốn đăng xuất."
+        if (confirm(warning)) {
+            Cookies.remove('jwt_token')
+            Cookies.remove('username')
+            this.loadCustomer()
+        }
+    }
+
+    onClickLogin = () => {
+        const {history} = this.props
+        Cookies.remove('jwt_token')
+        Cookies.remove('username')
+        history.push('/login')
+    }
+
+    loadCustomer = () => {
+        const username = Cookies.get('username')
+        this.setState({username})
+    }
+
+    componentDidMount() {
+        this.loadCustomer()
+    }
+
+    render() {
+        const {username} = this.state
+        return (
+            <>
+                <section id="one">
+                    <nav id="nav">
+                        <div className="nav-logo">
+                            <Link to="/" className="nav-link">
+                                <div className="header-logo-container">
+                                    <img
+                                        className="website-logo"
+                                        src="https://res.cloudinary.com/nsp/image/upload/v1635311275/tastyKitchens/websiteLogo_1x_fzy1tx.png"
+                                        alt="website logo"
+                                    />
+                                    <p className="logo-name">Tasty Kitchens</p>
+                                </div>
+                            </Link>
+                            <div className="hamburger">
+                                <a href="#"><i className="fas fa-bars "></i></a>
+                            </div>
+                        </div>
+                        <ul className="nav-links">
+                            <li><a>TRANG CHỦ</a></li>
+                            <li><a href={"/posts"}>BÀI VIẾT</a></li>
+                            <li><a>TẠO BÀI VIẾT</a></li>
+                            {(username && username.length > 0) ? (
+                                <>
+                                    <li>
+                                        <p className="username"><a className="nav-link"
+                                                                   href={`/profile/${username}`}>{username} (Customer)</a></p>
+                                    </li>
+                                    <li>
+                                        <button
+                                            type="button"
+                                            className="logout-desktop-btn"
+                                            onClick={this.onClickLogout}
+                                        >
+                                            <b>Logout </b>
+                                        </button>
+                                    </li>
+                                </>
+                            ) : (
+                                <li>
+                                    <button
+                                        type="button"
+                                        className="logout-desktop-btn"
+                                        onClick={this.onClickLogin}
+                                    >
+                                        <b>Login</b>
+                                    </button>
+                                </li>
+                            )}
+                        </ul>
+                    </nav>
+                    <div className="content">
+                        <div className="text-content">
+                            <h1 className="white">Cùng nhau tạo nên sự đa dạng</h1>
+                            <h1 className="white">cho <strong>mỗi bữa ăn!</strong></h1>
+                            <h4 className="blackish">We bring variety to <strong>your kitchen!</strong></h4>
+                            <div className="two-button">
+                                <button className="w-btn btn" onClick={this.onClickAllPosts}>Tất cả công thức</button>
+                                <button className="t-btn btn" onClick={this.onClickNewPosts}>Tạo mới</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <Footer/>
+            </>
+        )
+    }
 }
 
 export default Home

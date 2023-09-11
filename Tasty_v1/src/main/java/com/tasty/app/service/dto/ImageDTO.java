@@ -8,6 +8,7 @@ public class ImageDTO {
     private String uri;
     private Long postsId;
     private Long ingredientId;
+    private String username;
 
     public Long getId() {
         return id;
@@ -49,14 +50,23 @@ public class ImageDTO {
         this.ingredientId = ingredientId;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public ImageDTO() {
     }
 
-    public ImageDTO(Long id, TypeOfImage type, String uri, Long postsId, Long ingredientId) {
+    public ImageDTO(Long id, TypeOfImage type, String uri, Long postsId, Long ingredientId, String username) {
         this.id = id;
         this.type = type;
         this.uri = uri;
         this.postsId = postsId;
         this.ingredientId = ingredientId;
+        this.username = username;
     }
 }

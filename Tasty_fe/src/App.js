@@ -15,6 +15,7 @@ import RegistrySuccess from './components/RegistrySuccess'
 import PersonalProfile from './components/PersonalProfile'
 import Comment from './components/Comment'
 import Rating from './components/Rating'
+import Posts from './components/Posts'
 
 import './App.css'
 
@@ -27,11 +28,12 @@ const App = () => (
     <Route exact path="/registry/success" component={RegistrySuccess} />
     <Route exact path="/profile/:username" component={PersonalProfile} />
     <Route exact path="/" component={Home} />
+    <Route exact path="/posts" component={Posts} />
     <Route exact path="/comment" component={Comment} />
     <Route exact path="/rating" component={Rating} />
     <Route
       exact
-      path="/restaurant/:id"
+      path="/posts/:id"
       component={RestaurantDetails}
     />
     <ProtectedRoute exact path="/cart" component={Cart} />

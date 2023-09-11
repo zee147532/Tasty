@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Xác thực tài khoản Tasty Kitchens</title>
+</head>
+<body style="font: small/1.5 Arial, Helvetica, sans-serif;">
+<div style="display: flex;
+    align-items: center;">
+  <img
+    style="width: 35px;
+    height: 28px;
+    margin-right: 10px;"
+    src="https://res.cloudinary.com/nsp/image/upload/v1635311275/tastyKitchens/websiteLogo_1x_fzy1tx.png"
+    alt="website logo"
+  />
+  <p style="font-family: 'roboto', sans-serif;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 24px;
+    color: #f7931e;
+    margin: 0">Tasty Kitchens</p>
+</div>
+<p>
+  <span style="font-size: 15px;">Chào bạn<br></span>
+</p>
+<p>
+  <span style="font-size: 15px;">Bạn đang hoàn thành đăng ký tài khoản mới trên trang web Tasty.<br></span>
+</p>
+<p>
+  <span style="font-size: 15px;">Mã xác thực của bạn là&nbsp;</span>
+  <span>
+      <strong>
+        <span style="color: rgb(78,164,220); font-size: 15px" th:text="${code}"></span>
+        <span style="font-size: 15px;">.</span>
+      </strong>
+    </span>
+</p>
+<p>
+  <span style="font-size: 15px;">Mã xác thực sẽ có hiệu lực trong vòng 5 phút.<br></span>
+</p>
+<div>
+  <p>
+    <span style="font-size: 15px;">Tasty Kitchens</span>
+  </p>
+  <h5>
+    <span style="color:rgb(119,119,119);font-size:13px">Đây là thư từ hệ thống, vui lòng không trả lời thư.</span>
+  </h5>
+</div>
+</body>
+</html>

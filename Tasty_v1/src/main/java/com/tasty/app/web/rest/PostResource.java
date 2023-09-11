@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * REST controller for managing {@link com.tasty.app.domain.Post}.
@@ -228,7 +229,17 @@ public class PostResource {
     }
 
     @PostMapping("/customer/posts/{postsId}/image")
-    public ResponseEntity updatePostsImage(@ModelAttribute FileDTO dto) {
-        return postService.updateImage(dto);
+    public ResponseEntity updatePostsImage(@PathVariable("postsId") Long postsId,
+                                           @ModelAttribute FileDTO dto) {
+        CompletableFuture.runAsync(() -> {
+            postService.updateImage(dto, postsId);
+            log.info("Create image successful.");
+        });
+        return ResponseEntity.ok("Success.");
+    }
+
+    @PostMapping("/customer/posts/search")
+    public ResponseEntity searchByImage(@ModelAttribute FileDTO dto) {
+        return postService.findByImageCalorie(dto);
     }
 }

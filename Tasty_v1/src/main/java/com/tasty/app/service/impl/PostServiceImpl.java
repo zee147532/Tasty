@@ -1,32 +1,43 @@
 package com.tasty.app.service.impl;
 
+import com.tasty.app.config.RestTemplateResponseErrorHandler;
 import com.tasty.app.domain.*;
+import com.tasty.app.exception.BadRequestException;
 import com.tasty.app.repository.*;
 import com.tasty.app.repository.projection.PostsDetail;
 import com.tasty.app.request.PostsRequest;
 import com.tasty.app.response.*;
+import com.tasty.app.service.ImageService;
 import com.tasty.app.service.PostService;
+import com.tasty.app.service.dto.FileDTO;
+import com.tasty.app.service.dto.ImageDTO;
+import com.tasty.app.service.dto.PostDTO;
+import com.tasty.app.web.rest.errors.BadRequestAlertException;
+import org.apache.logging.log4j.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.*;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-import com.tasty.app.service.dto.FileDTO;
-import com.tasty.app.service.dto.PostDTO;
-import com.tasty.app.web.rest.errors.BadRequestAlertException;
-import org.apache.logging.log4j.util.Strings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
-
+import static com.tasty.app.constant.Constant.*;
 import static com.tasty.app.domain.enumeration.TypeOfImage.DISH;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 
 /**
  * Service Implementation for managing {@link Post}.
@@ -52,8 +63,10 @@ public class PostServiceImpl implements PostService {
     private final CommentRepository commentRepository;
     private final EvaluationRepository evaluationRepository;
     private final MinioService minioService;
+    private final ImageService imageService;
+    private final RestTemplateBuilder templateBuilder;
 
-    public PostServiceImpl(PostRepository postRepository, StepToCookRepository stepToCookRepository, DishTypeRepository dishTypeRepository, IngredientOfDishRepository ingredientRepository, CustomerRepository customerRepository, ImageRepository imageRepository, TypeOfDishRepository typeOfDishRepository, IngredientRepository ingredientRepository1, FavoritesRepository favoritesRepository, CommentRepository commentRepository, EvaluationRepository evaluationRepository, MinioService minioService) {
+    public PostServiceImpl(PostRepository postRepository, StepToCookRepository stepToCookRepository, DishTypeRepository dishTypeRepository, IngredientOfDishRepository ingredientRepository, CustomerRepository customerRepository, ImageRepository imageRepository, TypeOfDishRepository typeOfDishRepository, IngredientRepository ingredientRepository1, FavoritesRepository favoritesRepository, CommentRepository commentRepository, EvaluationRepository evaluationRepository, MinioService minioService, ImageService imageService, RestTemplateBuilder templateBuilder) {
         this.postRepository = postRepository;
         this.stepToCookRepository = stepToCookRepository;
         this.dishTypeRepository = dishTypeRepository;
@@ -66,6 +79,8 @@ public class PostServiceImpl implements PostService {
         this.commentRepository = commentRepository;
         this.evaluationRepository = evaluationRepository;
         this.minioService = minioService;
+        this.imageService = imageService;
+        this.templateBuilder = templateBuilder;
     }
 
     @Override
@@ -149,20 +164,22 @@ public class PostServiceImpl implements PostService {
     }
 
     public List<PostsResponse> getListPostsResponse(List<Post> postList) {
-        return postList.stream().map(p -> {
-            Map rating = evaluationRepository.getRate(p.getId());
-            long totalPoint = Objects.isNull(rating.get("totalPoint")) ? 0l : (long) rating.get("totalPoint");
-            long totalReview = (long) rating.get("totalReview");
-            Image image = imageRepository.findByTypeAndPost(DISH, p);
-            return new PostsResponse(
-                p.getId(),
-                p.getTitle(),
-                dishTypeRepository.getAllByPostId(p.getId()),
-                Objects.isNull(image) ? "https://icon-library.com/images/meat-icon-png/meat-icon-png-11.jpg" : image.getUri(),
-                totalPoint == 0l ? 0d : (double) totalPoint / totalReview,
-                totalReview
-            );
-        }).collect(Collectors.toList());
+        return postList.stream().map(this::convertToPostResponse).collect(Collectors.toList());
+    }
+
+    public PostsResponse convertToPostResponse(Post post) {
+        Map rating = evaluationRepository.getRate(post.getId());
+        long totalPoint = Objects.isNull(rating.get("totalPoint")) ? 0l : (long) rating.get("totalPoint");
+        long totalReview = (long) rating.get("totalReview");
+        Image image = imageRepository.findByTypeAndPost(DISH, post);
+        return new PostsResponse(
+            post.getId(),
+            post.getTitle(),
+            dishTypeRepository.getAllByPostId(post.getId()),
+            Objects.isNull(image) ? "https://icon-library.com/images/meat-icon-png/meat-icon-png-11.jpg" : image.getUri(),
+            totalPoint == 0l ? 0d : (double) totalPoint / totalReview,
+            totalReview
+        );
     }
 
     @Override
@@ -299,8 +316,74 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ResponseEntity updateImage(FileDTO dto) {
+    public void updateImage(FileDTO dto, Long postsId) {
         String imageUrl = minioService.uploadFile(dto);
-        return ResponseEntity.ok(imageUrl);
+        ImageDTO imageDTO = new ImageDTO();
+        imageDTO.setPostsId(postsId);
+        imageDTO.setType(DISH);
+        imageDTO.setUri(imageUrl);
+        imageService.createImage(imageDTO);
+    }
+
+    @Override
+    public ResponseEntity findByImage(FileDTO dto) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        headers.setAccept(List.of(MediaType.ALL, MediaType.APPLICATION_JSON));
+        MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+        map.add("filename", dto.getFile().getResource());
+        map.add("g-recaptcha-response", LOG_MEAL_RECAPTCHA);
+        HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(map, headers);
+        RestTemplate restTemplate = templateBuilder.errorHandler(new RestTemplateResponseErrorHandler()).build();
+        ResponseEntity<LogMealResponse> result = restTemplate.exchange(LOG_MEAL_API, POST, entity, LogMealResponse.class);
+        return ResponseEntity.ok(result.getBody());
+    }
+
+    @Override
+    public ResponseEntity findByImageCalorie(FileDTO dto) {
+        List<String> recognitionResult = calorieMamaRecognition(dto.getFile());
+        List<Post> allPosts = postRepository.findAll();
+//        List<PostsResponse> response = allPosts.stream().filter(post ->
+//            Arrays.stream(post.getOtherName().split(",")).anyMatch(on ->
+//                recognitionResult.stream().anyMatch(on::equalsIgnoreCase)
+//            )
+//        ).map(this::convertToPostResponse).collect(Collectors.toList());
+
+        Set<Post> filteredPosts = new HashSet<>();
+        recognitionResult.forEach(r ->
+            filteredPosts.addAll(
+                allPosts.stream().filter(posts ->
+                    Arrays.stream(posts.getOtherName().split(",")).anyMatch(r::equalsIgnoreCase)
+                ).collect(Collectors.toList())
+            )
+        );
+        List<PostsResponse> response = filteredPosts.stream().map(this::convertToPostResponse).collect(Collectors.toList());
+        return ResponseEntity.ok(response);
+    }
+
+    public List<String> calorieMamaRecognition(MultipartFile file) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", MediaType.MULTIPART_FORM_DATA_VALUE);
+        headers.add("accept", MediaType.ALL_VALUE);
+        headers.add("authority", "www.caloriemama.ai");
+        headers.add("origin", "https://www.caloriemama.ai");
+        headers.add("referer", "https://www.caloriemama.ai/api");
+        headers.add("cookie", "mp_c8ac40b34bef058fe76cd11db4cdec6e_mixpanel=%7B%22distinct_id%22%3A%20%22%24device%3A18a550bf8905ee-07cee7e10aacc2-26031f51-100200-18a550bf8915ee%22%2C%22%24device_id%22%3A%20%2218a550bf8905ee-07cee7e10aacc2-26031f51-100200-18a550bf8915ee%22%2C%22%24search_engine%22%3A%20%22google%22%2C%22%24initial_referrer%22%3A%20%22https%3A%2F%2Fwww.google.com%2F%22%2C%22%24initial_referring_domain%22%3A%20%22www.google.com%22%7D; _ga=GA1.2.1824110598.1693643963; _gid=GA1.2.1989766158.1693643963; _gat_gtm.js=1; _fbp=fb.1.1693643964236.371521729");
+        MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+        map.add("media", file.getResource());
+        HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(map, headers);
+        RestTemplate restTemplate = templateBuilder.errorHandler(new RestTemplateResponseErrorHandler()).build();
+        ResponseEntity<CalorieResponse> result = restTemplate.exchange(CALORIE_API, POST, entity, CalorieResponse.class);
+        CalorieResponse calorieResponse = result.getBody();
+        assert calorieResponse != null;
+        if (!calorieResponse.isFood()) {
+            throw new BadRequestException("Hình ảnh truyền vào không thể xác định là một món ăn.");
+        }
+        List<String> allGroup = new ArrayList<>();
+        calorieResponse.getResults().forEach(r -> {
+            allGroup.add(r.getGroup());
+            allGroup.addAll(r.getItems().stream().map(ResultItem::getName).collect(Collectors.toList()));
+        });
+        return allGroup.size() <= 60 ? allGroup : allGroup.subList(0, 60);
     }
 }

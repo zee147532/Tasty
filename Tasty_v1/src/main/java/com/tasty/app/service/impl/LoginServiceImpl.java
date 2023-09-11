@@ -13,13 +13,12 @@ import com.tasty.app.response.InfoResponse;
 import com.tasty.app.response.RegistryResponse;
 import com.tasty.app.security.jwt.TokenProvider;
 import com.tasty.app.service.LoginService;
+import com.tasty.app.service.MailService;
 import com.tasty.app.service.dto.CustomerDetail;
 import com.tasty.app.web.rest.errors.BadRequestAlertException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -35,18 +34,19 @@ public class LoginServiceImpl implements LoginService {
     private static final Duration PERMISSION_CACHE_TTL = Duration.ofMinutes(5);
     private final ObjectMapper mapper;
     private final TokenProvider tokenProvider;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final MailService mailService;
 
     public LoginServiceImpl(ObjectMapper mapper,
                             CustomerRepository customerRepository,
                             ProfessionRepository professionRepository,
-                            RedisTemplate<String, String> redisTemplate, TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder) {
+                            RedisTemplate<String, String> redisTemplate,
+                            TokenProvider tokenProvider, MailService mailService) {
         this.customerRepository = customerRepository;
         this.professionRepository = professionRepository;
         this.redisTemplate = redisTemplate;
         this.mapper = mapper;
         this.tokenProvider = tokenProvider;
-        this.authenticationManagerBuilder = authenticationManagerBuilder;
+        this.mailService = mailService;
     }
 
     public Map<String, String> customerLogin(CustomerDetail customerDetail) {
@@ -152,7 +152,8 @@ public class LoginServiceImpl implements LoginService {
         String generatedCode = RandomStringUtils.random(6, false, true);
         redisTemplate.opsForValue().set(email, generatedCode, PERMISSION_CACHE_TTL);
 
-        // TODO: Gửi mail xác nhận
+        // Gửi mail xác nhận
+        mailService.sendVerificationEmail(email, generatedCode);
 
         return "Success.";
     }

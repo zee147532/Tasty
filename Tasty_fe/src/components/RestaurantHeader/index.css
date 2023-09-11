@@ -9,11 +9,10 @@ body {
   width: 100%;
   max-width: 60px;
   height: 45px;
-  margin: 0 50px;
   background-color: #fff;
   border-radius: 6px;
   transition: all 0.5s ease-in-out;
-  margin: 5px;
+  margin: 5px 0 5px 5px;
 }
 .input-box.open {
   max-width: 350px;
@@ -51,7 +50,7 @@ body {
 .input-box.open .search {
   border-radius: 6px 0 0 6px;
 }
-.search .search-icon {
+.search-icon {
   font-size: 30px;
   color: #1c1c1c;
 }
@@ -164,7 +163,7 @@ body {
 
 .sort-by {
   color: #475569;
-  font-family: 'Roboto';
+  font-family: 'Roboto', sans-serif;
   font-size: 16px;
   margin: 0;
 }
@@ -185,6 +184,10 @@ body {
 
 .select-option {
   color: #7e858e;
-  font-family: 'Roboto';
+  font-family: 'Roboto', sans-serif;
   font-size: 14px;
+}
+
+.search-image {
+  display: none;
 }
