@@ -13,7 +13,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    List<Comment> findAllByIsSubCommentAndPost_Id(Boolean isSubComment, Long postsId);
+    List<Comment> findAllByIsSubCommentAndPost_IdOrderByCreatedTimeDesc(Boolean isSubComment, Long postsId);
 
     List<Comment> findAllBySupperComment_Id(Long id);
 
@@ -23,5 +23,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Modifying
     void deleteAllByPost(Post post);
 
-    List<Comment> findAllBySupperCommentIn(List<Comment> comments);
+    List<Comment> findAllBySupperCommentInOrderByCreatedTimeDesc(List<Comment> comments);
 }

@@ -5,6 +5,7 @@ import java.util.List;
 public class PostsDetailResponse {
     private Long id;
     private String title;
+    private String author;
     private List<String> tags;
     private String description;
     private String imageUrl;
@@ -27,6 +28,14 @@ public class PostsDetailResponse {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public List<String> getTags() {
@@ -88,9 +97,10 @@ public class PostsDetailResponse {
     public PostsDetailResponse() {
     }
 
-    public PostsDetailResponse(Long id, String title, List<String> tags, String description, String imageUrl, Double rating, Long totalReviews, List<StepResponse> steps, List<IngredientResponse> ingredients) {
+    public PostsDetailResponse(Long id, String title, String author, List<String> tags, String description, String imageUrl, Double rating, Long totalReviews, List<StepResponse> steps, List<IngredientResponse> ingredients) {
         this.id = id;
         this.title = title;
+        this.author = author;
         this.tags = tags;
         this.description = description;
         this.imageUrl = imageUrl;

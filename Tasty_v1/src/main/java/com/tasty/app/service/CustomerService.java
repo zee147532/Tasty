@@ -72,7 +72,10 @@ public interface CustomerService {
     String deleteCustomer(String username);
 
     ResponseEntity getCustomerProfile(String username);
+
     ResponseEntity getCustomerDetail(String username);
 
     ResponseEntity changePassword(ChangePasswordRequest request);
+
+    ResponseEntity getAvatar(String username);
 }

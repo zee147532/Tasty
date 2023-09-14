@@ -53,7 +53,6 @@ public class PostDTO {
     public static class Step {
         private Long id;
         private String content;
-        private Long index;
 
         public Long getId() {
             return id;
@@ -63,14 +62,12 @@ public class PostDTO {
             return content;
         }
 
-        public Long getIndex() {
-            return index;
+        public Step() {
         }
 
-        public Step(Long id, String content, Long index) {
+        public Step(Long id, String content) {
             this.id = id;
             this.content = content;
-            this.index = index;
         }
     }
 }

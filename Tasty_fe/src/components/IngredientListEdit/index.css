@@ -91,7 +91,7 @@ h1 {
     border-radius: 3px;
 }
 
-textarea, input {
+input {
     width: 100%;
     margin: 0;
     resize: vertical;

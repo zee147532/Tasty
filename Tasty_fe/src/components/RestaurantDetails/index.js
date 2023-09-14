@@ -27,8 +27,10 @@ class RestaurantDetails extends Component {
     allIngredients: [],
     stepInsert: '',
     index: 0,
-    editable: true,
-    postsId: ''
+    editable: false,
+    isAuthor: false,
+    postsId: '',
+    srcImage: '',
   }
 
   componentDidMount() {
@@ -102,16 +104,40 @@ class RestaurantDetails extends Component {
     tags: data.tags,
   })
 
+  importImage = (e) => {
+    const {restaurantData} = this.state
+    const file = e.target.files[0]
+    if (file) {
+      restaurantData.imageFile = file
+      const reader = new FileReader();
+      reader.onload = this.loadImage;
+      this.setState({
+        restaurantData,
+        srcImage: URL.createObjectURL(file)
+      })
+    } else {
+      restaurantData.imageFile = undefined
+      this.setState({restaurantData})
+    }
+  }
+
+  loadImage = (e) =>  {
+    this.setState({srcImage: e.target.result})
+    console.log(e.target.result)
+  }
+
   getRestaurantData = async () => {
     const {match} = this.props
     const {params} = match
     const {id} = params
+    const username = Cookies.get('username')
 
     this.setState({postsId: id})
 
     if (id == 'new') {
       this.setState({
         apiStatus: apiStatusConstants.success,
+        editable: true,
       })
       return
     }
@@ -136,6 +162,7 @@ class RestaurantDetails extends Component {
         allSteps: fetchedData.steps,
         apiStatus: apiStatusConstants.success,
         allIngredients: fetchedData.ingredients,
+        isAuthor: username === fetchedData.author,
       })
     } else {
       this.setState({
@@ -144,51 +171,161 @@ class RestaurantDetails extends Component {
     }
   }
 
+  setTitle = (e) => {
+    const {restaurantData} = this.state
+    restaurantData.title = e.target.value
+    console.log(restaurantData.title)
+    this.setState({restaurantData})
+  }
+
+  setDescription = (e) => {
+    const {restaurantData} = this.state
+    restaurantData.description = e.target.value
+    this.setState({restaurantData})
+  }
+
+  savePosts = async () => {
+    const jwtToken = Cookies.get('jwt_token')
+    const {restaurantData, allSteps, allIngredients, postsId} = this.state
+    const url = 'http://localhost:8080/api/customer/posts'
+    const data = {
+      'id': restaurantData.id !== undefined ? restaurantData.id : null,
+      'title': restaurantData.title,
+      'description': restaurantData.description !== undefined ? restaurantData.description : '',
+      'steps': allSteps,
+      'ingredient': allIngredients
+    }
+    const options = {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+        Accept: 'application/json',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(data),
+      method: 'POST',
+    }
+    const response = await fetch(url, options)
+    if (response.ok) {
+      const id = await response.json()
+      if (restaurantData.imageFile) {
+        await this.saveImage(id)
+      }
+      this.setState({editable: false})
+    } else {
+      const data = await response.json()
+      alert(data.errorMsg)
+    }
+  }
+
+  saveImage = async (id) => {
+    const jwtToken = Cookies.get('jwt_token')
+    const {restaurantData} = this.state
+    const url = `http://localhost:8080/api/customer/posts/${id}/image`
+    const data = new FormData();
+    data.append('file', restaurantData.imageFile)
+
+    const options = {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+      body: data,
+      method: 'POST',
+    }
+
+    const response = await fetch(url, options)
+  }
+
   renderRestaurantDetailsView = () => {
-    const {postsId, restaurantData, allSteps, allIngredients, editable} = this.state
+    const {postsId, restaurantData, allSteps, allIngredients, editable, srcImage, isAuthor} = this.state
 
     return (
       <>
         <div className="specific-restaurant-details-container">
           <div className="restaurant-banner-container">
             <div className="banner-responsive-container">
-              <img
-                src={restaurantData.imageUrl}
-                alt="restaurant"
-                className="specific-restaurant-image"
-              />
-              <div className="banner-details-container">
-                <h1 className="specific-restaurant-name">{restaurantData.title}</h1>
-                <div className="specific-restaurant-cuisine">
-                  {restaurantData.tags?.map(tag => {
-                    <p>{tag}</p>
-                  })}
-                </div>
-                <p className="specific-restaurant-location">{restaurantData.description}</p>
-                <div className="rating-cost-container">
-                  <div className="specific-restaurant-rating-container">
-                    <div className="rating-container">
-                      <AiFillStar className="restaurant-details-star" />
-                      <p className="specific-restaurant-rating">{restaurantData.rating}</p>
+              {postsId !== 'new' && !editable ? (
+                  <>
+                    <img
+                        src={restaurantData.imageUrl}
+                        alt="restaurant"
+                        className="specific-restaurant-image"/>
+
+                    <div className="banner-details-container">
+                      <h1 className="specific-restaurant-name">{restaurantData.title}</h1>
+                      <div className="specific-restaurant-cuisine">
+                        {restaurantData.tags?.map(tag => {
+                          <p>{tag}</p>
+                        })}
+                      </div>
+                      <p className="specific-restaurant-location">{restaurantData.description}</p>
+                      <div className="rating-cost-container">
+                        <hr className="line"/>
+                        <div className="specific-restaurant-rating-container">
+                          <div className="rating-container">
+                            <AiFillStar className="restaurant-details-star"/>
+                            <p className="specific-restaurant-rating">{restaurantData.rating}</p>
+                          </div>
+                          <p className="specific-restaurant-reviews">
+                            {restaurantData.totalReviews} Ratings
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    <p className="specific-restaurant-reviews">
-                      {restaurantData.totalReviews}+ Ratings
-                    </p>
-                  </div>
-                  <hr className="line" />
-                  <div className="cost-container">
-                    <p className="specific-restaurant-cost">{restaurantData.costForTwo}</p>
-                    <p className="specific-restaurant-cost-text">
-                      Cost for two
-                    </p>
-                  </div>
+                  </>
+              ) : (
+                  <>
+                    <label className="picture" htmlFor="picture-input" tabIndex="0">
+                      {restaurantData.imageFile ? (
+                          <span className="picture-image">
+                            <img src={srcImage} id="imported-image" className="picture-img" alt="preview image"/>
+                          </span>
+                      ) : (
+                          <span className="picture-image" dangerouslySetInnerHTML={{__html: '<p>Chọn ảnh</p>'}}></span>
+                      )}
+                    </label>
+                    <input type="file" name="imageFile" id="picture-input" onChange={this.importImage}/>
+                    <div className="banner-details-container edit">
+                      <input type={"text"}
+                             className="specific-restaurant-name name-input"
+                             value={restaurantData.title}
+                             onChange={this.setTitle}
+                             placeholder={"Tên món"}
+                      />
+                      <textarea rows={3}
+                                className={"specific-restaurant-location description-input"}
+                                value={restaurantData.description}
+                                onChange={this.setDescription}
+                                placeholder={"Mô tả..."}/>
+                    </div>
+                  </>
+              )}
+            </div>
+            {((isAuthor && editable) || (postsId === 'new')) && (
+                <div className="update-action">
+                  <button type="button" className="btn btn-success" onClick={this.savePosts}>Lưu</button>
+                  {postsId !== 'new' && (
+                      <button type="button" className="btn btn-default"
+                              onClick={() => this.setState({editable: false})}>Hủy</button>
+                  )}
                 </div>
-              </div>
-            </div>
-            <div className="update-action">
-              <button className="action-button">Chỉnh sửa <span className="material-symbols-rounded edit-icon">edit_square</span></button>
-              <button className="action-button">Lưu <span className="material-symbols-rounded edit-icon">upgrade</span></button>
-            </div>
+            )}
+            {isAuthor && !editable && (
+                <div className="action-option dropdown">
+                  <button className="btn btn-secondary dropdown-toggle option-button" type="button"
+                          id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                          aria-expanded="false">
+                    <span className="material-symbols-rounded option-icon">
+                      more_horiz
+                    </span>
+                  </button>
+                  <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li onClick={() => this.setState({editable: true})}>
+                      <a className="dropdown-item" href="#" data-toggle="modal">Chỉnh sửa</a>
+                    </li>
+                    <li><a className="dropdown-item" href="#" data-toggle="modal">Xóa</a></li>
+                  </ul>
+                </div>
+            )}
           </div>
           <div className="block-body">
             <AllStepEdit steps={allSteps}
@@ -205,8 +342,8 @@ class RestaurantDetails extends Component {
           </div>
           {(postsId !== 'new') && (
               <div className="block-body">
-                <Comment/>
-                <Rating/>
+                <Comment postsId={postsId}/>
+                <Rating postsId={postsId}/>
               </div>
           )}
         </div>

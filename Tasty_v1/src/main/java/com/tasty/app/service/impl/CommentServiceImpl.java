@@ -2,13 +2,17 @@ package com.tasty.app.service.impl;
 
 import com.tasty.app.domain.Comment;
 import com.tasty.app.domain.Customer;
+import com.tasty.app.domain.Image;
 import com.tasty.app.domain.Post;
+import com.tasty.app.exception.BadRequestException;
 import com.tasty.app.repository.CommentRepository;
 import com.tasty.app.repository.CustomerRepository;
+import com.tasty.app.repository.ImageRepository;
 import com.tasty.app.repository.PostRepository;
 import com.tasty.app.request.CommentRequest;
 import com.tasty.app.response.HttpResponse;
 import com.tasty.app.response.SubCommentResponse;
+import com.tasty.app.security.jwt.TokenProvider;
 import com.tasty.app.service.CommentService;
 
 import java.time.LocalDateTime;
@@ -17,14 +21,19 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.tasty.app.service.dto.CommentResponse;
-import com.tasty.app.service.dto.SubComment;
 import com.tasty.app.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletRequest;
+
+import static com.tasty.app.constant.Constant.AUTHORIZATION;
+import static com.tasty.app.domain.enumeration.TypeOfImage.CUSTOMER;
 
 /**
  * Service Implementation for managing {@link Comment}.
@@ -38,11 +47,17 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final CustomerRepository customerRepository;
+    private final ImageRepository imageRepository;
+    private final HttpServletRequest servletRequest;
+    private final TokenProvider tokenProvider;
 
-    public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository, CustomerRepository customerRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository, CustomerRepository customerRepository, ImageRepository imageRepository, HttpServletRequest servletRequest, TokenProvider tokenProvider) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
         this.customerRepository = customerRepository;
+        this.imageRepository = imageRepository;
+        this.servletRequest = servletRequest;
+        this.tokenProvider = tokenProvider;
     }
 
     @Override
@@ -98,24 +113,28 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Map<String, Object> getByPosts(Long postsId) {
-        List<Comment> commentList = commentRepository.findAllByIsSubCommentAndPost_Id(false, postsId);
-        List<Comment> subCommentList = commentRepository.findAllBySupperCommentIn(commentList);
+        List<Comment> commentList = commentRepository.findAllByIsSubCommentAndPost_IdOrderByCreatedTimeDesc(false, postsId);
+        List<Comment> subCommentList = commentRepository.findAllBySupperCommentInOrderByCreatedTimeDesc(commentList);
         List<CommentResponse> commentResponses = commentList.stream().map(c -> {
             String time = getTime(c.getCreatedTime());
+            Image image = imageRepository.findByTypeAndCustomer(CUSTOMER, c.getCustomer());
             return new CommentResponse(
                 c.getId(),
                 c.getCustomer().getUsername(),
-                "https://rvs-comment-module.vercel.app/Assets/User Avatar.png",
+                Objects.isNull(image) ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSheI9UkWllIpSNbs2UdE18KLLswgDON9qzXg&usqp=CAU"
+                    : image.getUri(),
                 c.getComment(),
                 time
             );
         }).collect(Collectors.toList());
         List<SubCommentResponse> subCommentResponses = subCommentList.stream().map(c -> {
             String time = getTime(c.getCreatedTime());
+            Image image = imageRepository.findByTypeAndCustomer(CUSTOMER, c.getCustomer());
             return new SubCommentResponse(
                 c.getId(),
                 c.getCustomer().getUsername(),
-                "https://rvs-comment-module.vercel.app/Assets/User Avatar-1.png",
+                Objects.isNull(image) ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSheI9UkWllIpSNbs2UdE18KLLswgDON9qzXg&usqp=CAU"
+                    : image.getUri(),
                 c.getComment(),
                 time,
                 c.getSupperComment().getId()
@@ -153,23 +172,26 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public HttpResponse updateComment(CommentRequest request) {
-        // TODO: Lấy username từ token
-        String username = "tiennd";
+        String token = servletRequest.getHeader(AUTHORIZATION).substring(7);
+        if (!tokenProvider.validateToken(token)) {
+            return new HttpResponse(401, "Phiên đăng nhập đã hết. Vui lòng đăng nhập lại.");
+        }
+        String username = tokenProvider.getAuthentication(token).getName();
         Customer customer = customerRepository.findByUsername(username);
         if (Objects.isNull(customer)) {
-            throw new BadRequestAlertException("Không thể thêm đánh giá", "customer", "customernotfound");
+            throw new BadRequestException("Không thể thêm đánh giá");
         }
         Post post = postRepository.getReferenceById(request.getPostsId());
         if (Objects.isNull(post.getId())) {
-            throw new BadRequestAlertException("Không thể thêm đánh giá", "posts", "postsnotfound");
+            throw new BadRequestException("Không thể thêm đánh giá");
         }
         Comment comment = new Comment().createdTime(LocalDateTime.now());
         if (Objects.nonNull(request.getId())) {
             comment = commentRepository.findById(request.getId()).orElse(new Comment().createdTime(LocalDateTime.now()));
         }
 
-        Comment superComment = Objects.isNull(request.getSupperCommentId())
-            ? null : commentRepository.getReferenceById(request.getSupperCommentId());
+        Comment superComment = request.getSubComment() && Objects.nonNull(request.getSupperCommentId())
+            ? commentRepository.getReferenceById(request.getSupperCommentId()) : null;
 
         comment.setComment(request.getComment());
         comment.setIsSubComment(request.getSubComment());

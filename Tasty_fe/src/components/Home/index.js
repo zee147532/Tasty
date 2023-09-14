@@ -49,7 +49,7 @@ class Home extends Component {
         const {username} = this.state
         return (
             <>
-                <section id="one">
+                <section id="home">
                     <nav id="nav">
                         <div className="nav-logo">
                             <Link to="/" className="nav-link">
@@ -67,9 +67,9 @@ class Home extends Component {
                             </div>
                         </div>
                         <ul className="nav-links">
-                            <li><a>TRANG CHỦ</a></li>
+                            <li><a href={"/"}>TRANG CHỦ</a></li>
                             <li><a href={"/posts"}>BÀI VIẾT</a></li>
-                            <li><a>TẠO BÀI VIẾT</a></li>
+                            <li><a href={"/posts/new"}>TẠO BÀI VIẾT</a></li>
                             {(username && username.length > 0) ? (
                                 <>
                                     <li>
@@ -103,7 +103,7 @@ class Home extends Component {
                         <div className="text-content">
                             <h1 className="white">Cùng nhau tạo nên sự đa dạng</h1>
                             <h1 className="white">cho <strong>mỗi bữa ăn!</strong></h1>
-                            <h4 className="blackish">We bring variety to <strong>your kitchen!</strong></h4>
+                            <h4 className="white">We bring variety to <strong>your kitchen!</strong></h4>
                             <div className="two-button">
                                 <button className="w-btn btn" onClick={this.onClickAllPosts}>Tất cả công thức</button>
                                 <button className="t-btn btn" onClick={this.onClickNewPosts}>Tạo mới</button>

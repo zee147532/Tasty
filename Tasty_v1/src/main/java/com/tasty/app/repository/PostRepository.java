@@ -24,6 +24,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("SELECT p.id AS id, " +
         "   p.title AS title, " +
+        "   p.author.username AS author, " +
         "   p.description AS description, " +
         "   i.uri AS imageUrl, " +
         "   SUM(e.point) / COUNT(e) AS rating, " +

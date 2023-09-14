@@ -19,14 +19,14 @@ class AllStepEdit extends Component {
 
     /* Add a new step to the list of steps on key press enter */
     onKeyPressAdd = (e) => {
-        console.log(e.target.value.length, e)
         if (e.keyCode === 13 && e.shiftKey === false && e.target.value !== '') {
             e.preventDefault()
             const id = Math.max(...this.props.steps.map(i => i.id))
             const item = {
-                "id": id + 1,
+                "id": id != -Infinity ? id + 1 : 1,
                 "content": e.target.value
             }
+            console.log(item)
             this.props.onAdd(item)
             this.setState({addValue: ''})
         }

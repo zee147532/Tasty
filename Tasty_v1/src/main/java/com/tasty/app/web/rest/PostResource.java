@@ -213,7 +213,7 @@ public class PostResource {
     @PostMapping("/customer/posts")
     public ResponseEntity updatePosts(@RequestBody PostsRequest request) {
         Post response = postService.createPost(request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(response.getId());
     }
 
     @DeleteMapping("/customer/posts/{id}")

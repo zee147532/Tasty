@@ -261,12 +261,14 @@ public class PostServiceImpl implements PostService {
 
         postRepository.save(post);
         stepToCookRepository.deleteAllByPost(post);
-
+        long index = 1;
         for (PostDTO.Step step : dto.getSteps()) {
             StepToCook stepToCook = new StepToCook().content(step.getContent())
-                .index(step.getIndex());
+                .index(index)
+                .post(post);
 
             stepToCookRepository.save(stepToCook);
+            index++;
         }
         return post;
     }
@@ -300,6 +302,7 @@ public class PostServiceImpl implements PostService {
         return new PostsDetailResponse(
             postsDetail.getId(),
             postsDetail.getTitle(),
+            postsDetail.getAuthor(),
             dishTypes.stream().map(DishType::getName).collect(Collectors.toList()),
             postsDetail.getDescription(),
             Strings.isBlank(postsDetail.getImageUrl()) ? "https://icon-library.com/images/meat-icon-png/meat-icon-png-11.jpg" : postsDetail.getImageUrl(),

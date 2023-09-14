@@ -176,7 +176,7 @@
 }
 
 .nav-menu-item-mobile {
-  font-family: 'Roboto';
+  font-family: 'Roboto', sans-serif;
   text-decoration: none;
   margin-right: 10px;
   font-weight: 500;

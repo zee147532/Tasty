@@ -12,4 +12,6 @@ public interface PostsDetail {
     String getDescription();
 
     String getImageUrl();
+
+    String getAuthor();
 }

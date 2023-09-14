@@ -199,4 +199,9 @@ public class CustomerResource {
     public ResponseEntity changePassword(@RequestBody ChangePasswordRequest request) {
         return customerService.changePassword(request);
     }
+
+    @GetMapping("/customer/{username}/avatar")
+    public ResponseEntity getAvatar(@PathVariable("username") String username) {
+        return customerService.getAvatar(username);
+    }
 }

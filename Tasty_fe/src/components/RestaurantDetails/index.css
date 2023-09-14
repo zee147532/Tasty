@@ -11,7 +11,6 @@
 @media screen and (min-width: 768px) {
   .restaurant-banner-container {
     padding: 32px;
-    justify-content: center;
     align-items: center;
     margin-bottom: 30px;
   }
@@ -33,32 +32,43 @@
     padding-top: 32px;
     padding-bottom: 32px;
   }
+  .specific-restaurant-image {
+    width: 221px;
+    height: 221px;
+    border-radius: 133px;
+    margin-right: 16px;
+    margin-left: -68px;
+  }
 }
-.specific-restaurant-image {
-  width: 221px;
-  height: 221px;
-  border-radius: 133px;
-  margin-right: 16px;
-  margin-left: -68px;
+.picture-img {
+  height: 200px;
+  width: 320px;
+  object-fit: cover;
+}
+.banner-responsive-container .picture {
+  margin-right: 20px;
+  border-radius: 8px;
+  height: 200px;
+  width: 300px;
 }
 @media screen and (min-width: 768px) {
   .specific-restaurant-image {
     width: auto;
     height: 280px;
-    margin-right: 30px;
+    margin: 0 30px;
     border-radius: 8px;
   }
 }
 .specific-restaurant-name {
-  font-family: Roboto;
+  font-family: 'Roboto', sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;
   /* identical to box height, or 150% */
 
-  letter-spacing: 0.2px;
-  margin: 0px;
+  letter-spacing: 1px;
+  margin: 0;
 
   color: #ffffff;
 }
@@ -70,27 +80,23 @@
   }
 }
 .specific-restaurant-cuisine {
-  font-family: Roboto;
+  font-family: 'Roboto', sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
   line-height: 16px;
-  margin: 0;
-  margin-top: 8px;
-  margin-bottom: 8px;
+  margin: 8px 0;
   color: #ffffff;
 }
 @media screen and (min-width: 768px) {
   .specific-restaurant-cuisine {
     font-size: 16px;
     line-height: 24px;
-    margin: 0;
-    margin-top: 12px;
-    margin-bottom: 8px;
+    margin: 12px 0 8px;
   }
 }
 .specific-restaurant-location {
-  font-family: Roboto;
+  font-family: 'Roboto', sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
@@ -113,27 +119,27 @@
 .rating-container {
   display: flex;
   align-items: center;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 .restaurant-details-star {
   font-size: 20px;
   color: #ffffff;
-  margin-top: 0px;
-  margin-bottom: 0px;
+  margin-top: 0;
+  margin-bottom: 0;
   margin-right: 4px;
 }
 
 .specific-restaurant-rating {
-  font-family: DM Sans;
+  font-family: 'roboto', sans-serif;
   font-style: normal;
   font-weight: bold;
   font-size: 12px;
   line-height: 16px;
   color: #ffffff;
-  margin: 0px;
+  margin: 0;
 }
 .specific-restaurant-reviews {
-  font-family: DM Sans;
+  font-family: 'roboto', sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
@@ -141,7 +147,7 @@
 
   color: #e2e8f0;
   margin-top: 4px;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 .line {
   border-left: 1px solid #e2e8f0;
@@ -158,17 +164,17 @@
   }
 }
 .specific-restaurant-cost {
-  font-family: DM Sans;
+  font-family: 'roboto', sans-serif;
   font-style: normal;
   font-weight: bold;
   font-size: 12px;
   line-height: 16px;
   color: #ffffff;
-  margin-bottom: 0px;
-  margin-top: 0px;
+  margin-bottom: 0;
+  margin-top: 0;
 }
 .specific-restaurant-cost-text {
-  font-family: DM Sans;
+  font-family: 'roboto', sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
@@ -176,12 +182,12 @@
 
   color: #e2e8f0;
   margin-top: 4px;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 .food-item-list-container {
   width: 90%;
   list-style-type: none;
-  padding-left: 0px;
+  padding-left: 0;
 }
 @media screen and (min-width: 768px) {
   .food-item-list-container {
@@ -204,7 +210,7 @@
 
 @media screen and (min-width: 768px) {
   .restaurant-error-view-container {
-    margin-top: 0px;
+    margin-top: 0;
     margin-left: 30px;
     width: 80%;
     padding-bottom: 0;
@@ -224,7 +230,7 @@
 }
 
 .restaurant-failure-heading-text {
-  font-family: DM Sans;
+  font-family: 'roboto', sans-serif;
   font-style: normal;
   font-weight: bold;
   font-size: 20px;
@@ -240,7 +246,7 @@
 
 @media screen and (min-width: 768px) {
   .restaurant-failure-heading-text {
-    font-family: DM Sans;
+    font-family: 'roboto', sans-serif;
     font-style: normal;
     font-weight: bold;
     font-size: 32px;
@@ -256,7 +262,7 @@
 }
 
 .restaurant-failure-description {
-  font-family: DM Sans;
+  font-family: 'roboto', sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
@@ -272,7 +278,7 @@
 
 @media screen and (min-width: 768px) {
   .restaurant-failure-description {
-    font-family: DM Sans;
+    font-family: 'roboto', sans-serif;
     font-style: normal;
     font-weight: normal;
     font-size: 20px;
@@ -289,7 +295,7 @@
 .error-button {
   background-color: #f7931e;
   border-radius: 8px;
-  font-family: Inter;
+  font-family: "Roboto", sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 12px;
@@ -297,14 +303,13 @@
   /* identical to box height, or 133% */
 
   /* Light / base / white */
-
   color: #ffffff;
 }
 @media screen and (min-width: 768px) {
   .error-button {
     background-color: #f7931e;
     border-radius: 12px;
-    font-family: DM Sans;
+    font-family: 'roboto', sans-serif;
     font-style: normal;
     font-weight: 500;
     font-size: 14px;
@@ -331,7 +336,35 @@
 }
 
 .update-action {
-  display: block;
+  display: grid;
+  padding: 0 0 20px 20px;
+  margin: 0 0 auto auto;
+}
+
+.action-option {
+  padding: 0 0 20px 20px;
+  margin: 0 0 auto auto;
+}
+
+.action-option .option-button {
+  background: initial;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+.action-option .option-button:active {
+  outline: none;
+}
+
+.option-icon {
+  color: white;
+  font-size: 32px;
+}
+
+.update-action .btn {
+  margin-bottom: 5px;
+  font-size: 16px;
+  padding: 7px 18px;
 }
 
 .action-button {
@@ -342,4 +375,46 @@
 
 .edit-icon {
   font-size: 18px;
+}
+
+.name-input {
+  border-radius: 4px;
+  height: 44px;
+  padding: 10px;
+  background: initial;
+  border: 1px solid #767676ff;
+}
+
+.description-input {
+  border-radius: 4px;
+  padding: 10px;
+  width: -webkit-fill-available;
+  margin-top: 5px;
+  background: initial;
+  border: 1px solid #767676ff;
+}
+
+.edit {
+  margin-bottom: auto;
+}
+
+
+.action-option .open .dropdown-menu {
+  display: grid;
+  min-width: 100px;
+  padding: 0;
+  margin: -10px 0 0 10px;
+  top: 50%;
+  right: 10%;
+}
+
+.action-option ul, ul li, ul li a {
+  width: fit-content;
+  min-width: auto;
+}
+
+.action-option ul {
+  top: 50%;
+  right: 10%;
+  left: auto;
 }

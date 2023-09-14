@@ -21,7 +21,7 @@ public interface DishTypeRepository extends JpaRepository<DishType, Long> {
 
     @Query("SELECT dt FROM DishType dt " +
         "WHERE dt.name in :types")
-    List<DishType> findByListName(List<String> types);
+    List<DishType> findByListName(@Param("types") List<String> types);
 
     @Query("SELECT dt.name FROM DishType dt " +
         "JOIN dt.typeOfDishes tod " +

@@ -10,10 +10,7 @@ import com.tasty.app.response.CustomerProfileResponse;
 import com.tasty.app.security.jwt.TokenProvider;
 import com.tasty.app.service.CustomerService;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import com.tasty.app.service.dto.CustomerDTO;
 import org.slf4j.Logger;
@@ -259,5 +256,16 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setPassword(request.getNewPassword());
         customerRepository.save(customer);
         return ResponseEntity.ok("Success");
+    }
+
+    public ResponseEntity getAvatar(String username) {
+        Image image = imageRepository.findByTypeAndCustomer_Username(CUSTOMER, username);
+        Map response = new HashMap<>();
+        try {
+            response.put("url", image.getUri());
+        } catch (NullPointerException e) {
+            response.put("url", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSheI9UkWllIpSNbs2UdE18KLLswgDON9qzXg&usqp=CAU");
+        }
+        return ResponseEntity.ok(response);
     }
 }
