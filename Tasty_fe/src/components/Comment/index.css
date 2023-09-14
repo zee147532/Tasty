@@ -239,6 +239,7 @@
 
 .reply-button {
     font-size: 16px;
+    cursor: pointer;
 }
 
 .comment-action {
@@ -249,4 +250,15 @@
     font-size: 24px;
     font-weight: bold;
     margin: 0;
+}
+
+.delete-button {
+    color: grey;
+    font-size: 22px;
+    display: none;
+    cursor: pointer;
+}
+
+.comment-content:hover .comment-details .delete-button {
+    display: inline-block;
 }
