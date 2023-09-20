@@ -4,8 +4,8 @@ import Cookies from 'js-cookie'
 
 import {RiArrowDropLeftLine, RiArrowDropRightLine} from 'react-icons/ri'
 
-import RestaurantHeader from '../RestaurantHeader'
-import RestaurantCard from '../RestaurantCard'
+import PostsHeader from '../PostsHeader'
+import PostsCard from '../PostsCard'
 
 import './index.css'
 
@@ -29,9 +29,9 @@ const apiStatusConstants = {
   inProgress: 'IN_PROGRESS',
 }
 
-class AllRestaurantsList extends Component {
+class AllPostsList extends Component {
   state = {
-    restaurantList: [],
+    postsList: [],
     activeOptionId: 'DESC',
     currentPage: 1,
     apiStatus: apiStatusConstants.initial,
@@ -40,14 +40,14 @@ class AllRestaurantsList extends Component {
   }
 
   componentDidMount() {
-    this.getRestaurants()
+    this.getPosts()
   }
 
   changeKeyword = keyword => {
     this.setState({keyword})
   }
 
-  getRestaurants = async () => {
+  getPosts = async () => {
     this.setState({
       apiStatus: apiStatusConstants.inProgress,
     })
@@ -74,16 +74,16 @@ class AllRestaurantsList extends Component {
     const response = await fetch(apiUrl, options)
     if (response.ok) {
       const fetchedData = await response.json()
-      const updatedData = fetchedData.data.map(restaurant => ({
-        name: restaurant.name,
-        cuisine: restaurant.cuisine,
-        id: restaurant.id,
-        imageUrl: restaurant.imageUrl,
-        rating: restaurant.rating,
-        totalReviews: restaurant.totalReviews,
+      const updatedData = fetchedData.data.map(posts => ({
+        name: posts.name,
+        cuisine: posts.cuisine,
+        id: posts.id,
+        imageUrl: posts.imageUrl,
+        rating: posts.rating,
+        totalReviews: posts.totalReviews,
       }))
       this.setState({
-        restaurantList: updatedData,
+        postsList: updatedData,
         apiStatus: apiStatusConstants.success,
         totalPage: fetchedData.totalPage,
         keyword: '',
@@ -97,7 +97,7 @@ class AllRestaurantsList extends Component {
   }
 
   changeSortBy = activeOptionId => {
-    this.setState({activeOptionId}, this.getRestaurants)
+    this.setState({activeOptionId}, this.getPosts)
   }
 
   changeImage = async (file) => {
@@ -115,18 +115,18 @@ class AllRestaurantsList extends Component {
     await fetch(apiUrl, options)
         .then(response => {
           const fetchedData = response.json()
-          fetchedData.then(restaurants => {
-            const updatedData = restaurants.map(restaurant => ({
-                name: restaurant.name,
-                cuisine: restaurant.cuisine,
-                id: restaurant.id,
-                imageUrl: restaurant.imageUrl,
-                rating: restaurant.rating,
-                totalReviews: restaurant.totalReviews,
+          fetchedData.then(posts => {
+            const updatedData = posts.map(post => ({
+                name: post.name,
+                cuisine: post.cuisine,
+                id: post.id,
+                imageUrl: post.imageUrl,
+                rating: post.rating,
+                totalReviews: post.totalReviews,
               }
             ))
             this.setState({
-              restaurantList: updatedData,
+              postsList: updatedData,
               apiStatus: apiStatusConstants.success,
               totalPage: 1,
             })
@@ -139,22 +139,22 @@ class AllRestaurantsList extends Component {
         })
   }
 
-  renderRestaurantListView = () => {
-    const {restaurantList, activeOptionId, keyword} = this.state
+  renderPostsListView = () => {
+    const {postsList, activeOptionId, keyword} = this.state
 
     return (
       <>
-        <RestaurantHeader
+        <PostsHeader
           activeOptionId={activeOptionId}
           sortByOptions={sortByOptions}
           changeSortBy={this.changeSortBy}
-          search={this.getRestaurants}
+          search={this.getPosts}
           onChangeKeyword={this.changeKeyword}
           changeImage={this.changeImage}
 
         />
         <hr className="hr-line"/>
-          {restaurantList.length === 0 ? (
+          {postsList.length === 0 ? (
               <div className="restaurant-error-view-container">
                   <p className="restaurant-failure-description">
                       Không thể tìm thấy bất kỳ bài viết nào!
@@ -162,8 +162,8 @@ class AllRestaurantsList extends Component {
               </div>
           ) : (
               <ul className="restaurant-list">
-                  {restaurantList.map(restaurant => (
-                      <RestaurantCard restaurant={restaurant} key={restaurant.id}/>
+                  {postsList.map(posts => (
+                      <PostsCard posts={posts} key={posts.id}/>
                   ))}
               </ul>
           )}
@@ -195,12 +195,12 @@ class AllRestaurantsList extends Component {
     </div>
   )
 
-  renderRestaurants = () => {
+  renderPosts = () => {
     const {apiStatus} = this.state
 
     switch (apiStatus) {
       case apiStatusConstants.success:
-        return this.renderRestaurantListView()
+        return this.renderPostsListView()
       case apiStatusConstants.failure:
         return this.renderFailureView()
       case apiStatusConstants.inProgress:
@@ -215,7 +215,7 @@ class AllRestaurantsList extends Component {
     if (currentPage > 1) {
       this.setState(
         prev => ({currentPage: prev.currentPage - 1}),
-        this.getRestaurants,
+        this.getPosts,
       )
     }
   }
@@ -225,7 +225,7 @@ class AllRestaurantsList extends Component {
     if (currentPage < totalPage) {
       this.setState(
         prev => ({currentPage: prev.currentPage + 1}),
-        this.getRestaurants,
+        this.getPosts,
       )
     }
   }
@@ -239,7 +239,7 @@ class AllRestaurantsList extends Component {
       <div>
         {/*<ReactSlider />*/}
         <div className="all-restaurant-responsive-container">
-          {this.renderRestaurants()}
+          {this.renderPosts()}
           <div className={`restaurant-navigation ${paging ? '' : 'disable'}`}>
             <button
               type="button"
@@ -263,4 +263,4 @@ class AllRestaurantsList extends Component {
   }
 }
 
-export default AllRestaurantsList
+export default AllPostsList

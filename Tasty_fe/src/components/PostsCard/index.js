@@ -2,9 +2,9 @@ import {Link} from 'react-router-dom'
 import {AiFillStar} from 'react-icons/ai'
 import './index.css'
 
-const RestaurantCard = props => {
-  const {restaurant} = props
-  const {imageUrl, name, cuisine, rating, totalReviews, id} = restaurant
+const PostsCard = props => {
+  const {posts} = props
+  const {imageUrl, name, cuisine, rating, totalReviews, id} = posts
 
   return (
     <li className="restaurant-item">
@@ -30,4 +30,4 @@ const RestaurantCard = props => {
   )
 }
 
-export default RestaurantCard
+export default PostsCard

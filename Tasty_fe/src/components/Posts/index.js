@@ -1,13 +1,13 @@
 import Header from '../Header'
 
-import AllRestaurantsList from '../AllRestaurantsList'
+import AllPostsList from '../AllPostsList'
 import Footer from '../Footer'
 
 const Posts = () => {
     return (
         <>
             <Header />
-            <AllRestaurantsList paging={true} url={"http://localhost:8080/api/customer/posts"}/>
+            <AllPostsList paging={true} url={"http://localhost:8080/api/customer/posts"}/>
             <Footer />
         </>
     )

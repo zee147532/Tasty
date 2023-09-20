@@ -3,7 +3,7 @@ import {BsFilterRight, BsImage} from 'react-icons/bs'
 import './index.css'
 import {useState} from "react";
 
-const RestaurantHeader = props => {
+const PostsHeader = props => {
   const onChangeImage = e => {
     const {changeImage} = props
     changeImage(e.target.files[0])
@@ -63,7 +63,7 @@ const RestaurantHeader = props => {
           </select>
           {isOpen && (
             <div className="input-box">
-              <input type="file" id="search-image" className="search-image" onChange={onChangeImage} />
+              <input type="file" accept="image/jpeg" id="search-image" className="search-image" onChange={onChangeImage} />
               <label htmlFor="search-image" tabIndex="0">
                 <span className="material-symbols-rounded search search-icon">image</span>
               </label>
@@ -89,4 +89,4 @@ const RestaurantHeader = props => {
   )
 }
 
-export default RestaurantHeader
+export default PostsHeader

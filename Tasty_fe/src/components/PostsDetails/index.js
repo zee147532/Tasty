@@ -19,9 +19,9 @@ const apiStatusConstants = {
   inProgress: 'IN_PROGRESS',
 }
 
-class RestaurantDetails extends Component {
+class PostsDetails extends Component {
   state = {
-    restaurantData: {},
+    postsData: {},
     apiStatus: apiStatusConstants.initial,
     allSteps: [],
     allIngredients: [],
@@ -36,7 +36,7 @@ class RestaurantDetails extends Component {
   }
 
   componentDidMount() {
-    this.getRestaurantData()
+    this.getPostsData()
   }
 
   deleteIngredient = id => {
@@ -107,19 +107,19 @@ class RestaurantDetails extends Component {
   })
 
   importImage = (e) => {
-    const {restaurantData} = this.state
+    const {postsData} = this.state
     const file = e.target.files[0]
     if (file) {
-      restaurantData.imageFile = file
+      postsData.imageFile = file
       const reader = new FileReader();
       reader.onload = this.loadImage;
       this.setState({
-        restaurantData,
+        postsData: postsData,
         srcImage: URL.createObjectURL(file)
       })
     } else {
-      restaurantData.imageFile = undefined
-      this.setState({restaurantData})
+      postsData.imageFile = undefined
+      this.setState({postsData: postsData})
     }
   }
 
@@ -128,7 +128,7 @@ class RestaurantDetails extends Component {
     console.log(e.target.result)
   }
 
-  getRestaurantData = async () => {
+  getPostsData = async () => {
     const {match} = this.props
     const {params} = match
     const {id} = params
@@ -160,7 +160,7 @@ class RestaurantDetails extends Component {
       const fetchedData = await response.json()
       const updatedData = this.getFormattedData(fetchedData)
       this.setState({
-        restaurantData: updatedData,
+        postsData: updatedData,
         allSteps: fetchedData.steps,
         apiStatus: apiStatusConstants.success,
         allIngredients: fetchedData.ingredients,
@@ -177,26 +177,26 @@ class RestaurantDetails extends Component {
   }
 
   setTitle = (e) => {
-    const {restaurantData} = this.state
-    restaurantData.title = e.target.value
-    console.log(restaurantData.title)
-    this.setState({restaurantData})
+    const {postsData} = this.state
+    postsData.title = e.target.value
+    console.log(postsData.title)
+    this.setState({postsData: postsData})
   }
 
   setDescription = (e) => {
-    const {restaurantData} = this.state
-    restaurantData.description = e.target.value
-    this.setState({restaurantData})
+    const {postsData} = this.state
+    postsData.description = e.target.value
+    this.setState({postsData: postsData})
   }
 
   savePosts = async () => {
     const jwtToken = Cookies.get('jwt_token')
-    const {restaurantData, allSteps, allIngredients, postsId} = this.state
+    const {postsData, allSteps, allIngredients, postsId} = this.state
     const url = 'http://localhost:8080/api/customer/posts'
     const data = {
-      'id': restaurantData.id !== undefined ? restaurantData.id : null,
-      'title': restaurantData.title,
-      'description': restaurantData.description !== undefined ? restaurantData.description : '',
+      'id': postsData.id !== undefined ? postsData.id : null,
+      'title': postsData.title,
+      'description': postsData.description !== undefined ? postsData.description : '',
       'steps': allSteps,
       'ingredient': allIngredients
     }
@@ -212,7 +212,7 @@ class RestaurantDetails extends Component {
     const response = await fetch(url, options)
     if (response.ok) {
       const id = await response.json()
-      if (restaurantData.imageFile) {
+      if (postsData.imageFile) {
         await this.saveImage(id)
       }
       this.setState({editable: false})
@@ -226,10 +226,10 @@ class RestaurantDetails extends Component {
 
   saveImage = async (id) => {
     const jwtToken = Cookies.get('jwt_token')
-    const {restaurantData} = this.state
+    const {postsData} = this.state
     const url = `http://localhost:8080/api/customer/posts/${id}/image`
     const data = new FormData();
-    data.append('file', restaurantData.imageFile)
+    data.append('file', postsData.imageFile)
 
     const options = {
       headers: {
@@ -241,15 +241,15 @@ class RestaurantDetails extends Component {
 
     await fetch(url, options)
     this.addOtherName()
-    await this.getRestaurantData()
+    await this.getPostsData()
   }
 
   addOtherName = () => {
     const jwtToken = Cookies.get('jwt_token')
-    const {restaurantData} = this.state
-    const url = `http://localhost:8080/api/posts/${restaurantData.id}/other-name`
+    const {postsData} = this.state
+    const url = `http://localhost:8080/api/posts/${postsData.id}/other-name`
     const data = new FormData();
-    const file = restaurantData.imageFile
+    const file = postsData.imageFile
     data.append('file', file)
 
     const options = {
@@ -266,8 +266,8 @@ class RestaurantDetails extends Component {
   deletePosts = async () => {
     var warning = "Bạn có chắc muốn xóa bài viết."
     if (confirm(warning)) {
-      const {restaurantData} = this.state
-      const url = `http://localhost:8080/api/customer/posts/${restaurantData.id}`
+      const {postsData} = this.state
+      const url = `http://localhost:8080/api/customer/posts/${postsData.id}`
 
       const options = {
         method: 'DELETE',
@@ -288,14 +288,14 @@ class RestaurantDetails extends Component {
   }
 
   removeFavorite = () => {
-    const {restaurantData} = this.state
+    const {postsData} = this.state
     const jwtToken = Cookies.get('jwt_token')
     const username = Cookies.get('username')
     if (username === undefined) {
       alert("Bạn cần đăng nhập để có thể xóa bài viết khỏi danh sách yêu thích.")
       return
     }
-    const url = `http://localhost:8080/api/customer/favorite-posts/${restaurantData.id}`
+    const url = `http://localhost:8080/api/customer/favorite-posts/${postsData.id}`
 
     const options = {
       headers: {
@@ -308,14 +308,14 @@ class RestaurantDetails extends Component {
   }
 
   addFavorite = () => {
-    const {restaurantData} = this.state
+    const {postsData} = this.state
     const jwtToken = Cookies.get('jwt_token')
     const username = Cookies.get('username')
     if (username === undefined) {
       alert("Bạn cần đăng nhập để có thể thêm bài viết khỏi danh sách yêu thích.")
       return
     }
-    const url = `http://localhost:8080/api/customer/favorite-posts/${restaurantData.id}`
+    const url = `http://localhost:8080/api/customer/favorite-posts/${postsData.id}`
 
     const options = {
       headers: {
@@ -327,8 +327,8 @@ class RestaurantDetails extends Component {
     this.setState({isFavorite: true})
   }
 
-  renderRestaurantDetailsView = () => {
-    const {postsId, restaurantData, allSteps, allIngredients, editable, srcImage, isAuthor, author, isFavorite} = this.state
+  renderPostsDetailsView = () => {
+    const {postsId, postsData, allSteps, allIngredients, editable, srcImage, isAuthor, author, isFavorite} = this.state
 
     return (
       <>
@@ -338,29 +338,29 @@ class RestaurantDetails extends Component {
               {postsId !== 'new' && !editable ? (
                   <>
                     <img
-                        src={restaurantData.imageUrl}
+                        src={postsData.imageUrl}
                         alt="restaurant"
                         className="specific-restaurant-image"/>
 
                     <div className="banner-details-container">
-                      <h1 className="specific-restaurant-name">{restaurantData.title}</h1>
+                      <h1 className="specific-restaurant-name">{postsData.title}</h1>
 
                       <p className="author">{author}</p>
                       <div className="specific-restaurant-cuisine">
-                        {restaurantData.tags?.map(tag => {
+                        {postsData.tags?.map(tag => {
                           <p>{tag}</p>
                         })}
                       </div>
-                      <p className="specific-restaurant-location">{restaurantData.description}</p>
+                      <p className="specific-restaurant-location">{postsData.description}</p>
                       <div className="rating-cost-container">
                         <hr className="line"/>
                         <div className="specific-restaurant-rating-container">
                           <div className="rating-container">
                             <AiFillStar className="restaurant-details-star"/>
-                            <p className="specific-restaurant-rating">{restaurantData.rating}</p>
+                            <p className="specific-restaurant-rating">{postsData.rating}</p>
                           </div>
                           <p className="specific-restaurant-reviews">
-                            {restaurantData.totalReviews} Ratings
+                            {postsData.totalReviews} Ratings
                           </p>
                         </div>
                       </div>
@@ -369,7 +369,7 @@ class RestaurantDetails extends Component {
               ) : (
                   <>
                     <label className="picture" htmlFor="picture-input" tabIndex="0">
-                      {restaurantData.imageFile ? (
+                      {postsData.imageFile ? (
                           <span className="picture-image">
                             <img src={srcImage} id="imported-image" className="picture-img" alt="preview image"/>
                           </span>
@@ -381,13 +381,13 @@ class RestaurantDetails extends Component {
                     <div className="banner-details-container edit">
                       <input type={"text"}
                              className="specific-restaurant-name name-input"
-                             value={restaurantData.title}
+                             value={postsData.title}
                              onChange={this.setTitle}
                              placeholder={"Tên món"}
                       />
                       <textarea rows={3}
                                 className={"specific-restaurant-location description-input"}
-                                value={restaurantData.description}
+                                value={postsData.description}
                                 onChange={this.setDescription}
                                 placeholder={"Mô tả..."}/>
                     </div>
@@ -499,12 +499,12 @@ class RestaurantDetails extends Component {
     </div>
   )
 
-  renderRestaurantDetails = () => {
+  renderPostsDetails = () => {
     const {apiStatus} = this.state
 
     switch (apiStatus) {
       case apiStatusConstants.success:
-        return this.renderRestaurantDetailsView()
+        return this.renderPostsDetailsView()
       case apiStatusConstants.failure:
         return this.renderFailureView()
       case apiStatusConstants.inProgress:
@@ -519,11 +519,11 @@ class RestaurantDetails extends Component {
       <>
         <Header />
         <div className="Restaurant-details-container">
-          {this.renderRestaurantDetails()}
+          {this.renderPostsDetails()}
         </div>
       </>
     )
   }
 }
 
-export default RestaurantDetails
+export default PostsDetails

@@ -5,7 +5,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Login from './components/Login'
 
 import Home from './components/Home'
-import RestaurantDetails from './components/RestaurantDetails'
+import PostsDetails from './components/PostsDetails'
 import Cart from './components/Cart'
 import NotFound from './components/NotFound'
 import Registry from './components/Registry'
@@ -34,7 +34,7 @@ const App = () => (
     <Route
       exact
       path="/posts/:id"
-      component={RestaurantDetails}
+      component={PostsDetails}
     />
     <ProtectedRoute exact path="/cart" component={Cart} />
     <Route path="/bad-path" component={NotFound} />

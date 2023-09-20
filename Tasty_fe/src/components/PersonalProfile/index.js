@@ -1,6 +1,6 @@
 import {Component} from "react";
 import './index.css'
-import AllRestaurantsList from "../AllRestaurantsList";
+import AllPostsList from "../AllPostsList";
 import Header from "../Header"
 import Footer from "../Footer"
 import Loader from "react-loader-spinner";
@@ -278,7 +278,7 @@ class PersonalProfile extends Component {
                             <span className="picture-image" dangerouslySetInnerHTML={{__html: '<p>Chọn ảnh</p>'}}></span>
                         )}
                     </label>
-                    <input type="file" name="imageFile" id="picture-input" onChange={this.importImage}/>
+                    <input type="file" accept="image/jpeg" name="imageFile" id="picture-input" onChange={this.importImage}/>
                 </div>
                 <div className="form-group">
                     <label htmlFor="description">Mô tả bản thân</label>
@@ -445,11 +445,11 @@ class PersonalProfile extends Component {
 
                         <div className="tab-content clearfix">
                             <div className="tab-pane active" id="1b">
-                                <AllRestaurantsList paging={false} type={"own"} getUsername={this.getUsername}/>
+                                <AllPostsList paging={false} type={"own"} getUsername={this.getUsername}/>
                             </div>
                             {username === loggedUser && (
                                 <div className="tab-pane" id="2b">
-                                    <AllRestaurantsList paging={false} type={"favorite"}/>
+                                    <AllPostsList paging={false} type={"favorite"}/>
                                 </div>
                             )}
                         </div>
