@@ -95,8 +95,14 @@ class Header extends Component {
                                 </li>
 
                                 <li className="nav-menu-item">
-                                    <Link to="/cart" className="nav-link">
+                                    <Link to="/posts" className="nav-link">
                                         Bài viết
+                                    </Link>
+                                </li>
+
+                                <li className="nav-menu-item">
+                                    <Link to="/posts/new" className="nav-link">
+                                        Tạo bài viết
                                     </Link>
                                 </li>
                             </ul>
@@ -137,6 +143,12 @@ class Header extends Component {
                                     <li className="nav-menu-item-mobile">
                                         <Link to="/cart" className="nav-link">
                                             Bài viết
+                                        </Link>
+                                    </li>
+
+                                    <li className="nav-menu-item-mobile">
+                                        <Link to="/posts/new" className="nav-link">
+                                            Tạo bài viết
                                         </Link>
                                     </li>
                                 </ul>

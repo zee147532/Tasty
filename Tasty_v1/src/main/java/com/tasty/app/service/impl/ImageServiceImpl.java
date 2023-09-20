@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 
 import static com.tasty.app.domain.enumeration.TypeOfImage.CUSTOMER;
+import static com.tasty.app.domain.enumeration.TypeOfImage.DISH;
 
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -39,7 +40,7 @@ public class ImageServiceImpl implements ImageService {
         switch (dto.getType()) {
             case DISH:
                 Long postsId = dto.getPostsId();
-                imageRepository.deleteAllByPost_IdAndType(postsId, TypeOfImage.DISH);
+                imageRepository.deleteAllByPost_IdAndType(postsId, DISH);
                 Post post = postRepository.getReferenceById(postsId);
                 if (Objects.isNull(post.getId())) {
                     log.warn(String.format("Không tìm thấy bài viết có id: %s", postsId));

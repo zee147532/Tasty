@@ -4,16 +4,16 @@ public class EvaluationDTO {
     private Long id;
     private Integer point;
     private String comment;
-    private Long postId;
+    private Long postsId;
 
     public EvaluationDTO() {
     }
 
-    public EvaluationDTO(Long id, Integer point, String comment, Long postId) {
+    public EvaluationDTO(Long id, Integer point, String comment, Long postsId) {
         this.id = id;
         this.point = point;
         this.comment = comment;
-        this.postId = postId;
+        this.postsId = postsId;
     }
 
     public Long getId() {
@@ -40,11 +40,11 @@ public class EvaluationDTO {
         this.comment = comment;
     }
 
-    public Long getPostId() {
-        return postId;
+    public Long getPostsId() {
+        return postsId;
     }
 
-    public void setPostId(Long postId) {
-        this.postId = postId;
+    public void setPostsId(Long postsId) {
+        this.postsId = postsId;
     }
 }

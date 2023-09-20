@@ -8,6 +8,7 @@ import java.util.Optional;
 import com.tasty.app.request.ChangePasswordRequest;
 import com.tasty.app.service.dto.CustomerDetailDTO;
 import com.tasty.app.service.dto.CustomerDTO;
+import com.tasty.app.service.dto.FileDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -78,4 +79,8 @@ public interface CustomerService {
     ResponseEntity changePassword(ChangePasswordRequest request);
 
     ResponseEntity getAvatar(String username);
+
+    ResponseEntity updateAvatar(FileDTO dto, String username);
+
+    String encodePassword(String password);
 }

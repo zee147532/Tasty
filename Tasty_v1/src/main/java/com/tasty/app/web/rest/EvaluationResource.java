@@ -7,11 +7,13 @@ import com.tasty.app.response.RatingResponse;
 import com.tasty.app.service.EvaluationService;
 import com.tasty.app.service.dto.EvaluationDTO;
 import com.tasty.app.web.rest.errors.BadRequestAlertException;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -72,7 +74,7 @@ public class EvaluationResource {
     /**
      * {@code PUT  /evaluations/:id} : Updates an existing evaluation.
      *
-     * @param id the id of the evaluation to save.
+     * @param id         the id of the evaluation to save.
      * @param evaluation the evaluation to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated evaluation,
      * or with status {@code 400 (Bad Request)} if the evaluation is not valid,
@@ -106,7 +108,7 @@ public class EvaluationResource {
     /**
      * {@code PATCH  /evaluations/:id} : Partial updates given fields of an existing evaluation, field will ignore if it is null
      *
-     * @param id the id of the evaluation to save.
+     * @param id         the id of the evaluation to save.
      * @param evaluation the evaluation to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated evaluation,
      * or with status {@code 400 (Bad Request)} if the evaluation is not valid,
@@ -114,7 +116,7 @@ public class EvaluationResource {
      * or with status {@code 500 (Internal Server Error)} if the evaluation couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PatchMapping(value = "/evaluations/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PatchMapping(value = "/evaluations/{id}", consumes = {"application/json", "application/merge-patch+json"})
     public ResponseEntity<Evaluation> partialUpdateEvaluation(
         @PathVariable(value = "id", required = false) final Long id,
         @RequestBody Evaluation evaluation
@@ -190,12 +192,8 @@ public class EvaluationResource {
 
     @PostMapping("/customer/posts/rating")
     public ResponseEntity createRating(@RequestBody EvaluationDTO dto) {
-        RatingResponse response = new RatingResponse();
-        if (Objects.isNull(dto.getId())) {
-            response = evaluationService.createEvaluation(dto);
-        } else {
-            response = evaluationService.updateEvaluation(dto);
-        }
+        RatingResponse response = Objects.isNull(dto.getId()) ? evaluationService.createEvaluation(dto)
+            : evaluationService.updateEvaluation(dto);
         return ResponseEntity.ok(response);
     }
 }

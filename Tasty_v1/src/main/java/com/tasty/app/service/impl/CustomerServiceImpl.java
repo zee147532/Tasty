@@ -5,6 +5,7 @@ import com.tasty.app.domain.Image;
 import com.tasty.app.domain.Profession;
 import com.tasty.app.repository.*;
 import com.tasty.app.request.ChangePasswordRequest;
+import com.tasty.app.service.ImageService;
 import com.tasty.app.service.dto.CustomerDetailDTO;
 import com.tasty.app.response.CustomerProfileResponse;
 import com.tasty.app.security.jwt.TokenProvider;
@@ -13,11 +14,14 @@ import com.tasty.app.service.CustomerService;
 import java.util.*;
 
 import com.tasty.app.service.dto.CustomerDTO;
+import com.tasty.app.service.dto.FileDTO;
+import com.tasty.app.service.dto.ImageDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,8 +46,11 @@ public class CustomerServiceImpl implements CustomerService {
     private final TokenProvider tokenProvider;
     private final ImageRepository imageRepository;
     private final PostRepository postRepository;
+    private final MinioService minioService;
+    private final ImageService imageService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public CustomerServiceImpl(CustomerRepository customerRepository, ProfessionRepository professionRepository, FavoritesRepository favoritesRepository, HttpServletRequest servletRequest, TokenProvider tokenProvider, ImageRepository imageRepository, PostRepository postRepository) {
+    public CustomerServiceImpl(CustomerRepository customerRepository, ProfessionRepository professionRepository, FavoritesRepository favoritesRepository, HttpServletRequest servletRequest, TokenProvider tokenProvider, ImageRepository imageRepository, PostRepository postRepository, MinioService minioService, ImageService imageService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.customerRepository = customerRepository;
         this.professionRepository = professionRepository;
         this.favoritesRepository = favoritesRepository;
@@ -51,6 +58,9 @@ public class CustomerServiceImpl implements CustomerService {
         this.tokenProvider = tokenProvider;
         this.imageRepository = imageRepository;
         this.postRepository = postRepository;
+        this.minioService = minioService;
+        this.imageService = imageService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
@@ -228,8 +238,7 @@ public class CustomerServiceImpl implements CustomerService {
             customer.getGender(),
             customer.getProfession().getId(),
             customer.getDescription(),
-            Objects.isNull(image) ? "" : image.getUri(),
-            null
+            Objects.isNull(image) ? "" : image.getUri()
         );
         return ResponseEntity.ok(response);
     }
@@ -249,11 +258,11 @@ public class CustomerServiceImpl implements CustomerService {
             return ResponseEntity.status(400).body(Map.of("errorMsg", String.format("Không thể tìm thấy người dùng %s", request.getUsername())));
         }
 
-        if (!customer.getPassword().equals(request.getOldPassword())) {
+        if (!bCryptPasswordEncoder.matches(request.getOldPassword(), customer.getPassword())) {
             return ResponseEntity.status(400).body(Map.of("errorMsg", "Mật khẩu không chính xác."));
         }
 
-        customer.setPassword(request.getNewPassword());
+        customer.setPassword(encodePassword(request.getNewPassword()));
         customerRepository.save(customer);
         return ResponseEntity.ok("Success");
     }
@@ -267,5 +276,31 @@ public class CustomerServiceImpl implements CustomerService {
             response.put("url", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSheI9UkWllIpSNbs2UdE18KLLswgDON9qzXg&usqp=CAU");
         }
         return ResponseEntity.ok(response);
+    }
+
+    @Override
+    public ResponseEntity updateAvatar(FileDTO dto, String username) {
+        String token = servletRequest.getHeader(AUTHORIZATION).substring(7);
+        if (!tokenProvider.validateToken(token)) {
+            return ResponseEntity.status(401).body(Map.of("errorMsg","Phiên đăng nhập đã hết. Vui lòng đăng nhập lại."));
+        }
+        String loggedUsername = tokenProvider.getAuthentication(token).getName();
+        if (!loggedUsername.equals(username)) {
+            return ResponseEntity.status(403).body(Map.of("errorMsg","Bạn không có quyền chỉnh sửa thông tin của người dùng này."));
+        }
+
+        String imageUrl = minioService.uploadFile(dto);
+        imageRepository.deleteAllByCustomer_UsernameAndType(username, CUSTOMER);
+        ImageDTO imageDTO = new ImageDTO();
+        imageDTO.setUsername(username);
+        imageDTO.setType(CUSTOMER);
+        imageDTO.setUri(imageUrl);
+        imageService.createImage(imageDTO);
+        return ResponseEntity.ok("Success.");
+    }
+
+    @Override
+    public String encodePassword(String password) {
+        return bCryptPasswordEncoder.encode(password);
     }
 }

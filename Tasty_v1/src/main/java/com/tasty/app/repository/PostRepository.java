@@ -18,8 +18,7 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p " +
         "WHERE p.title LIKE CONCAT('%', :keyword, '%') " +
-        "OR p.content LIKE CONCAT('%', :keyword, '%') " +
-        "OR p.description LIKE CONCAT('%', :keyword, '%')")
+        "OR p.content LIKE CONCAT('%', :keyword, '%')")
     Page<Post> getAllPosts(@Param("keyword") String keyword, Pageable pageable);
 
     @Query("SELECT p.id AS id, " +

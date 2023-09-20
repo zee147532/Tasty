@@ -8,7 +8,15 @@ class IngredientListEdit extends Component {
         addQuantity: NaN,
         allIngredients: this.props.ingredients,
         count: 0,
-        units: [{id: 1, name: 'Củ'}, {id: 2, name: 'Quả'}, {id: 3, name: 'gram'}, {id: 4, name: 'kilogram'}],
+        units: [
+            {id: 1, name: 'Củ'},
+            {id: 2, name: 'Quả'},
+            {id: 3, name: 'gram'},
+            {id: 4, name: 'kilogram'},
+            {id: 5, name: 'Cây'},
+            {id: 6, name: 'Muỗng cà phê'},
+            {id: 7, name: 'ml'},
+        ],
     }
 
     /* Delete a task */

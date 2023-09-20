@@ -7,11 +7,13 @@ import com.tasty.app.request.PostsRequest;
 import com.tasty.app.response.PostsDetailResponse;
 import com.tasty.app.service.PostService;
 import com.tasty.app.service.dto.FileDTO;
+import com.tasty.app.service.impl.MinioService;
 import com.tasty.app.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +26,7 @@ import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -50,6 +53,9 @@ public class PostResource {
     private PostRepository postRepository;
     @Autowired
     private PostService postService;
+
+    @Autowired
+    private MinioService minioService;
 
 //    @GetMapping("/posts")
 //    public ResponseEntity getPosts(@RequestParam(required = false, defaultValue = "") String keyword,
@@ -195,7 +201,7 @@ public class PostResource {
     @GetMapping("/customer/posts")
     public ResponseEntity getAllPosts(@RequestParam(required = false, defaultValue = "") String keyword,
                                       @RequestParam(required = false, defaultValue = "1") Integer page,
-                                      @RequestParam(required = false, defaultValue = "6") Integer pageSize,
+                                      @RequestParam(required = false, defaultValue = "10") Integer pageSize,
                                       @RequestParam(required = false, defaultValue = "DESC") String sortType,
                                       @RequestParam(required = false, defaultValue = "true") Boolean paging) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortType), "id");
@@ -231,15 +237,38 @@ public class PostResource {
     @PostMapping("/customer/posts/{postsId}/image")
     public ResponseEntity updatePostsImage(@PathVariable("postsId") Long postsId,
                                            @ModelAttribute FileDTO dto) {
-        CompletableFuture.runAsync(() -> {
+        try {
             postService.updateImage(dto, postsId);
-            log.info("Create image successful.");
-        });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        log.info("Create image successful.");
         return ResponseEntity.ok("Success.");
     }
 
     @PostMapping("/customer/posts/search")
     public ResponseEntity searchByImage(@ModelAttribute FileDTO dto) {
         return postService.findByImageCalorie(dto);
+    }
+
+    @GetMapping("/customer/favorite-posts")
+    public ResponseEntity getAllFavoritePosts() {
+        return postService.findAllFavorite();
+    }
+
+    @PostMapping("/customer/favorite-posts/{postsId}")
+    public void addFavoritePosts(@PathVariable("postsId") Long postsId) {
+        postService.addFavoritePosts(postsId);
+    }
+
+    @DeleteMapping("/customer/favorite-posts/{postsId}")
+    public void deleteFavoritePosts(@PathVariable("postsId") Long postsId) {
+        postService.deleteFavoritePosts(postsId);
+    }
+
+    @PostMapping("/posts/{postsId}/other-name")
+    public void createOtherName(@ModelAttribute FileDTO dto,
+                                @PathVariable("postsId") Long postsId) {
+        postService.createOtherName(dto, postsId);
     }
 }

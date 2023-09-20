@@ -55,7 +55,16 @@ class AllRestaurantsList extends Component {
     const jwtToken = Cookies.get('jwt_token')
     const {activeOptionId, currentPage, keyword} = this.state
     const url = this.props.url
-    const apiUrl = `${url}?page=${currentPage}&paging=${paging}&pageSize=6&sortType=${activeOptionId}&keyword=${keyword}`
+    const type = this.props.type
+    let apiUrl
+    if (type === 'own') {
+        const username = this.props.getUsername()
+      apiUrl = `http://localhost:8080/api/customer/${username}/posts`
+    } else if (type === 'favorite') {
+      apiUrl = 'http://localhost:8080/api/customer/favorite-posts'
+    } else {
+      apiUrl = `${url}?page=${currentPage}&paging=${paging}&pageSize=10&sortType=${activeOptionId}&keyword=${keyword}`
+    }
     const options = {
       headers: {
         Authorization: `Bearer ${jwtToken}`,
@@ -95,8 +104,6 @@ class AllRestaurantsList extends Component {
     this.setState({
       apiStatus: apiStatusConstants.inProgress,
     })
-    // var myHeader = new Headers();
-    // myHeader.append("Content-Type", "multipart/form-data")
     var data = new FormData()
     data.append('file', file)
     const apiUrl = 'http://localhost:8080/api/customer/posts/search'
@@ -146,12 +153,20 @@ class AllRestaurantsList extends Component {
           changeImage={this.changeImage}
 
         />
-        <hr className="hr-line" />
-        <ul className="restaurant-list">
-          {restaurantList.map(restaurant => (
-            <RestaurantCard restaurant={restaurant} key={restaurant.id} />
-          ))}
-        </ul>
+        <hr className="hr-line"/>
+          {restaurantList.length === 0 ? (
+              <div className="restaurant-error-view-container">
+                  <p className="restaurant-failure-description">
+                      Không thể tìm thấy bất kỳ bài viết nào!
+                  </p>
+              </div>
+          ) : (
+              <ul className="restaurant-list">
+                  {restaurantList.map(restaurant => (
+                      <RestaurantCard restaurant={restaurant} key={restaurant.id}/>
+                  ))}
+              </ul>
+          )}
       </>
     )
   }

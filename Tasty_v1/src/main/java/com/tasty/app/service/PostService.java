@@ -2,6 +2,8 @@ package com.tasty.app.service;
 
 import com.tasty.app.domain.Post;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -79,9 +81,17 @@ public interface PostService {
 
     PostsDetailResponse getDetail(Long id);
 
-    void updateImage(FileDTO dto, Long postsId);
+    void updateImage(FileDTO dto, Long postsId) throws IOException;
 
     ResponseEntity findByImage(FileDTO dto);
 
     ResponseEntity findByImageCalorie(FileDTO dto);
+
+    ResponseEntity findAllFavorite();
+
+    void createOtherName(FileDTO dto, Long postsId);
+
+    void addFavoritePosts(Long postsId);
+
+    void deleteFavoritePosts(Long postsId);
 }

@@ -3,10 +3,14 @@ package com.tasty.app.service.impl;
 import com.tasty.app.domain.Customer;
 import com.tasty.app.domain.Evaluation;
 import com.tasty.app.domain.Post;
+import com.tasty.app.exception.BadRequestException;
+import com.tasty.app.exception.NotFoundException;
 import com.tasty.app.repository.CustomerRepository;
 import com.tasty.app.repository.EvaluationRepository;
 import com.tasty.app.repository.PostRepository;
+import com.tasty.app.response.HttpResponse;
 import com.tasty.app.response.RatingResponse;
+import com.tasty.app.security.jwt.TokenProvider;
 import com.tasty.app.service.EvaluationService;
 
 import java.util.List;
@@ -22,6 +26,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
+
+import static com.tasty.app.constant.Constant.AUTHORIZATION;
+
 /**
  * Service Implementation for managing {@link Evaluation}.
  */
@@ -34,11 +42,15 @@ public class EvaluationServiceImpl implements EvaluationService {
     private final EvaluationRepository evaluationRepository;
     private final PostRepository postRepository;
     private final CustomerRepository customerRepository;
+    private final HttpServletRequest servletRequest;
+    private final TokenProvider tokenProvider;
 
-    public EvaluationServiceImpl(EvaluationRepository evaluationRepository, PostRepository postRepository, CustomerRepository customerRepository) {
+    public EvaluationServiceImpl(EvaluationRepository evaluationRepository, PostRepository postRepository, CustomerRepository customerRepository, HttpServletRequest servletRequest, TokenProvider tokenProvider) {
         this.evaluationRepository = evaluationRepository;
         this.postRepository = postRepository;
         this.customerRepository = customerRepository;
+        this.servletRequest = servletRequest;
+        this.tokenProvider = tokenProvider;
     }
 
     @Override
@@ -99,16 +111,19 @@ public class EvaluationServiceImpl implements EvaluationService {
 
     @Override
     public RatingResponse createEvaluation(EvaluationDTO dto) {
-        Post post = postRepository.getReferenceById(dto.getPostId());
+        Post post = postRepository.getReferenceById(dto.getPostsId());
         if (Objects.isNull(post.getId())) {
             throw new BadRequestAlertException("Không thể thêm đánh giá", "posts", "postsnotfound");
         }
-        // TODO: Lấy username từ token
-        String username = "tiennd";
+        String token = servletRequest.getHeader(AUTHORIZATION).substring(7);
+        if (!tokenProvider.validateToken(token)) {
+            throw new BadRequestException("Phiên đăng nhập đã hết. Vui lòng đăng nhập lại.");
+        }
+        String username = tokenProvider.getAuthentication(token).getName();
         Customer customer = customerRepository.findByUsername(username);
-         if (Objects.isNull(customer)) {
-             throw new BadRequestAlertException("Không thể thêm đánh giá", "customer", "customernotfound");
-         }
+        if (Objects.isNull(customer)) {
+            throw new NotFoundException("Không thể tìm thấy người dùng.");
+        }
 
         Evaluation evaluation = new Evaluation()
             .point(dto.getPoint())
@@ -122,16 +137,18 @@ public class EvaluationServiceImpl implements EvaluationService {
 
     @Override
     public RatingResponse updateEvaluation(EvaluationDTO dto) {
-        Post post = postRepository.getReferenceById(dto.getPostId());
+        Post post = postRepository.getReferenceById(dto.getPostsId());
         if (Objects.isNull(post.getId())) {
             throw new BadRequestAlertException("Không thể thêm đánh giá", "posts", "postsnotfound");
         }
-
-        // TODO: Lấy username từ token
-        String username = "tiennd";
+        String token = servletRequest.getHeader(AUTHORIZATION).substring(7);
+        if (!tokenProvider.validateToken(token)) {
+            throw new BadRequestException("Phiên đăng nhập đã hết. Vui lòng đăng nhập lại.");
+        }
+        String username = tokenProvider.getAuthentication(token).getName();
         Customer customer = customerRepository.findByUsername(username);
         if (Objects.isNull(customer)) {
-            throw new BadRequestAlertException("Không thể thêm đánh giá", "customer", "customernotfound");
+            throw new NotFoundException("Không thể tìm thấy người dùng.");
         }
 
         Evaluation evaluation = evaluationRepository.getReferenceById(dto.getId());
@@ -160,10 +177,19 @@ public class EvaluationServiceImpl implements EvaluationService {
 
     @Override
     public RatingResponse getRating(Long postsId) {
-        // TODO: Lấy username từ token
-        String username = "tiennd";
+        String token = servletRequest.getHeader(AUTHORIZATION).substring(7);
+        if (!tokenProvider.validateToken(token)) {
+            throw new BadRequestException("Phiên đăng nhập đã hết. Vui lòng đăng nhập lại.");
+        }
+        String username = tokenProvider.getAuthentication(token).getName();
+        Customer customer = customerRepository.findByUsername(username);
+        if (Objects.isNull(customer)) {
+            throw new NotFoundException("Không thể tìm thấy người dùng.");
+        }
 
         Evaluation evaluation = evaluationRepository.getRate(postsId, username);
-        return new RatingResponse(evaluation.getId(), evaluation.getPoint(), evaluation.getComment());
+        RatingResponse response = Objects.isNull(evaluation) ? new RatingResponse(null, 0, "")
+            : new RatingResponse(evaluation.getId(), evaluation.getPoint(), evaluation.getComment());
+        return response;
     }
 }

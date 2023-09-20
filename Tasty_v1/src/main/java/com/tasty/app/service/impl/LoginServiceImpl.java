@@ -12,6 +12,7 @@ import com.tasty.app.response.HttpResponse;
 import com.tasty.app.response.InfoResponse;
 import com.tasty.app.response.RegistryResponse;
 import com.tasty.app.security.jwt.TokenProvider;
+import com.tasty.app.service.CustomerService;
 import com.tasty.app.service.LoginService;
 import com.tasty.app.service.MailService;
 import com.tasty.app.service.dto.CustomerDetail;
@@ -19,6 +20,7 @@ import com.tasty.app.web.rest.errors.BadRequestAlertException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -35,18 +37,22 @@ public class LoginServiceImpl implements LoginService {
     private final ObjectMapper mapper;
     private final TokenProvider tokenProvider;
     private final MailService mailService;
+    private final CustomerService customerService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public LoginServiceImpl(ObjectMapper mapper,
                             CustomerRepository customerRepository,
                             ProfessionRepository professionRepository,
                             RedisTemplate<String, String> redisTemplate,
-                            TokenProvider tokenProvider, MailService mailService) {
+                            TokenProvider tokenProvider, MailService mailService, CustomerService customerService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.customerRepository = customerRepository;
         this.professionRepository = professionRepository;
         this.redisTemplate = redisTemplate;
         this.mapper = mapper;
         this.tokenProvider = tokenProvider;
         this.mailService = mailService;
+        this.customerService = customerService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     public Map<String, String> customerLogin(CustomerDetail customerDetail) {
@@ -54,7 +60,7 @@ public class LoginServiceImpl implements LoginService {
         if (Objects.isNull(customer)) {
             throw new BadRequestAlertException("Tên đăng nhập hoặc mật khẩu không chính xác.", "customer", "customernotfound");
         }
-        if (!customerDetail.getPassword().equals(customer.getPassword())) {
+        if (!bCryptPasswordEncoder.matches(customerDetail.getPassword(), customer.getPassword())) {
             throw new BadRequestAlertException("Tên đăng nhập hoặc mật khẩu không chính xác.", "customer", "customernotfound");
         }
 
@@ -79,8 +85,7 @@ public class LoginServiceImpl implements LoginService {
             response.setStatusCode(400);
             return response;
         }
-        // TODO: Encode mật khẩu
-        String encodedPassword = request.getPassword();
+        String encodedPassword = customerService.encodePassword(request.getPassword());
         Customer customer = new Customer().username(username)
             .password(encodedPassword)
             .confirmed(false);
@@ -126,7 +131,6 @@ public class LoginServiceImpl implements LoginService {
     }
 
     public HttpResponse verify(VerifyRequest request) {
-        // TODO: Lấy mã xác thực đúng từ redis sử dung email
         String correctCode = mapper.convertValue(redisTemplate.opsForValue().get(request.getEmail()), String.class);
         HttpResponse response = new HttpResponse();
 

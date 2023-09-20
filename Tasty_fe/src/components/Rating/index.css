@@ -103,3 +103,11 @@
 .rating-div {
     display: flex;
 }
+
+.rating-loader-container {
+    width: 30%;
+    height: fit-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

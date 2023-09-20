@@ -10,7 +10,7 @@ const RestaurantCard = props => {
     <li className="restaurant-item">
       <Link to={`/posts/${id}`} className="link-item">
         <div className="image-div">
-          <img src={imageUrl} alt="restaurant" className="restaurant-image" />
+          <img src={imageUrl === "" ? "https://icon-library.com/images/meat-icon-png/meat-icon-png-11.jpg" : imageUrl} alt="restaurant" className="restaurant-image" />
         </div>
         <div>
           <h1 className="restaurant-name">{name}</h1>

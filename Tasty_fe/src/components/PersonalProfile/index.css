@@ -69,11 +69,16 @@
 
 .profile-image {
     float: left;
-    width: calc(33.333% - 1rem);
     display: flex;
     justify-content: center;
     align-items: center;
     margin-right: 3rem;
+}
+
+.avatar {
+    object-fit: cover;
+    width: 200px;
+    height: 200px;
 }
 
 .profile-image img {
@@ -471,7 +476,6 @@ Remove or comment-out the code block below to see how the browser will fall-back
     border: none;
     outline: none;
     padding: 10px;
-    color: #fff;
 }
 
 .inputBox{

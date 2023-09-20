@@ -104,10 +104,24 @@
   color: #ffffff;
   margin: 0;
 }
+.author {
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-weight: bolder;
+  font-size: 12px;
+  line-height: 16px;
+  color: #ffffff;
+  margin: 0;
+}
 @media screen and (min-width: 768px) {
   .specific-restaurant-location {
     font-size: 16px;
     line-height: 24px;
+  }
+  .author {
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: bolder;
   }
 }
 
@@ -417,4 +431,8 @@
   top: 50%;
   right: 10%;
   left: auto;
+}
+
+.dropdown-item {
+  cursor: pointer;
 }

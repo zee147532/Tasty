@@ -23,6 +23,7 @@ class PersonalProfile extends Component {
         username: '',
         jwtToken: '',
         srcImage: '',
+        loggedUser: ''
     }
     componentDidMount() {
         this.loadCustomerProfile()
@@ -32,11 +33,14 @@ class PersonalProfile extends Component {
         const {match} = this.props
         const {params} = match
         const {username} = params
+        const jwtToken = Cookies.get('jwt_token')
+        const loggedUser = Cookies.get('username')
         this.setState({
             apiStatus: apiStatusConstants.success,
+            username: username,
+            loggedUser: loggedUser,
         })
 
-        const jwtToken = Cookies.get('jwt_token')
         const apiUrl = `http://localhost:8080/api/customer/profile/${username}`
         const options = {
             headers: {
@@ -50,8 +54,7 @@ class PersonalProfile extends Component {
             this.setState({
                 customerProfile: fetchedData,
                 apiStatus: apiStatusConstants.success,
-                username,
-                jwtToken,
+                jwtToken: jwtToken,
             })
         } else {
             this.setState({apiStatus: apiStatusConstants.failure})
@@ -160,32 +163,60 @@ class PersonalProfile extends Component {
         e.preventDefault();
         const {customerDetail, jwtToken} = this.state
         const apiUrl = 'http://localhost:8080/api/customer'
-        const data = new FormData(document.getElementById('form'))
-        // data.append('id', customerDetail.id)
-        // data.append('username', customerDetail.username)
-        // data.append('fullName', customerDetail.fullName)
-        // data.append('phoneNumber', customerDetail.phoneNumber)
-        // data.append('email', customerDetail.email)
-        // data.append('gender', customerDetail.gender)
-        // data.append('professionId', customerDetail.professionId)
-        // data.append('description', customerDetail.description)
-        // data.append('imageUrl', customerDetail.imageUrl)
-        // data.append('imageFile', customerDetail.imageFile)
-        console.log(data.get('username'), customerDetail)
+        const data = {
+            'id': customerDetail.id,
+            'username': customerDetail.username,
+            'fullName': customerDetail.fullName,
+            'phoneNumber': customerDetail.phoneNumber,
+            'email': customerDetail.email,
+            'gender': customerDetail.gender,
+            'professionId': customerDetail.professionId,
+            'description': customerDetail.description,
+            'imageUrl': ''
+        }
         const options = {
             headers: {
                 Authorization: `Bearer ${jwtToken}`,
-                "Content-Type": "multipart/form-data",
+                Accept: 'application/json',
+                'Content-type': 'application/json',
+            },
+            body: JSON.stringify(data),
+            method: 'POST',
+        }
+        console.log(apiUrl)
+        const response = await fetch(apiUrl, options)
+        if (response.ok) {
+            this.uploadAvatar()
+        } else {
+            const fetchedData = await response.json()
+            alert(fetchedData.errorMsg)
+        }
+    }
+
+    uploadAvatar = async () => {
+        const jwtToken = Cookies.get('jwt_token')
+        const {customerDetail} = this.state
+        const url = `http://localhost:8080/api/customer/${customerDetail.username}/avatar`
+        const data = new FormData();
+        data.append('file', customerDetail.imageFile)
+
+        const options = {
+            headers: {
+                Authorization: `Bearer ${jwtToken}`,
             },
             body: data,
             method: 'POST',
         }
-        const response = await fetch(apiUrl, options)
+
+        const response = await fetch(url, options)
         if (response.ok) {
+            alert("Cập nhật thông tin thành công.")
+            this.loadCustomerProfile()
         } else {
             const fetchedData = await response.json()
-            console.log(fetchedData.errorMsg)
-        }
+            alert(fetchedData.errorMsg)
+}
+
     }
 
     renderDetailView = () => {
@@ -306,16 +337,56 @@ class PersonalProfile extends Component {
         }
     }
 
+    getUsername = () => {
+        const {username} = this.state
+        return username
+    }
+
+    changePassword = async () => {
+        const {oldPassword, newPassword, confirmPassword, username} = this.state
+        if (oldPassword === newPassword) {
+            alert("Bạn không thể sử dụng lại mật hiện tại.")
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            alert("Mật khẩu xác nhận không trùng khớp.")
+        } else {
+            const jwtToken = Cookies.get('jwt_token')
+            const apiUrl = 'http://localhost:8080/api/customer/password'
+            const data = {
+                username: username,
+                oldPassword: oldPassword,
+                newPassword: newPassword
+            }
+            const options = {
+                headers: {
+                    Authorization: `Bearer ${jwtToken}`,
+                    Accept: 'application/json',
+                    'Content-type': 'application/json',
+                },
+                body: JSON.stringify(data),
+                method: 'POST',
+            }
+
+            const response = await fetch(apiUrl, options)
+            if (response.ok) {
+                alert("Thay đổi mật khẩu thành công.")
+            } else {
+                const fetchedData = await response.json()
+                alert(fetchedData.errorMsg)
+            }
+        }
+    }
+
     renderProfileView = () => {
-        const {customerProfile}  = this.state
-        console.log(customerProfile.username)
+        const {customerProfile, username, loggedUser}  = this.state
         return (
             <>
                 <header className="profile-header">
                     <div className="container">
                         <div className="profile">
                             <div className="profile-image">
-                                <img src={`${(!customerProfile.imageUrl || customerProfile.imageUrl.length < 1) ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSheI9UkWllIpSNbs2UdE18KLLswgDON9qzXg&usqp=CAU' : customerProfile.imageUrl}`}  alt={''}/>
+                                <img className={"avatar"} src={`${(!customerProfile.imageUrl || customerProfile.imageUrl.length < 1) ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSheI9UkWllIpSNbs2UdE18KLLswgDON9qzXg&usqp=CAU' : customerProfile.imageUrl}`}  alt={''}/>
                                 {/*<Avatar alt={customerProfile.username.toUpperCase()} src={customerProfile.imageUrl} />*/}
                             </div>
                             <div className="profile-user-settings">
@@ -324,22 +395,27 @@ class PersonalProfile extends Component {
                                     {customerProfile.gender === 'NU' && (<span className="material-symbols-rounded gender-icon">female</span>)}
                                     {customerProfile.gender === 'AN' && (<span className="material-symbols-rounded gender-icon">circle</span>)}
                                 </h1>
-                                <div className="dropdown">
-                                    <button className="btn btn-secondary dropdown-toggle profile-settings-btn" type="button"
-                                            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                                            aria-expanded="false">
-                                        <i className="fas fa-cog" aria-hidden="true"></i>
-                                    </button>
-                                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <li onClick={() => {
-                                            this.setState({detailApiStatus: apiStatusConstants.inProgress})
-                                            this.loadCustomerDetail()
-                                        }}>
-                                            <a className="dropdown-item" href="#" data-toggle="modal" data-target="#edit-profile">Chỉnh sửa</a>
-                                        </li>
-                                        <li><a className="dropdown-item" href="#" data-toggle="modal" data-target="#change-password">Đổi mật khẩu</a></li>
-                                    </ul>
-                                </div>
+                                {username === loggedUser && (
+                                    <div className="dropdown">
+                                        <button className="btn btn-secondary dropdown-toggle profile-settings-btn"
+                                                type="button"
+                                                id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                                aria-expanded="false">
+                                            <i className="fas fa-cog" aria-hidden="true"></i>
+                                        </button>
+                                        <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li onClick={() => {
+                                                this.setState({detailApiStatus: apiStatusConstants.inProgress})
+                                                this.loadCustomerDetail()
+                                            }}>
+                                                <a className="dropdown-item" href="#" data-toggle="modal"
+                                                   data-target="#edit-profile">Chỉnh sửa</a>
+                                            </li>
+                                            <li><a className="dropdown-item" href="#" data-toggle="modal"
+                                                   data-target="#change-password">Đổi mật khẩu</a></li>
+                                        </ul>
+                                    </div>
+                                )}
                             </div>
                             <div className="profile-stats">
                                 <ul>
@@ -360,18 +436,22 @@ class PersonalProfile extends Component {
                             <li className="active">
                                 <a  href="#1b" data-toggle="tab">Bài viết</a>
                             </li>
-                            <li>
-                                <a href="#2b" data-toggle="tab">Yêu thích</a>
-                            </li>
+                            {username === loggedUser && (
+                                <li>
+                                    <a href="#2b" data-toggle="tab">Yêu thích</a>
+                                </li>
+                            )}
                         </ul>
 
                         <div className="tab-content clearfix">
                             <div className="tab-pane active" id="1b">
-                                <AllRestaurantsList paging={false} url={"http://localhost:8080/api/customer/" + customerProfile.username + "/posts"}/>
+                                <AllRestaurantsList paging={false} type={"own"} getUsername={this.getUsername}/>
                             </div>
-                            <div className="tab-pane" id="2b">
-                                <AllRestaurantsList paging={false} url={"http://localhost:8080/api/customer/posts"}/>
-                            </div>
+                            {username === loggedUser && (
+                                <div className="tab-pane" id="2b">
+                                    <AllRestaurantsList paging={false} type={"favorite"}/>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </main>
@@ -389,7 +469,8 @@ class PersonalProfile extends Component {
                             {this.renderDetailContainer()}
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                                <button type="submit" form="form" className="btn btn-success" data-dismiss="modal">Lưu</button>
+                                <button type="submit" form="form" className="btn btn-success" data-dismiss="modal"
+                                    onClick={this.update}>Lưu</button>
                             </div>
                         </form>
                     </div>
@@ -403,31 +484,31 @@ class PersonalProfile extends Component {
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
-                                <h4 className="modal-title" id="modalLabel">Modal Title</h4>
+                                <h4 className="modal-title" id="modalLabel">Đổi mật khẩu</h4>
                             </div>
                             <div className="modal-body">
                                 <div className="edit-profile">
                                     <div className="form-group">
                                         <label htmlFor="old-password" aria-required={true}>Mật khẩu cũ</label>
                                         <div className="inputBox">
-                                            <input type="password" placeholder="Old password" id="myPassword"/>
-                                            <span className="material-symbols-rounded show"></span>
+                                            <input type="password" onChange={(e) => {this.setState({oldPassword: e.target.value})}} placeholder="Old password" id="myPassword"/>
+                                            {/*<span className="material-symbols-rounded show"></span>*/}
                                             {/*<span className="material-symbols-rounded">visibility-off</span>*/}
                                         </div>
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="new-password">Mật khẩu mới</label>
                                         <div className="inputBox">
-                                            <input type="password" placeholder="New password" id="myPassword"/>
-                                            <span className="material-symbols-rounded show"></span>
+                                            <input type="password" onChange={(e) => {this.setState({newPassword: e.target.value})}} placeholder="New password" id="myPassword"/>
+                                            {/*<span className="material-symbols-rounded show"></span>*/}
                                             {/*<span className="material-symbols-rounded">visibility-off</span>*/}
                                         </div>
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="confirm-password">Xác nhận mật khẩu</label>
                                         <div className="inputBox">
-                                            <input type="password" placeholder="Confirm password" id="myPassword"/>
-                                            <span className="material-symbols-rounded show"></span>
+                                            <input type="password" onChange={(e) => {this.setState({confirmPassword: e.target.value})}} placeholder="Confirm password" id="myPassword"/>
+                                            {/*<span className="material-symbols-rounded show"></span>*/}
                                             {/*<span className="material-symbols-rounded">visibility-off</span>*/}
                                         </div>
                                         {/*https://codepen.io/saad-muhammad01/pen/OJrJxVm*/}
@@ -435,7 +516,7 @@ class PersonalProfile extends Component {
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-success" data-dismiss="modal">Lưu</button>
+                                <button type="button" className="btn btn-success" onClick={this.changePassword} data-dismiss="modal">Lưu</button>
                             </div>
                         </div>
                     </div>

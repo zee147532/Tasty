@@ -55,7 +55,7 @@ class Comment extends Component {
 
     addComment = () => {
         const postsId = this.props.postsId
-        const {addComment, comments} = this.state
+        const {addComment} = this.state
         document.getElementById('comment-input').innerText = ''
         const data = {
             subComment: false,
@@ -79,27 +79,33 @@ class Comment extends Component {
     }
 
     saveComment = async (data) => {
-        const jwtToken = Cookies.get('jwt_token')
-        const apiUrl = 'http://localhost:8080/api/customer/comment'
-        const options = {
-            headers: {
-                Authorization: `Bearer ${jwtToken}`,
-                Accept: 'application/json',
-                'Content-type': 'application/json',
-            },
-            body: JSON.stringify(data),
-            method: 'POST',
+        const username = Cookies.get('username')
+        if (username === undefined) {
+            alert("Bạn cần đăng nhập để có thể thêm bình luận cho bài viết này.")
+        } else {
+            const jwtToken = Cookies.get('jwt_token')
+            const apiUrl = 'http://localhost:8080/api/customer/comment'
+            const options = {
+                headers: {
+                    Authorization: `Bearer ${jwtToken}`,
+                    Accept: 'application/json',
+                    'Content-type': 'application/json',
+                },
+                body: JSON.stringify(data),
+                method: 'POST',
+            }
+            await fetch(apiUrl, options)
+            this.loadComment()
         }
-        await fetch(apiUrl, options)
-        this.loadComment()
     }
 
     onKeyDownComment = (e) => {
-        if (e.keyCode === 13 && e.shiftKey === false && e.currentTarget.innerText !== '') {
+        if (e.keyCode === 13 && e.shiftKey === false && e.currentTarget.value !== '') {
             e.preventDefault()
             this.addComment()
         }
-        this.setState({addComment: e.currentTarget.innerText})
+        console.log(e.currentTarget.value)
+        this.setState({addComment: e.currentTarget.value})
     }
 
     onKeyDownSubComment = (e) => {

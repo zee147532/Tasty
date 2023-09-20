@@ -7,6 +7,7 @@ import com.tasty.app.repository.*;
 import com.tasty.app.repository.projection.PostsDetail;
 import com.tasty.app.request.PostsRequest;
 import com.tasty.app.response.*;
+import com.tasty.app.security.jwt.TokenProvider;
 import com.tasty.app.service.ImageService;
 import com.tasty.app.service.PostService;
 import com.tasty.app.service.dto.FileDTO;
@@ -17,7 +18,6 @@ import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
@@ -29,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -36,7 +37,6 @@ import java.util.stream.Collectors;
 
 import static com.tasty.app.constant.Constant.*;
 import static com.tasty.app.domain.enumeration.TypeOfImage.DISH;
-import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
 /**
@@ -65,8 +65,10 @@ public class PostServiceImpl implements PostService {
     private final MinioService minioService;
     private final ImageService imageService;
     private final RestTemplateBuilder templateBuilder;
+    private final HttpServletRequest servletRequest;
+    private final TokenProvider tokenProvider;
 
-    public PostServiceImpl(PostRepository postRepository, StepToCookRepository stepToCookRepository, DishTypeRepository dishTypeRepository, IngredientOfDishRepository ingredientRepository, CustomerRepository customerRepository, ImageRepository imageRepository, TypeOfDishRepository typeOfDishRepository, IngredientRepository ingredientRepository1, FavoritesRepository favoritesRepository, CommentRepository commentRepository, EvaluationRepository evaluationRepository, MinioService minioService, ImageService imageService, RestTemplateBuilder templateBuilder) {
+    public PostServiceImpl(PostRepository postRepository, StepToCookRepository stepToCookRepository, DishTypeRepository dishTypeRepository, IngredientOfDishRepository ingredientRepository, CustomerRepository customerRepository, ImageRepository imageRepository, TypeOfDishRepository typeOfDishRepository, IngredientRepository ingredientRepository1, FavoritesRepository favoritesRepository, CommentRepository commentRepository, EvaluationRepository evaluationRepository, MinioService minioService, ImageService imageService, RestTemplateBuilder templateBuilder, HttpServletRequest servletRequest, TokenProvider tokenProvider) {
         this.postRepository = postRepository;
         this.stepToCookRepository = stepToCookRepository;
         this.dishTypeRepository = dishTypeRepository;
@@ -81,6 +83,8 @@ public class PostServiceImpl implements PostService {
         this.minioService = minioService;
         this.imageService = imageService;
         this.templateBuilder = templateBuilder;
+        this.servletRequest = servletRequest;
+        this.tokenProvider = tokenProvider;
     }
 
     @Override
@@ -163,6 +167,83 @@ public class PostServiceImpl implements PostService {
         return result;
     }
 
+    @Override
+    public ResponseEntity findAllFavorite() {
+        String token = servletRequest.getHeader(AUTHORIZATION).substring(7);
+        if (!tokenProvider.validateToken(token)) {
+            return ResponseEntity.status(401).body(new HttpResponse(401, "Phiên đăng nhập đã hết. Vui lòng đăng nhập lại."));
+        }
+        String username = tokenProvider.getAuthentication(token).getName();
+        Customer customer = customerRepository.findByUsername(username);
+        if (Objects.isNull(customer)) {
+            throw new BadRequestException("Không tìm thấy người dùng " + username);
+        }
+
+        List<Post> postList = favoritesRepository.findAllByUsername(username);
+        List<PostsResponse> data = getListPostsResponse(postList);
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", data);
+        result.put("totalPage", 1);
+        return ResponseEntity.ok(result);
+    }
+
+    @Override
+    public void createOtherName(FileDTO dto, Long postsId) {
+        if (Objects.isNull(dto.getFile())) {
+            return;
+        }
+        Post post = postRepository.getReferenceById(postsId);
+        String otherNames;
+        try {
+            List<String> recognitionResult = calorieMamaRecognition(dto.getFile());
+            otherNames = String.join(",", recognitionResult);
+        } catch (Exception e) {
+            otherNames = Objects.isNull(post.getOtherName()) ? post.getTitle() : post.getOtherName();
+        }
+        post.setOtherName(otherNames);
+        postRepository.save(post);
+    }
+
+    @Override
+    public void addFavoritePosts(Long postsId) {
+        String token = servletRequest.getHeader(AUTHORIZATION).substring(7);
+        if (!tokenProvider.validateToken(token)) {
+            throw new BadRequestException("Phiên đăng nhập đã hết. Vui lòng đăng nhập lại.");
+        }
+        String username = tokenProvider.getAuthentication(token).getName();
+        Customer customer = customerRepository.findByUsername(username);
+        if (Objects.isNull(customer)) {
+            throw new BadRequestException("Không tìm thấy người dùng " + username);
+        }
+        Post post = postRepository.getReferenceById(postsId);
+        if (Objects.isNull(customer)) {
+            throw new BadRequestException("Không tìm thấy bài viết");
+        }
+
+        Favorites favorites = new Favorites().post(post).customer(customer);
+        favoritesRepository.save(favorites);
+    }
+
+    @Override
+    public void deleteFavoritePosts(Long postsId) {
+        String token = servletRequest.getHeader(AUTHORIZATION).substring(7);
+        if (!tokenProvider.validateToken(token)) {
+            throw new BadRequestException("Phiên đăng nhập đã hết. Vui lòng đăng nhập lại.");
+        }
+        String username = tokenProvider.getAuthentication(token).getName();
+        Customer customer = customerRepository.findByUsername(username);
+        if (Objects.isNull(customer)) {
+            throw new BadRequestException("Không tìm thấy người dùng " + username);
+        }
+        Post post = postRepository.getReferenceById(postsId);
+        if (Objects.isNull(customer)) {
+            throw new BadRequestException("Không tìm thấy bài viết");
+        }
+
+        Favorites favorites = favoritesRepository.findAllByPostAndCustomer(post, customer);
+        favoritesRepository.delete(favorites);
+    }
+
     public List<PostsResponse> getListPostsResponse(List<Post> postList) {
         return postList.stream().map(this::convertToPostResponse).collect(Collectors.toList());
     }
@@ -185,13 +266,17 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post createPost(PostsRequest request) {
         Post post = new Post();
-        // TODO: Lấy username từ token
-        String username = "tiennd";
-        // TODO: Lưu ảnh vào minio
-        String imageUrl = "";
+        String token = servletRequest.getHeader(AUTHORIZATION).substring(7);
+        if (!tokenProvider.validateToken(token)) {
+            throw new BadRequestException("Phiên đăng nhập đã hết. Vui lòng đăng nhập lại.");
+        }
+        String username = tokenProvider.getAuthentication(token).getName();
+        Customer customer = customerRepository.findByUsername(username);
+        if (Objects.isNull(customer)) {
+            throw new BadRequestException("Không tìm thấy người dùng " + username);
+        }
         if (Objects.isNull(request.getId())) {
             post.setCreatedDate(LocalDate.now());
-            Customer customer = customerRepository.findByUsername(username);
             post.setAuthor(customer);
         } else {
             post = postRepository.getReferenceById(request.getId());
@@ -205,12 +290,6 @@ public class PostServiceImpl implements PostService {
         post.setStatus(true);
 
         post = postRepository.save(post);
-
-        Image image = new Image();
-        image.setType(DISH);
-        image.setUri(imageUrl);
-        image.setPost(post);
-        imageRepository.save(image);
 
         List<TypeOfDish> allNewType = new ArrayList<>();
         List<DishType> dishTypes = dishTypeRepository.findByListName(request.getTypes());
@@ -292,6 +371,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostsDetailResponse getDetail(Long id) {
+        String token = servletRequest.getHeader(AUTHORIZATION).substring(7);
+        String username = tokenProvider.getAuthentication(token).getName();
+        Favorites favorites = favoritesRepository.findAllByPost_IdAndCustomer_Username(id, username);
         PostsDetail postsDetail = postRepository.getDetail(id);
         if (Objects.isNull(postsDetail)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy bài viết.");
@@ -314,13 +396,15 @@ public class PostServiceImpl implements PostService {
                 i.getIngredient().getName(),
                 i.getUnit(),
                 i.getQuantity())
-            ).collect(Collectors.toList())
+            ).collect(Collectors.toList()),
+            Objects.nonNull(favorites)
         );
     }
 
     @Override
     public void updateImage(FileDTO dto, Long postsId) {
         String imageUrl = minioService.uploadFile(dto);
+        imageRepository.deleteAllByPost_IdAndType(postsId, DISH);
         ImageDTO imageDTO = new ImageDTO();
         imageDTO.setPostsId(postsId);
         imageDTO.setType(DISH);
@@ -344,13 +428,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public ResponseEntity findByImageCalorie(FileDTO dto) {
-        List<String> recognitionResult = calorieMamaRecognition(dto.getFile());
+        List<String> recognitionResult = new ArrayList<>();
+        try {
+            recognitionResult = calorieMamaRecognition(dto.getFile());
+        } catch (Exception e) {
+        }
         List<Post> allPosts = postRepository.findAll();
-//        List<PostsResponse> response = allPosts.stream().filter(post ->
-//            Arrays.stream(post.getOtherName().split(",")).anyMatch(on ->
-//                recognitionResult.stream().anyMatch(on::equalsIgnoreCase)
-//            )
-//        ).map(this::convertToPostResponse).collect(Collectors.toList());
 
         Set<Post> filteredPosts = new HashSet<>();
         recognitionResult.forEach(r ->

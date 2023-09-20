@@ -5,6 +5,7 @@ import com.tasty.app.repository.CustomerRepository;
 import com.tasty.app.request.ChangePasswordRequest;
 import com.tasty.app.service.dto.CustomerDetailDTO;
 import com.tasty.app.service.CustomerService;
+import com.tasty.app.service.dto.FileDTO;
 import com.tasty.app.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -181,7 +182,7 @@ public class CustomerResource {
     }
 
     @PostMapping("/customer")
-    public ResponseEntity updateCustomer(@ModelAttribute CustomerDetailDTO dto) {
+    public ResponseEntity updateCustomer(@RequestBody CustomerDetailDTO dto) {
         return customerService.updateCustomer(dto);
     }
 
@@ -198,6 +199,12 @@ public class CustomerResource {
     @PostMapping("/customer/password")
     public ResponseEntity changePassword(@RequestBody ChangePasswordRequest request) {
         return customerService.changePassword(request);
+    }
+
+    @PostMapping("/customer/{username}/avatar")
+    public ResponseEntity updateAvatar(@ModelAttribute FileDTO dto,
+                                       @PathVariable("username") String username) {
+        return customerService.updateAvatar(dto, username);
     }
 
     @GetMapping("/customer/{username}/avatar")

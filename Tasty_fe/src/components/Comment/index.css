@@ -54,6 +54,7 @@
 .comment-container section.comment-module ul li .comment .comment-img img {
     width: 50px;
     height: 50px;
+    border-radius: 50%;
 }
 
 .comment-container section.comment-module ul li .comment .comment-content {
@@ -191,6 +192,7 @@
     border-bottom: 2px solid #016BA8;
     transition: all 0.5s;
     margin-top: 15px;
+    height: 38px;
 }
 
 .comment-input:focus {

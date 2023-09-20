@@ -13,7 +13,6 @@ public class CustomerDetailDTO {
     private Long professionId;
     private String description;
     private String imageUrl;
-    private MultipartFile imageFile;
 
     public Long getId() {
         return id;
@@ -87,18 +86,10 @@ public class CustomerDetailDTO {
         this.imageUrl = imageUrl;
     }
 
-    public MultipartFile getImageFile() {
-        return imageFile;
-    }
-
-    public void setImageFile(MultipartFile imageFile) {
-        this.imageFile = imageFile;
-    }
-
     public CustomerDetailDTO() {
     }
 
-    public CustomerDetailDTO(Long id, String username, String fullName, String phoneNumber, String email, Gender gender, Long professionId, String description, String imageUrl, MultipartFile imageFile) {
+    public CustomerDetailDTO(Long id, String username, String fullName, String phoneNumber, String email, Gender gender, Long professionId, String description, String imageUrl) {
         this.id = id;
         this.username = username;
         this.fullName = fullName;
@@ -108,6 +99,5 @@ public class CustomerDetailDTO {
         this.professionId = professionId;
         this.description = description;
         this.imageUrl = imageUrl;
-        this.imageFile = imageFile;
     }
 }

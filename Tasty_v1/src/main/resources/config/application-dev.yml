@@ -7,13 +7,20 @@ logging:
 
 minio:
   bucket:
-    name: tasty
+    name: tasty123
   access:
-    key: tasty
-    secret: tiennd123
+    key: pC3CDPcmIc4MqwvhKOWN
+    secret: VezMvGNP6MhZZLrw37LpIjvtszPzGLiRaKSHJeK2
   url: http://127.0.0.1:9000
+  default:
+    folder: /
 
 spring:
+#  minio:
+#    url: http://127.0.0.1:9000
+#    bucket: tasty123
+#    access-key: pC3CDPcmIc4MqwvhKOWN
+#    secret-key: VezMvGNP6MhZZLrw37LpIjvtszPzGLiRaKSHJeK2
   devtools:
     restart:
       enabled: true

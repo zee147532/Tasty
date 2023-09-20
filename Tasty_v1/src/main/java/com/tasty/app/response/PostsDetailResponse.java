@@ -13,6 +13,7 @@ public class PostsDetailResponse {
     private Long totalReviews;
     private List<StepResponse> steps;
     private List<IngredientResponse> ingredients;
+    private Boolean favorite;
 
     public Long getId() {
         return id;
@@ -94,10 +95,18 @@ public class PostsDetailResponse {
         this.ingredients = ingredients;
     }
 
+    public Boolean getFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(Boolean favorite) {
+        this.favorite = favorite;
+    }
+
     public PostsDetailResponse() {
     }
 
-    public PostsDetailResponse(Long id, String title, String author, List<String> tags, String description, String imageUrl, Double rating, Long totalReviews, List<StepResponse> steps, List<IngredientResponse> ingredients) {
+    public PostsDetailResponse(Long id, String title, String author, List<String> tags, String description, String imageUrl, Double rating, Long totalReviews, List<StepResponse> steps, List<IngredientResponse> ingredients, Boolean favorite) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -108,5 +117,6 @@ public class PostsDetailResponse {
         this.totalReviews = totalReviews;
         this.steps = steps;
         this.ingredients = ingredients;
+        this.favorite = favorite;
     }
 }

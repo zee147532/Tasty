@@ -31,6 +31,8 @@ class RestaurantDetails extends Component {
     isAuthor: false,
     postsId: '',
     srcImage: '',
+    author: '',
+    isFavorite: false,
   }
 
   componentDidMount() {
@@ -163,7 +165,10 @@ class RestaurantDetails extends Component {
         apiStatus: apiStatusConstants.success,
         allIngredients: fetchedData.ingredients,
         isAuthor: username === fetchedData.author,
+        author: fetchedData.author,
+        isFavorite: fetchedData.favorite
       })
+      console.log(fetchedData.favorite)
     } else {
       this.setState({
         apiStatus: apiStatusConstants.failure,
@@ -211,6 +216,8 @@ class RestaurantDetails extends Component {
         await this.saveImage(id)
       }
       this.setState({editable: false})
+      const {history} = this.props
+      history.push(`/posts/${id}`)
     } else {
       const data = await response.json()
       alert(data.errorMsg)
@@ -232,11 +239,96 @@ class RestaurantDetails extends Component {
       method: 'POST',
     }
 
-    const response = await fetch(url, options)
+    await fetch(url, options)
+    this.addOtherName()
+    await this.getRestaurantData()
+  }
+
+  addOtherName = () => {
+    const jwtToken = Cookies.get('jwt_token')
+    const {restaurantData} = this.state
+    const url = `http://localhost:8080/api/posts/${restaurantData.id}/other-name`
+    const data = new FormData();
+    const file = restaurantData.imageFile
+    data.append('file', file)
+
+    const options = {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+      body: data,
+      method: 'POST',
+    }
+
+    fetch(url, options)
+  }
+
+  deletePosts = async () => {
+    var warning = "Bạn có chắc muốn xóa bài viết."
+    if (confirm(warning)) {
+      const {restaurantData} = this.state
+      const url = `http://localhost:8080/api/customer/posts/${restaurantData.id}`
+
+      const options = {
+        method: 'DELETE',
+      }
+      const response = await fetch(url, options)
+      if (response.ok) {
+        alert("Xóa bài viết thành công.")
+        const {history} = this.props
+        history.push("/posts")
+
+      } else {
+        const data = await response.json()
+        alert(data.errorMsg)
+      }
+
+    }
+
+  }
+
+  removeFavorite = () => {
+    const {restaurantData} = this.state
+    const jwtToken = Cookies.get('jwt_token')
+    const username = Cookies.get('username')
+    if (username === undefined) {
+      alert("Bạn cần đăng nhập để có thể xóa bài viết khỏi danh sách yêu thích.")
+      return
+    }
+    const url = `http://localhost:8080/api/customer/favorite-posts/${restaurantData.id}`
+
+    const options = {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+      method: 'DELETE',
+    }
+    fetch(url, options)
+    this.setState({isFavorite: false})
+  }
+
+  addFavorite = () => {
+    const {restaurantData} = this.state
+    const jwtToken = Cookies.get('jwt_token')
+    const username = Cookies.get('username')
+    if (username === undefined) {
+      alert("Bạn cần đăng nhập để có thể thêm bài viết khỏi danh sách yêu thích.")
+      return
+    }
+    const url = `http://localhost:8080/api/customer/favorite-posts/${restaurantData.id}`
+
+    const options = {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+      method: 'POST',
+    }
+    fetch(url, options)
+    this.setState({isFavorite: true})
   }
 
   renderRestaurantDetailsView = () => {
-    const {postsId, restaurantData, allSteps, allIngredients, editable, srcImage, isAuthor} = this.state
+    const {postsId, restaurantData, allSteps, allIngredients, editable, srcImage, isAuthor, author, isFavorite} = this.state
 
     return (
       <>
@@ -252,6 +344,8 @@ class RestaurantDetails extends Component {
 
                     <div className="banner-details-container">
                       <h1 className="specific-restaurant-name">{restaurantData.title}</h1>
+
+                      <p className="author">{author}</p>
                       <div className="specific-restaurant-cuisine">
                         {restaurantData.tags?.map(tag => {
                           <p>{tag}</p>
@@ -283,7 +377,7 @@ class RestaurantDetails extends Component {
                           <span className="picture-image" dangerouslySetInnerHTML={{__html: '<p>Chọn ảnh</p>'}}></span>
                       )}
                     </label>
-                    <input type="file" name="imageFile" id="picture-input" onChange={this.importImage}/>
+                    <input type="file" accept="image/jpeg" name="imageFile" id="picture-input" onChange={this.importImage}/>
                     <div className="banner-details-container edit">
                       <input type={"text"}
                              className="specific-restaurant-name name-input"
@@ -309,7 +403,7 @@ class RestaurantDetails extends Component {
                   )}
                 </div>
             )}
-            {isAuthor && !editable && (
+            {!editable && (
                 <div className="action-option dropdown">
                   <button className="btn btn-secondary dropdown-toggle option-button" type="button"
                           id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
@@ -319,10 +413,28 @@ class RestaurantDetails extends Component {
                     </span>
                   </button>
                   <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <li onClick={() => this.setState({editable: true})}>
-                      <a className="dropdown-item" href="#" data-toggle="modal">Chỉnh sửa</a>
-                    </li>
-                    <li><a className="dropdown-item" href="#" data-toggle="modal">Xóa</a></li>
+                    {isAuthor && !editable && (
+                        <>
+                          <li onClick={() => this.setState({editable: true})}>
+                            <a className="dropdown-item" href="#" data-toggle="modal">Chỉnh sửa</a>
+                          </li>
+                          <li>
+                            <a className="dropdown-item" href="#" data-toggle="modal"
+                               onClick={() => this.deletePosts()}>Xóa</a>
+                          </li>
+                        </>
+                    )}
+                    {isFavorite ? (
+                        <li>
+                          <a className="dropdown-item" onClick={this.removeFavorite}>Bỏ yêu thích</a>
+                        </li>
+                    ) : (
+                        <li>
+                          <a className="dropdown-item" onClick={this.addFavorite} >Thêm yêu thích</a>
+                        </li>
+                    )
+                    }
+
                   </ul>
                 </div>
             )}
