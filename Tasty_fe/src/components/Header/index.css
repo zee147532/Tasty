@@ -173,6 +173,7 @@
 .nav-link {
   text-decoration: none;
   color: #334155;
+  cursor: pointer;
 }
 
 .nav-menu-item-mobile {

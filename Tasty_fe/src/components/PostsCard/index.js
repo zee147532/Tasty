@@ -14,11 +14,6 @@ const PostsCard = props => {
         </div>
         <div>
           <h1 className="restaurant-name">{name}</h1>
-          <p className="restaurant-cuisine">
-            {cuisine.map(c => (
-              <h4 className="cuisine-tag">{c}</h4>
-            ))}
-          </p>
           <div className="rating-container">
             <AiFillStar className="star" />
             <p className="rating">{rating}</p>

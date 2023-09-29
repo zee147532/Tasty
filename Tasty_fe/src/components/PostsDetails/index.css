@@ -112,6 +112,7 @@
   line-height: 16px;
   color: #ffffff;
   margin: 0;
+  cursor: pointer;
 }
 @media screen and (min-width: 768px) {
   .specific-restaurant-location {

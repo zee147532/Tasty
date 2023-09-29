@@ -15,11 +15,6 @@ class Home extends Component {
         history.push('/posts')
     }
 
-    onClickNewPosts = () => {
-        const {history} = this.props
-        history.push('/posts/new')
-    }
-
     onClickLogout = () => {
         var warning = "Bạn có chắc muốn đăng xuất."
         if (confirm(warning)) {
@@ -43,6 +38,16 @@ class Home extends Component {
 
     componentDidMount() {
         this.loadCustomer()
+    }
+
+    checkLogin = () => {
+        const {username} = this.state
+        if (username && username.length > 0) {
+            const {history} = this.props
+            history.push('/posts/new')
+        } else {
+            alert("Bạn cần đăng nhập để có thể tạo một bài viết mới.")
+        }
     }
 
     render() {
@@ -69,7 +74,7 @@ class Home extends Component {
                         <ul className="nav-links">
                             <li><a href={"/"}>TRANG CHỦ</a></li>
                             <li><a href={"/posts"}>BÀI VIẾT</a></li>
-                            <li><a href={"/posts/new"}>TẠO BÀI VIẾT</a></li>
+                            <li><a onClick={this.checkLogin}>TẠO BÀI VIẾT</a></li>
                             {(username && username.length > 0) ? (
                                 <>
                                     <li>
@@ -106,7 +111,7 @@ class Home extends Component {
                             <h4 className="white">We bring variety to <strong>your kitchen!</strong></h4>
                             <div className="two-button">
                                 <button className="w-btn btn" onClick={this.onClickAllPosts}>Tất cả công thức</button>
-                                <button className="t-btn btn" onClick={this.onClickNewPosts}>Tạo mới</button>
+                                <button className="t-btn btn" onClick={this.checkLogin}>Tạo mới</button>
                             </div>
                         </div>
                     </div>

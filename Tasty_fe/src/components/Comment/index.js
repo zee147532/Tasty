@@ -100,12 +100,12 @@ class Comment extends Component {
     }
 
     onKeyDownComment = (e) => {
-        if (e.keyCode === 13 && e.shiftKey === false && e.currentTarget.value !== '') {
+        if (e.keyCode === 13 && e.shiftKey === false && e.currentTarget.innerText !== '') {
             e.preventDefault()
             this.addComment()
         }
-        console.log(e.currentTarget.value)
-        this.setState({addComment: e.currentTarget.value})
+        console.log(e.currentTarget.innerText)
+        this.setState({addComment: e.currentTarget.innerText})
     }
 
     onKeyDownSubComment = (e) => {
@@ -114,7 +114,7 @@ class Comment extends Component {
             e.preventDefault()
             this.addSubComment(addSub)
         }
-        this.setState({addSubComment: e.currentTarget.innerText})
+        this.setState({addSubComment: e.currentTarget.innerText + ' '})
     }
 
     deleteComment = async (id) => {
@@ -124,6 +124,11 @@ class Comment extends Component {
         }
         await fetch(apiUrl, options)
         this.loadComment()
+    }
+
+    clickUsername = (username) => {
+        const {clickUsername} = this.props
+        clickUsername(username)
     }
 
     render()
@@ -153,7 +158,7 @@ class Comment extends Component {
                                         </div>
                                         <div className="comment-content">
                                             <div className="comment-details">
-                                                <h4 className="comment-name">{comment.username}</h4>
+                                                <h4 className="comment-name" onClick={() => this.clickUsername(comment.username)}>{comment.username}</h4>
                                                 <span className="comment-log">{comment.time}</span>
                                                 {comment.username === username && (
                                                     <span className="material-symbols-rounded delete-button"
@@ -195,7 +200,7 @@ class Comment extends Component {
                                                     </div>
                                                     <div className="comment-content">
                                                         <div className="comment-details">
-                                                            <h4 className="comment-name">{subComment.username}</h4>
+                                                            <h4 className="comment-name" onClick={() => this.clickUsername(subComment.username)} >{subComment.username}</h4>
                                                             <span className="comment-log">{subComment.time}</span>
                                                             {subComment.username === username && (
                                                                 <span className="material-symbols-rounded delete-button">delete</span>

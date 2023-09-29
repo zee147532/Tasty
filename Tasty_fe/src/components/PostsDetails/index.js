@@ -215,9 +215,11 @@ class PostsDetails extends Component {
       if (postsData.imageFile) {
         await this.saveImage(id)
       }
+      await this.getPostsData()
       this.setState({editable: false})
       const {history} = this.props
       history.push(`/posts/${id}`)
+      window.location.reload(true)
     } else {
       const data = await response.json()
       alert(data.errorMsg)
@@ -225,23 +227,25 @@ class PostsDetails extends Component {
   }
 
   saveImage = async (id) => {
-    const jwtToken = Cookies.get('jwt_token')
     const {postsData} = this.state
-    const url = `http://localhost:8080/api/customer/posts/${id}/image`
-    const data = new FormData();
-    data.append('file', postsData.imageFile)
+    const image = postsData.imageFile
+    if (image) {
+      const jwtToken = Cookies.get('jwt_token')
+      const url = `http://localhost:8080/api/customer/posts/${id}/image`
+      const data = new FormData();
+      data.append('file', image)
 
-    const options = {
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-      },
-      body: data,
-      method: 'POST',
+      const options = {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+        body: data,
+        method: 'POST',
+      }
+
+      await fetch(url, options)
+      this.addOtherName()
     }
-
-    await fetch(url, options)
-    this.addOtherName()
-    await this.getPostsData()
   }
 
   addOtherName = () => {
@@ -312,7 +316,7 @@ class PostsDetails extends Component {
     const jwtToken = Cookies.get('jwt_token')
     const username = Cookies.get('username')
     if (username === undefined) {
-      alert("Bạn cần đăng nhập để có thể thêm bài viết khỏi danh sách yêu thích.")
+      alert("Bạn cần đăng nhập để có thể thêm bài viết vào danh sách yêu thích.")
       return
     }
     const url = `http://localhost:8080/api/customer/favorite-posts/${postsData.id}`
@@ -325,6 +329,11 @@ class PostsDetails extends Component {
     }
     fetch(url, options)
     this.setState({isFavorite: true})
+  }
+
+  clickUsername = (username) => {
+    const {history} = this.props
+    history.push(`/profile/${username}`)
   }
 
   renderPostsDetailsView = () => {
@@ -345,7 +354,7 @@ class PostsDetails extends Component {
                     <div className="banner-details-container">
                       <h1 className="specific-restaurant-name">{postsData.title}</h1>
 
-                      <p className="author">{author}</p>
+                      <p className="author" onClick={() => this.clickUsername(author)}>{author}</p>
                       <div className="specific-restaurant-cuisine">
                         {postsData.tags?.map(tag => {
                           <p>{tag}</p>
@@ -360,7 +369,7 @@ class PostsDetails extends Component {
                             <p className="specific-restaurant-rating">{postsData.rating}</p>
                           </div>
                           <p className="specific-restaurant-reviews">
-                            {postsData.totalReviews} Ratings
+                            {postsData.totalReviews} lượt đánh giá
                           </p>
                         </div>
                       </div>
@@ -377,7 +386,7 @@ class PostsDetails extends Component {
                           <span className="picture-image" dangerouslySetInnerHTML={{__html: '<p>Chọn ảnh</p>'}}></span>
                       )}
                     </label>
-                    <input type="file" accept="image/jpeg" name="imageFile" id="picture-input" onChange={this.importImage}/>
+                    <input type="file" accept="image/*" name="imageFile" id="picture-input" onChange={this.importImage}/>
                     <div className="banner-details-container edit">
                       <input type={"text"}
                              className="specific-restaurant-name name-input"
@@ -454,7 +463,7 @@ class PostsDetails extends Component {
           </div>
           {(postsId !== 'new') && (
               <div className="block-body">
-                <Comment postsId={postsId}/>
+                <Comment postsId={postsId} clickUsername={this.clickUsername}/>
                 <Rating postsId={postsId}/>
               </div>
           )}

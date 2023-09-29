@@ -44,6 +44,17 @@ class Header extends Component {
         this.setState(prev => ({isMobileMenuClicked: !prev.isMobileMenuClicked}))
     }
 
+    checkLogin = () => {
+        const {username} = this.state
+        if (username && username.length > 0) {
+            const {history} = this.props
+            history.push('/posts/new')
+            window.location.reload(true)
+        } else {
+            alert("Bạn cần đăng nhập để có thể tạo một bài viết mới.")
+        }
+    }
+
     render() {
         const {isMobileMenuClicked, username} = this.state
         return (
@@ -95,15 +106,15 @@ class Header extends Component {
                                 </li>
 
                                 <li className="nav-menu-item">
-                                    <Link to="/posts" className="nav-link">
+                                    <Link to="/posts"  className="nav-link">
                                         Bài viết
                                     </Link>
                                 </li>
 
                                 <li className="nav-menu-item">
-                                    <Link to="/posts/new" className="nav-link">
+                                    <a onClick={this.checkLogin} className="nav-link">
                                         Tạo bài viết
-                                    </Link>
+                                    </a>
                                 </li>
                             </ul>
                             {(username && username.length > 0) ? (

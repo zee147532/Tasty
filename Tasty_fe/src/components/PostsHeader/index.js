@@ -63,7 +63,7 @@ const PostsHeader = props => {
           </select>
           {isOpen && (
             <div className="input-box">
-              <input type="file" accept="image/jpeg" id="search-image" className="search-image" onChange={onChangeImage} />
+              <input type="file" accept="image/*" id="search-image" className="search-image" onChange={onChangeImage} />
               <label htmlFor="search-image" tabIndex="0">
                 <span className="material-symbols-rounded search search-icon">image</span>
               </label>

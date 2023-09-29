@@ -23,7 +23,10 @@ class PersonalProfile extends Component {
         username: '',
         jwtToken: '',
         srcImage: '',
-        loggedUser: ''
+        loggedUser: '',
+        oldPassword: '',
+        newPassword: '',
+        confirmPassword: '',
     }
     componentDidMount() {
         this.loadCustomerProfile()
@@ -186,7 +189,12 @@ class PersonalProfile extends Component {
         console.log(apiUrl)
         const response = await fetch(apiUrl, options)
         if (response.ok) {
-            this.uploadAvatar()
+            if(customerDetail.imageFile) {
+                this.uploadAvatar()
+            } else {
+                this.loadCustomerProfile()
+                alert("Cập nhật thông tin thành công.")
+            }
         } else {
             const fetchedData = await response.json()
             alert(fetchedData.errorMsg)
@@ -210,12 +218,12 @@ class PersonalProfile extends Component {
 
         const response = await fetch(url, options)
         if (response.ok) {
-            alert("Cập nhật thông tin thành công.")
             this.loadCustomerProfile()
+            alert("Cập nhật thông tin thành công.")
         } else {
             const fetchedData = await response.json()
             alert(fetchedData.errorMsg)
-}
+        }
 
     }
 
@@ -278,7 +286,7 @@ class PersonalProfile extends Component {
                             <span className="picture-image" dangerouslySetInnerHTML={{__html: '<p>Chọn ảnh</p>'}}></span>
                         )}
                     </label>
-                    <input type="file" accept="image/jpeg" name="imageFile" id="picture-input" onChange={this.importImage}/>
+                    <input type="file" accept="image/*" name="imageFile" id="picture-input" onChange={this.importImage}/>
                 </div>
                 <div className="form-group">
                     <label htmlFor="description">Mô tả bản thân</label>
@@ -344,11 +352,11 @@ class PersonalProfile extends Component {
 
     changePassword = async () => {
         const {oldPassword, newPassword, confirmPassword, username} = this.state
-        if (oldPassword === newPassword) {
+        if (oldPassword === '' || newPassword === '' || confirmPassword === '') {
+            alert("Vui lòng điền đầy đủ thông tin")
+        } else if (oldPassword === newPassword) {
             alert("Bạn không thể sử dụng lại mật hiện tại.")
-            return;
-        }
-        if (newPassword !== confirmPassword) {
+        } else if (newPassword !== confirmPassword) {
             alert("Mật khẩu xác nhận không trùng khớp.")
         } else {
             const jwtToken = Cookies.get('jwt_token')
@@ -376,10 +384,15 @@ class PersonalProfile extends Component {
                 alert(fetchedData.errorMsg)
             }
         }
+        this.setState({
+            oldPassword: '',
+            newPassword: '',
+            confirmPassword: ''
+        })
     }
 
     renderProfileView = () => {
-        const {customerProfile, username, loggedUser}  = this.state
+        const {customerProfile, username, loggedUser, oldPassword, newPassword, confirmPassword}  = this.state
         return (
             <>
                 <header className="profile-header">
@@ -387,7 +400,6 @@ class PersonalProfile extends Component {
                         <div className="profile">
                             <div className="profile-image">
                                 <img className={"avatar"} src={`${(!customerProfile.imageUrl || customerProfile.imageUrl.length < 1) ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSheI9UkWllIpSNbs2UdE18KLLswgDON9qzXg&usqp=CAU' : customerProfile.imageUrl}`}  alt={''}/>
-                                {/*<Avatar alt={customerProfile.username.toUpperCase()} src={customerProfile.imageUrl} />*/}
                             </div>
                             <div className="profile-user-settings">
                                 <h1 className="profile-user-name">{customerProfile.username}
@@ -445,11 +457,11 @@ class PersonalProfile extends Component {
 
                         <div className="tab-content clearfix">
                             <div className="tab-pane active" id="1b">
-                                <AllPostsList paging={false} type={"own"} getUsername={this.getUsername}/>
+                                <AllPostsList paging={false} type={"own"} header={false} getUsername={this.getUsername}/>
                             </div>
                             {username === loggedUser && (
                                 <div className="tab-pane" id="2b">
-                                    <AllPostsList paging={false} type={"favorite"}/>
+                                    <AllPostsList paging={false} type={"favorite"} header={false}/>
                                 </div>
                             )}
                         </div>
@@ -491,27 +503,29 @@ class PersonalProfile extends Component {
                                     <div className="form-group">
                                         <label htmlFor="old-password" aria-required={true}>Mật khẩu cũ</label>
                                         <div className="inputBox">
-                                            <input type="password" onChange={(e) => {this.setState({oldPassword: e.target.value})}} placeholder="Old password" id="myPassword"/>
-                                            {/*<span className="material-symbols-rounded show"></span>*/}
-                                            {/*<span className="material-symbols-rounded">visibility-off</span>*/}
+                                            <input value={oldPassword} type="password" onChange={(e) => {
+                                                this.setState({
+                                                    oldPassword: e.target.value
+                                                })}} placeholder="Old password" id="myPassword"/>
                                         </div>
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="new-password">Mật khẩu mới</label>
                                         <div className="inputBox">
-                                            <input type="password" onChange={(e) => {this.setState({newPassword: e.target.value})}} placeholder="New password" id="myPassword"/>
-                                            {/*<span className="material-symbols-rounded show"></span>*/}
-                                            {/*<span className="material-symbols-rounded">visibility-off</span>*/}
+                                            <input value={newPassword} type="password" onChange={(e) => {
+                                                this.setState({
+                                                    newPassword: e.target.value
+                                                })}} placeholder="New password" id="myPassword"/>
                                         </div>
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="confirm-password">Xác nhận mật khẩu</label>
                                         <div className="inputBox">
-                                            <input type="password" onChange={(e) => {this.setState({confirmPassword: e.target.value})}} placeholder="Confirm password" id="myPassword"/>
-                                            {/*<span className="material-symbols-rounded show"></span>*/}
-                                            {/*<span className="material-symbols-rounded">visibility-off</span>*/}
+                                            <input value={confirmPassword} type="password" onChange={(e) => {
+                                                this.setState({
+                                                    confirmPassword: e.target.value
+                                                })}} placeholder="Confirm password" id="myPassword"/>
                                         </div>
-                                        {/*https://codepen.io/saad-muhammad01/pen/OJrJxVm*/}
                                     </div>
                                 </div>
                             </div>

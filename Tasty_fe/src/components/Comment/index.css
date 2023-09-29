@@ -264,3 +264,7 @@
 .comment-content:hover .comment-details .delete-button {
     display: inline-block;
 }
+
+.comment-name {
+    cursor: pointer;
+}

@@ -168,7 +168,10 @@ public class CustomerServiceImpl implements CustomerService {
         if (!username.equals(dto.getUsername())) {
             return ResponseEntity.status(403).body(Map.of("errorMsg","Bạn không có quyền chỉnh sửa thông tin của người dùng này."));
         }
-        Profession profession = professionRepository.getReferenceById(dto.getProfessionId());
+        Profession profession = null;
+        if (dto.getProfessionId() != 0L) {
+            profession = professionRepository.getReferenceById(dto.getProfessionId());
+        }
         Customer customer = customerRepository.findByUsername(dto.getUsername());
         customer.fullName(dto.getFullName())
             .phoneNumber(dto.getPhoneNumber())
@@ -236,7 +239,7 @@ public class CustomerServiceImpl implements CustomerService {
             customer.getPhoneNumber(),
             customer.getEmail(),
             customer.getGender(),
-            customer.getProfession().getId(),
+            Objects.isNull(customer.getProfession()) ? 0 : customer.getProfession().getId(),
             customer.getDescription(),
             Objects.isNull(image) ? "" : image.getUri()
         );

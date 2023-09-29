@@ -196,7 +196,7 @@ public class PostServiceImpl implements PostService {
         String otherNames;
         try {
             List<String> recognitionResult = calorieMamaRecognition(dto.getFile());
-            otherNames = String.join(",", recognitionResult);
+            otherNames = String.join(",", recognitionResult.size() < 20 ? recognitionResult : recognitionResult.subList(0, 20));
         } catch (Exception e) {
             otherNames = Objects.isNull(post.getOtherName()) ? post.getTitle() : post.getOtherName();
         }
@@ -278,6 +278,7 @@ public class PostServiceImpl implements PostService {
         if (Objects.isNull(request.getId())) {
             post.setCreatedDate(LocalDate.now());
             post.setAuthor(customer);
+            post.setOtherName("dish");
         } else {
             post = postRepository.getReferenceById(request.getId());
             imageRepository.deleteAllByPost_IdAndType(request.getId(), DISH);
@@ -371,9 +372,14 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostsDetailResponse getDetail(Long id) {
-        String token = servletRequest.getHeader(AUTHORIZATION).substring(7);
-        String username = tokenProvider.getAuthentication(token).getName();
-        Favorites favorites = favoritesRepository.findAllByPost_IdAndCustomer_Username(id, username);
+        Favorites favorites;
+        try {
+            String token = servletRequest.getHeader(AUTHORIZATION).substring(7);
+            String username = tokenProvider.getAuthentication(token).getName();
+            favorites = favoritesRepository.findAllByPost_IdAndCustomer_Username(id, username);
+        } catch (Exception e) {
+            favorites = null;
+        }
         PostsDetail postsDetail = postRepository.getDetail(id);
         if (Objects.isNull(postsDetail)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy bài viết.");
@@ -439,7 +445,7 @@ public class PostServiceImpl implements PostService {
         recognitionResult.forEach(r ->
             filteredPosts.addAll(
                 allPosts.stream().filter(posts ->
-                    Arrays.stream(posts.getOtherName().split(",")).anyMatch(r::equalsIgnoreCase)
+                    Arrays.stream((Objects.isNull(posts.getOtherName()) ? "" : posts.getOtherName()).split(",")).anyMatch(r::equalsIgnoreCase)
                 ).collect(Collectors.toList())
             )
         );
@@ -470,6 +476,6 @@ public class PostServiceImpl implements PostService {
             allGroup.add(r.getGroup());
             allGroup.addAll(r.getItems().stream().map(ResultItem::getName).collect(Collectors.toList()));
         });
-        return allGroup.size() <= 60 ? allGroup : allGroup.subList(0, 60);
+        return allGroup.size() <= 30 ? allGroup : allGroup.subList(0, 30);
     }
 }

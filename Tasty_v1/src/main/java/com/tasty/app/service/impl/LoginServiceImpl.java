@@ -115,7 +115,10 @@ public class LoginServiceImpl implements LoginService {
             return response;
         }
 
-        Profession profession = professionRepository.getReferenceById(request.getProfession());
+        Profession profession = null;
+        if (request.getProfession() != 0L) {
+            profession = professionRepository.getReferenceById(request.getProfession());
+        }
         Customer customer = customerRepository.findByUsername(username)
             .fullName(request.getFullName())
             .phoneNumber(request.getPhoneNumber())

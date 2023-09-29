@@ -16,6 +16,7 @@ class IngredientListEdit extends Component {
             {id: 5, name: 'Cây'},
             {id: 6, name: 'Muỗng cà phê'},
             {id: 7, name: 'ml'},
+            {id: 8, name: 'Con'},
         ],
     }
 

@@ -29,6 +29,10 @@ class Rating extends Component {
         if (username) {
             this.getRateByUsername()
             this.setState({logged: true})
+        } else {
+            this.setState({
+                apiStatus: apiStatusConstants.success,
+            })
         }
     }
 

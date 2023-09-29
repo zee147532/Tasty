@@ -12,12 +12,12 @@ import './index.css'
 const sortByOptions = [
   {
     id: 0,
-    displayText: 'Cao nhất',
+    displayText: 'Mới nhất',
     value: 'DESC',
   },
   {
     id: 2,
-    displayText: 'Thấp nhất',
+    displayText: 'Cũ nhất',
     value: 'ASC',
   },
 ]
@@ -37,9 +37,14 @@ class AllPostsList extends Component {
     apiStatus: apiStatusConstants.initial,
     totalPage: 99,
     keyword: '',
+    header: true,
   }
 
   componentDidMount() {
+    const {header} = this.props
+    if (header !== undefined) {
+      this.setState({header: header})
+    }
     this.getPosts()
   }
 
@@ -140,33 +145,34 @@ class AllPostsList extends Component {
   }
 
   renderPostsListView = () => {
-    const {postsList, activeOptionId, keyword} = this.state
+    const {postsList, activeOptionId, keyword, header} = this.state
 
     return (
       <>
-        <PostsHeader
-          activeOptionId={activeOptionId}
-          sortByOptions={sortByOptions}
-          changeSortBy={this.changeSortBy}
-          search={this.getPosts}
-          onChangeKeyword={this.changeKeyword}
-          changeImage={this.changeImage}
-
-        />
+        {header && (
+            <PostsHeader
+                activeOptionId={activeOptionId}
+                sortByOptions={sortByOptions}
+                changeSortBy={this.changeSortBy}
+                search={this.getPosts}
+                onChangeKeyword={this.changeKeyword}
+                changeImage={this.changeImage}
+            />
+        )}
         <hr className="hr-line"/>
-          {postsList.length === 0 ? (
-              <div className="restaurant-error-view-container">
-                  <p className="restaurant-failure-description">
-                      Không thể tìm thấy bất kỳ bài viết nào!
-                  </p>
-              </div>
-          ) : (
-              <ul className="restaurant-list">
-                  {postsList.map(posts => (
-                      <PostsCard posts={posts} key={posts.id}/>
-                  ))}
-              </ul>
-          )}
+        {postsList.length === 0 ? (
+            <div className="restaurant-error-view-container">
+              <p className="restaurant-failure-description">
+                Không thể tìm thấy bất kỳ bài viết nào!
+              </p>
+            </div>
+        ) : (
+            <ul className="restaurant-list">
+              {postsList.map(posts => (
+                  <PostsCard posts={posts} key={posts.id}/>
+              ))}
+            </ul>
+        )}
       </>
     )
   }
